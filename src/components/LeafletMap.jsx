@@ -54,7 +54,7 @@ function LeafletMap({
     }
 
     markerRef.current = marker
-    map.setView(correctedCoords, 16)
+    map.setView(correctedCoords, 18)
   }, [markerCoords, zoom, companyName])
 
   return <div ref={mapRef} style={{ width: '100%', height: '400px' }}></div>

@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { geocodeAddress } from '../api/geocode'
 
-function GeocodeForm({ onSelectAddress }) {
+function GeocodeForm({ onSelectAddress, currentCoords }) {
   const [address, setAddress] = useState('')
   const [companyName, setCompanyName] = useState('')
   const [dateOfObservation, setDateOfObservation] = useState('')
   const [timeOfObservation, setTimeOfObservation] = useState('')
   const [autocompleteResults, setAutocompleteResults] = useState([])
+  const [isNameValidated, setIsNameValidated] = useState(false)
+  const defaultName = 'Entreprise X'
 
   const handleAddressChange = async (e) => {
     const query = e.target.value
@@ -29,11 +31,33 @@ function GeocodeForm({ onSelectAddress }) {
     setAddress(feature.properties.label)
     if (onSelectAddress && feature.geometry) {
       onSelectAddress({
-        coordinates: feature.geometry.coordinates, // Modifié 'coords' à 'coordinates' pour la cohérence
+        coordinates: feature.geometry.coordinates,
         companyName: companyName,
       })
     }
     setAutocompleteResults([])
+  }
+
+  const handleCompanyNameValidation = () => {
+    setIsNameValidated(true)
+    // Envoyer les informations mises à jour si une adresse est déjà sélectionnée
+    if (address) {
+      if (onSelectAddress) {
+        onSelectAddress({
+          coordinates: currentCoords, // Utilisez les coordonnées actuelles
+          companyName: companyName,
+        })
+      }
+    }
+  }
+
+  const handleCompanyNameModification = () => {
+    setIsNameValidated(false)
+  }
+
+  const handleIDontKnowClick = () => {
+    setCompanyName(defaultName)
+    setIsNameValidated(true)
   }
 
   return (
@@ -44,14 +68,39 @@ function GeocodeForm({ onSelectAddress }) {
         </label>
         <input
           id="company-name-input"
-          name="companyName" // Ajout de l'attribut 'name'
+          name="companyName"
           type="text"
           className="form-control"
           value={companyName}
           onChange={(e) => setCompanyName(e.target.value)}
           placeholder="Entrez le nom de l'entreprise"
-          required // Ajout de l'attribut 'required'
+          disabled={isNameValidated}
         />
+        {!isNameValidated ? (
+          <>
+            <button
+              className="btn btn-success mt-2"
+              onClick={handleCompanyNameValidation}
+              disabled={!companyName.trim()} // Désactiver le bouton si companyName est vide
+            >
+              Valider
+            </button>
+            <button
+              type="button"
+              className="btn btn-link mt-2"
+              onClick={handleIDontKnowClick}
+            >
+              Je ne sais pas
+            </button>
+          </>
+        ) : (
+          <button
+            className="btn btn-warning mt-2"
+            onClick={handleCompanyNameModification}
+          >
+            Modifier
+          </button>
+        )}
       </div>
 
       <div className="form-group mb-3">
@@ -60,26 +109,26 @@ function GeocodeForm({ onSelectAddress }) {
         </label>
         <input
           id="address-input"
-          name="companyAddress" // Ajout de l'attribut 'name'
+          name="companyAddress"
           type="text"
           className="form-control"
           value={address}
           onChange={handleAddressChange}
           placeholder="Saisissez une adresse"
-          required // Ajout de l'attribut 'required'
+          required
+          disabled={!isNameValidated}
         />
         <div className="position-relative">
-          {autocompleteResults.map(
-            (feature, index) =>
-              feature.properties && (
-                <div
-                  key={index}
-                  className="position-absolute bg-white w-100 border p-2"
-                  onClick={() => handleSuggestionClick(feature)}
-                >
-                  {feature.properties.label}
-                </div>
-              ),
+          {autocompleteResults.map((feature, index) =>
+            feature.properties ? (
+              <div
+                key={index}
+                className="position-absolute bg-white w-100 border p-2"
+                onClick={() => handleSuggestionClick(feature)}
+              >
+                {feature.properties.label}
+              </div>
+            ) : null,
           )}
         </div>
       </div>

@@ -13,8 +13,8 @@ export default function PrivateHome() {
         Éco-veille: Lumière inutiles
       </h1>
       <GeocodeForm
+        currentCoords={markerCoords}
         onSelectAddress={({ coordinates, companyName: name }) => {
-          // Ici, on déstructure l'objet reçu
           setMarkerCoords(coordinates)
           setCompanyName(name)
         }}
