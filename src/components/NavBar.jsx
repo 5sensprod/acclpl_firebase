@@ -30,13 +30,13 @@ export default function Navbar() {
       <div>
         <button
           onClick={() => toggleModals('signUp')}
-          className="btn btn-primary btn-sm"
+          className="btn btn-secondary btn-sm"
         >
           S'inscrire
         </button>
         <button
           onClick={() => toggleModals('signIn')}
-          className="btn btn-primary btn-sm ms-2"
+          className="btn btn-secondary btn-sm ms-2"
         >
           Connexion
         </button>

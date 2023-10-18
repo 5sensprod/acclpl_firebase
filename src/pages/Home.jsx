@@ -9,7 +9,7 @@ export default function Home() {
       <h1 className="display-3 text-light">
         {currentUser
           ? 'Bienvenue, Gros !'
-          : "Bonjour, S'insrire ou se connecter"}
+          : "Bonjour, S'inscrire ou se connecter"}
       </h1>
     </div>
   )
