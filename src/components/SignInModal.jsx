@@ -3,7 +3,7 @@ import { UserContext } from '../context/userContext'
 import { useNavigate } from 'react-router-dom'
 
 export default function SignUpModal() {
-  const { modalState, toggleModals, signUp } = useContext(UserContext)
+  const { modalState, toggleModals, signIn } = useContext(UserContext)
 
   const navigate = useNavigate()
 
@@ -19,31 +19,15 @@ export default function SignUpModal() {
 
   const handleForm = async (e) => {
     e.preventDefault()
-
-    if (
-      (inputs.current[1].value.length || inputs.current[2].value.length) < 6
-    ) {
-      setValidation('6 caractères min')
-      return
-    } else if (inputs.current[1].value !== inputs.current[2].value) {
-      setValidation('Le mot de passe en correspond pas')
-      return
-    }
-
     try {
-      await signUp(inputs.current[0].value, inputs.current[1].value)
-      formRef.current.reset()
+      await signIn(inputs.current[0].value, inputs.current[1].value)
+
+      //   formRef.current.reset()
       setValidation('')
       toggleModals('close')
       navigate('/private/private-home')
-    } catch (err) {
-      if (err.code === 'auth/invalid-email') {
-        setValidation("Format d'adresse invalide")
-      }
-
-      if (err.code === 'auth/email-already-in-use') {
-        setValidation("L'adresse est déjà utilisée")
-      }
+    } catch {
+      setValidation("Oups, L'adresse email ou le mot de passe est invalide")
     }
   }
 
@@ -54,7 +38,7 @@ export default function SignUpModal() {
 
   return (
     <>
-      {modalState.signUpModal && (
+      {modalState.signInModal && (
         <div className="position-fixed top-0 vw-100 vh-100">
           <div
             onClick={closeModal}
@@ -67,7 +51,7 @@ export default function SignUpModal() {
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">S'inscrire</h5>
+                  <h5 className="modal-title">Connexion</h5>
                   <button onClick={closeModal} className="btn-close"></button>
                 </div>
 
@@ -78,7 +62,7 @@ export default function SignUpModal() {
                     className="sign-up-form"
                   >
                     <div className="mb-3">
-                      <label htmlFor="signUpEmail" className="form-label">
+                      <label htmlFor="signInEmail" className="form-label">
                         Adresse email
                       </label>
                       <input
@@ -87,12 +71,12 @@ export default function SignUpModal() {
                         required
                         type="email"
                         className="form-control"
-                        id="signUpEmail"
+                        id="signInEmail"
                       />
                     </div>
 
                     <div className="mb-3">
-                      <label htmlFor="signUpPwd" className="form-label">
+                      <label htmlFor="signInPwd" className="form-label">
                         Mot de passe
                       </label>
                       <input
@@ -101,26 +85,12 @@ export default function SignUpModal() {
                         required
                         type="password"
                         className="form-control"
-                        id="signUpPwd"
-                      />
-                    </div>
-
-                    <div className="mb-3">
-                      <label htmlFor="repeatPwd" className="form-label">
-                        Répeter le mot de passe
-                      </label>
-                      <input
-                        ref={addInputs}
-                        name="pwd"
-                        required
-                        type="password"
-                        className="form-control"
-                        id="repeatPwd"
+                        id="signInPwd"
                       />
                       <p className="text-danger mt-1">{validation}</p>
                     </div>
 
-                    <button className="btn btn-primary">S'inscrire</button>
+                    <button className="btn btn-primary">Se connecter</button>
                   </form>
                 </div>
               </div>
