@@ -16,7 +16,7 @@ export default function Navbar() {
       navigate('/')
     } catch {
       alert(
-        "For some reasons we can't deconnect, please check your internet connexion and retry.",
+        'Pour certaines raisons, nous ne pouvons pas nous déconnecter, veuillez vérifier votre connexion internet et réessayer.',
       )
     }
   }
