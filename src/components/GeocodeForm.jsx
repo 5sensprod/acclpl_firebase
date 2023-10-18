@@ -4,8 +4,8 @@ import { geocodeAddress } from '../api/geocode'
 function GeocodeForm({ onSelectAddress }) {
   const [address, setAddress] = useState('')
   const [companyName, setCompanyName] = useState('')
-  const [dateOfObservation, setDateOfObservation] = useState('') // Pour la date
-  const [timeOfObservation, setTimeOfObservation] = useState('') // Pour l'heure
+  const [dateOfObservation, setDateOfObservation] = useState('')
+  const [timeOfObservation, setTimeOfObservation] = useState('')
   const [autocompleteResults, setAutocompleteResults] = useState([])
 
   const handleAddressChange = async (e) => {
@@ -28,7 +28,10 @@ function GeocodeForm({ onSelectAddress }) {
   const handleSuggestionClick = (feature) => {
     setAddress(feature.properties.label)
     if (onSelectAddress && feature.geometry) {
-      onSelectAddress(feature.geometry.coordinates)
+      onSelectAddress({
+        coordinates: feature.geometry.coordinates, // Modifié 'coords' à 'coordinates' pour la cohérence
+        companyName: companyName,
+      })
     }
     setAutocompleteResults([])
   }
