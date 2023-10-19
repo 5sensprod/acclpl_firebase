@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { reverseGeocode, geocodeAddress } from '../api/geocode'
 import ValidatedToggleButton from './ValidatedToggleButton'
+import PhotoCapture from './PhotoCapture'
 
 function ObservationEntryForm({ onSelectAddress, currentCoords }) {
   const [address, setAddress] = useState('')
@@ -12,7 +13,6 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
   const [isNameValidated, setIsNameValidated] = useState(false)
   const defaultName = 'Entreprise X'
   const [photo, setPhoto] = useState(null)
-  const photoInputRef = useRef(null)
 
   const handleAddressChange = async (e) => {
     const query = e.target.value
@@ -131,14 +131,9 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
     if (file) {
       const reader = new FileReader()
       reader.onload = (e) => {
-        // e.target.result contient la photo en tant que Data URL
         setPhoto(e.target.result)
       }
       reader.readAsDataURL(file)
-
-      // Update the file label
-      const label = document.querySelector('label[for="photo-input"]')
-      label.textContent = file.name
     }
   }
 
@@ -256,24 +251,8 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
           />
         </div>
       </div>
-      <div className="form-group col-md-6 mb-3">
-        <label htmlFor="photo-input" className="text-light">
-          Prendre une photo
-        </label>
-        <div className="custom-file">
-          <input
-            type="file"
-            accept="image/*;capture=camera"
-            className="custom-file-input"
-            id="photo-input"
-            onChange={handlePhotoChange}
-            ref={photoInputRef}
-          />
-          <label className="custom-file-label" htmlFor="photo-input">
-            Choisir une photo
-          </label>
-        </div>
-      </div>
+
+      <PhotoCapture />
     </div>
   )
 }
