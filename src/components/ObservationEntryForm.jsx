@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { geocodeAddress } from '../api/geocode'
+import ValidatedToggleButton from './ValidatedToggleButton'
 
-function GeocodeForm({ onSelectAddress, currentCoords }) {
+function ObservationEntryForm({ onSelectAddress, currentCoords }) {
   const [address, setAddress] = useState('')
+  const [isAddressValidated, setIsAddressValidated] = useState(false)
   const [companyName, setCompanyName] = useState('')
   const [dateOfObservation, setDateOfObservation] = useState('')
   const [timeOfObservation, setTimeOfObservation] = useState('')
@@ -44,7 +46,7 @@ function GeocodeForm({ onSelectAddress, currentCoords }) {
     if (address) {
       if (onSelectAddress) {
         onSelectAddress({
-          coordinates: currentCoords, // Utilisez les coordonnées actuelles
+          coordinates: currentCoords, // Utilise les coordonnées actuelles
           companyName: companyName,
         })
       }
@@ -58,6 +60,14 @@ function GeocodeForm({ onSelectAddress, currentCoords }) {
   const handleIDontKnowClick = () => {
     setCompanyName(defaultName)
     setIsNameValidated(true)
+  }
+
+  const handleAddressValidation = () => {
+    setIsAddressValidated(true)
+  }
+
+  const handleAddressModification = () => {
+    setIsAddressValidated(false)
   }
 
   return (
@@ -76,29 +86,20 @@ function GeocodeForm({ onSelectAddress, currentCoords }) {
           placeholder="Entrez le nom de l'entreprise"
           disabled={isNameValidated}
         />
-        {!isNameValidated ? (
-          <>
-            <button
-              className="btn btn-success mt-2"
-              onClick={handleCompanyNameValidation}
-              disabled={!companyName.trim()} // Désactiver le bouton si companyName est vide
-            >
-              Valider
-            </button>
-            <button
-              type="button"
-              className="btn btn-link mt-2"
-              onClick={handleIDontKnowClick}
-            >
-              Je ne sais pas
-            </button>
-          </>
-        ) : (
+        <ValidatedToggleButton
+          isValidated={isNameValidated}
+          onValidation={handleCompanyNameValidation}
+          onModification={handleCompanyNameModification}
+          disabled={!companyName.trim()}
+        />
+
+        {!isNameValidated && (
           <button
-            className="btn btn-warning mt-2"
-            onClick={handleCompanyNameModification}
+            type="button"
+            className="btn btn-link mt-2"
+            onClick={handleIDontKnowClick}
           >
-            Modifier
+            Je ne sais pas
           </button>
         )}
       </div>
@@ -116,19 +117,16 @@ function GeocodeForm({ onSelectAddress, currentCoords }) {
           onChange={handleAddressChange}
           placeholder="Saisissez une adresse"
           required
-          disabled={!isNameValidated}
+          disabled={isAddressValidated}
           style={{ zIndex: 6 }}
         />
-        <div
-          className="position-relative mt-n5"
-          style={{ zIndex: 3, marginTop: '-5px' }}
-        >
-          <ul className="autocomplete-list position-absolute w-100 bg-white p-0">
+        <div className="position-relative" style={{ zIndex: 3 }}>
+          <ul className="list-group autocomplete-list position-absolute w-100 bg-white p-0">
             {autocompleteResults.map((feature, index) =>
               feature.properties ? (
                 <li
                   key={index}
-                  className="p-2"
+                  className="list-group-item list-group-item-action p-2"
                   onClick={() => handleSuggestionClick(feature)}
                   style={{ zIndex: 3 }}
                 >
@@ -138,6 +136,12 @@ function GeocodeForm({ onSelectAddress, currentCoords }) {
             )}
           </ul>
         </div>
+        <ValidatedToggleButton
+          isValidated={isAddressValidated}
+          onValidation={handleAddressValidation}
+          onModification={handleAddressModification}
+          disabled={!address.trim()}
+        />
       </div>
 
       <div className="row">
@@ -171,4 +175,4 @@ function GeocodeForm({ onSelectAddress, currentCoords }) {
   )
 }
 
-export default GeocodeForm
+export default ObservationEntryForm

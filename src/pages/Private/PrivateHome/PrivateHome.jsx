@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import cat from './cat.gif'
 import LeafletMap from '../../../components/LeafletMap'
-import GeocodeForm from '../../../components/GeocodeForm'
+import ObservationEntryForm from '../../../components/ObservationEntryForm'
 
 export default function PrivateHome() {
   const [markerCoords, setMarkerCoords] = useState(null)
@@ -12,7 +12,7 @@ export default function PrivateHome() {
       <h1 className="display-5 text-light mb-4">
         Éco-veille: Lumière inutiles
       </h1>
-      <GeocodeForm
+      <ObservationEntryForm
         currentCoords={markerCoords}
         onSelectAddress={({ coordinates, companyName: name }) => {
           setMarkerCoords(coordinates)
