@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirection</title>
+    <script type="text/javascript">
+        // Prend l'URL actuelle et la redirige vers index.html avec le chemin approprié
+        var path = window.location.href.split("#")[1];
+        window.location.replace(path ? path : "/");
+    </script>
+</head>
+<body>
+</body>
+</html>

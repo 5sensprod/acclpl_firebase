@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { reverseGeocode, geocodeAddress } from '../api/geocode'
 import ValidatedToggleButton from './ValidatedToggleButton'
 
@@ -11,6 +11,8 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
   const [autocompleteResults, setAutocompleteResults] = useState([])
   const [isNameValidated, setIsNameValidated] = useState(false)
   const defaultName = 'Entreprise X'
+  const [photo, setPhoto] = useState(null)
+  const photoInputRef = useRef(null)
 
   const handleAddressChange = async (e) => {
     const query = e.target.value
@@ -124,6 +126,22 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
     )
   }
 
+  const handlePhotoChange = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        // e.target.result contient la photo en tant que Data URL
+        setPhoto(e.target.result)
+      }
+      reader.readAsDataURL(file)
+
+      // Update the file label
+      const label = document.querySelector('label[for="photo-input"]')
+      label.textContent = file.name
+    }
+  }
+
   return (
     <div className="my-4">
       <div className="form-group mb-3">
@@ -150,8 +168,9 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
         {!isNameValidated && (
           <button
             type="button"
-            className="btn btn-link mt-2"
+            className="btn text-light mt-2"
             onClick={handleIDontKnowClick}
+            style={{ boxShadow: 'none', outline: 'none' }}
           >
             Je ne sais pas
           </button>
@@ -200,9 +219,10 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
         {!isAddressValidated && (
           <button
             type="button"
-            className="btn btn-link mt-2"
+            className="btn text-light mt-2 btn"
             onClick={handleGeolocationClick}
             disabled={!isNameValidated}
+            style={{ boxShadow: 'none', outline: 'none' }}
           >
             Me géolocaliser
           </button>
@@ -234,6 +254,24 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
             value={timeOfObservation}
             onChange={(e) => setTimeOfObservation(e.target.value)}
           />
+        </div>
+      </div>
+      <div className="form-group col-md-6 mb-3">
+        <label htmlFor="photo-input" className="text-light">
+          Prendre une photo
+        </label>
+        <div className="custom-file">
+          <input
+            type="file"
+            accept="image/*;capture=camera"
+            className="custom-file-input"
+            id="photo-input"
+            onChange={handlePhotoChange}
+            ref={photoInputRef}
+          />
+          <label className="custom-file-label" htmlFor="photo-input">
+            Choisir une photo
+          </label>
         </div>
       </div>
     </div>
