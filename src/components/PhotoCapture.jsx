@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PhotoCropper from './PhotoCropper' // Assurez-vous que le chemin d'importation est correct
 
 function PhotoCapture(props) {
   const [photo, setPhoto] = useState(null)
@@ -12,6 +13,10 @@ function PhotoCapture(props) {
       }
       reader.readAsDataURL(file)
     }
+  }
+
+  const handleCropComplete = (croppedArea, croppedAreaPixels) => {
+    console.log(croppedArea, croppedAreaPixels)
   }
 
   return (
@@ -38,7 +43,7 @@ function PhotoCapture(props) {
       {photo && (
         <div className="row justify-content-center mt-4">
           <div className="col-md-6">
-            <img src={photo} alt="Captured" className="img-fluid rounded" />
+            <PhotoCropper photo={photo} onCropComplete={handleCropComplete} />
           </div>
         </div>
       )}

@@ -239,7 +239,6 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
           />
         </div>
       </div>
-
       <PhotoCapture />
     </div>
   )
