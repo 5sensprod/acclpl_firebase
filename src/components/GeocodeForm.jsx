@@ -14,7 +14,7 @@ function GeocodeForm({ onSelectAddress, currentCoords }) {
     const query = e.target.value
     setAddress(query)
 
-    if (query.length < 5) {
+    if (query.length < 3) {
       setAutocompleteResults([])
       return
     }
@@ -117,19 +117,26 @@ function GeocodeForm({ onSelectAddress, currentCoords }) {
           placeholder="Saisissez une adresse"
           required
           disabled={!isNameValidated}
+          style={{ zIndex: 6 }}
         />
-        <div className="position-relative">
-          {autocompleteResults.map((feature, index) =>
-            feature.properties ? (
-              <div
-                key={index}
-                className="position-absolute bg-white w-100 border p-2"
-                onClick={() => handleSuggestionClick(feature)}
-              >
-                {feature.properties.label}
-              </div>
-            ) : null,
-          )}
+        <div
+          className="position-relative mt-n5"
+          style={{ zIndex: 3, marginTop: '-5px' }}
+        >
+          <ul className="autocomplete-list position-absolute w-100 bg-white p-0">
+            {autocompleteResults.map((feature, index) =>
+              feature.properties ? (
+                <li
+                  key={index}
+                  className="p-2"
+                  onClick={() => handleSuggestionClick(feature)}
+                  style={{ zIndex: 3 }}
+                >
+                  {feature.properties.label}
+                </li>
+              ) : null,
+            )}
+          </ul>
         </div>
       </div>
 

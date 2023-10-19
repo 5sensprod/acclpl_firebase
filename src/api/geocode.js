@@ -6,7 +6,7 @@ export const geocodeAddress = async (address) => {
       `/search/?q=${encodeURIComponent(address)}&limit=5&postcode=51000`,
     )
 
-    if (response.data.features) {
+    if (Array.isArray(response.data.features)) {
       const relevantResults = response.data.features.filter(
         (feature) => feature.properties.score > 0.5,
       )
