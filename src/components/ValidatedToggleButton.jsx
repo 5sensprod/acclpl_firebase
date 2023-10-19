@@ -5,7 +5,6 @@ function ValidatedToggleButton({
   onValidation,
   onModification,
   disabled,
-  style = {},
 }) {
   if (isValidated) {
     return (
@@ -19,7 +18,6 @@ function ValidatedToggleButton({
         className="btn btn-success mt-2"
         onClick={onValidation}
         disabled={disabled}
-        style={style}
       >
         Valider
       </button>

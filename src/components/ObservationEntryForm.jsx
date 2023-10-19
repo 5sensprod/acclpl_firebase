@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { geocodeAddress } from '../api/geocode'
+import { reverseGeocode, geocodeAddress } from '../api/geocode'
 import ValidatedToggleButton from './ValidatedToggleButton'
 
 function ObservationEntryForm({ onSelectAddress, currentCoords }) {
@@ -70,6 +70,60 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
     setIsAddressValidated(false)
   }
 
+  const handleGeolocationClick = async () => {
+    if (!navigator.geolocation) {
+      alert(
+        "La géolocalisation n'est pas prise en charge par votre navigateur.",
+      )
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude
+        const lon = position.coords.longitude
+
+        try {
+          // Utilisation du géocodage inverse pour obtenir l'adresse
+          const address = await reverseGeocode(lat, lon)
+          if (address) {
+            setAddress(address) // Met à jour l'adresse dans l'input
+          } else {
+            console.warn(
+              'Géocodage inverse: aucune adresse trouvée pour ces coordonnées.',
+            )
+          }
+        } catch (error) {
+          console.error('Erreur lors du géocodage inverse:', error)
+        }
+
+        onSelectAddress({
+          coordinates: [lon, lat],
+          companyName: companyName,
+        })
+      },
+      (error) => {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert('Permission pour la géolocalisation refusée.')
+            break
+          case error.POSITION_UNAVAILABLE:
+            alert('Information de localisation non disponible.')
+            break
+          case error.TIMEOUT:
+            alert(
+              "La requête pour obtenir la position de l'utilisateur a expiré.",
+            )
+            break
+          case error.UNKNOWN_ERROR:
+          default:
+            alert("Une erreur inconnue s'est produite.")
+            break
+        }
+      },
+    )
+  }
+
   return (
     <div className="my-4">
       <div className="form-group mb-3">
@@ -117,7 +171,7 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
           onChange={handleAddressChange}
           placeholder="Saisissez une adresse"
           required
-          disabled={isAddressValidated}
+          disabled={isAddressValidated || !isNameValidated}
           style={{ zIndex: 6 }}
         />
         <div className="position-relative" style={{ zIndex: 3 }}>
@@ -142,6 +196,17 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
           onModification={handleAddressModification}
           disabled={!address.trim()}
         />
+
+        {!isAddressValidated && (
+          <button
+            type="button"
+            className="btn btn-link mt-2"
+            onClick={handleGeolocationClick}
+            disabled={!isNameValidated}
+          >
+            Me géolocaliser
+          </button>
+        )}
       </div>
 
       <div className="row">
