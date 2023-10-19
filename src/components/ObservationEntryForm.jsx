@@ -12,7 +12,6 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
   const [autocompleteResults, setAutocompleteResults] = useState([])
   const [isNameValidated, setIsNameValidated] = useState(false)
   const defaultName = 'Entreprise X'
-  const [photo, setPhoto] = useState(null)
 
   const handleAddressChange = async (e) => {
     const query = e.target.value
@@ -124,17 +123,6 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
         }
       },
     )
-  }
-
-  const handlePhotoChange = (event) => {
-    const file = event.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setPhoto(e.target.result)
-      }
-      reader.readAsDataURL(file)
-    }
   }
 
   return (
