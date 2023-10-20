@@ -66,6 +66,33 @@ function PhotoCapture(props) {
             </>
           )}
 
+          {photoURL && (
+            <div className="d-flex align-items-center">
+              {usingDefaultPhoto && (
+                <button
+                  className="btn btn-primary mb-3 mr-2"
+                  onClick={triggerFileInput}
+                >
+                  Prendre une photo
+                </button>
+              )}
+              <button
+                className="btn btn-danger mb-3"
+                onClick={handleDeletePhoto}
+              >
+                Effacer la photo
+              </button>
+              {!usingDefaultPhoto && (
+                <button
+                  className="btn btn-secondary mb-3 mr-2"
+                  onClick={() => setOpenCrop(true)}
+                >
+                  Modifier
+                </button>
+              )}
+            </div>
+          )}
+
           <input
             type="file"
             accept="image/*"
@@ -74,6 +101,16 @@ function PhotoCapture(props) {
             id="photo-input"
             onChange={handlePhotoChange}
           />
+        </div>
+
+        <div className="col-md-6 text-center">
+          {photoURL && (
+            <img
+              src={photoURL}
+              alt="Cropped"
+              style={{ width: '100px', height: '100px' }}
+            />
+          )}
         </div>
       </div>
 
@@ -90,42 +127,7 @@ function PhotoCapture(props) {
           setFile={setFile}
         />
       )}
-
-      {photoURL && (
-        <div className="mt-3 text-center">
-          <img
-            src={photoURL}
-            alt="Cropped"
-            style={{
-              width: '100px',
-              height: '100px',
-              display: 'block',
-              margin: '0 auto',
-            }}
-          />
-          {usingDefaultPhoto ? (
-            <div className="mt-2">
-              <button className="btn btn-primary" onClick={triggerFileInput}>
-                Prendre une photo
-              </button>
-            </div>
-          ) : (
-            <div className="mt-2 d-flex justify-content-center">
-              <button
-                className="btn btn-secondary mr-2"
-                onClick={() => setOpenCrop(true)}
-              >
-                Modifier
-              </button>
-              <button className="btn btn-danger" onClick={handleDeletePhoto}>
-                Effacer la photo
-              </button>
-            </div>
-          )}
-        </div>
-      )}
     </>
   )
 }
-
 export default PhotoCapture
