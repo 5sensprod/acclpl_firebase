@@ -30,12 +30,15 @@ function PhotoCapture(props) {
     <>
       <div className="row">
         <div className="col-md-6">
-          <button
-            className="btn btn-primary mb-3"
-            onClick={() => document.getElementById('photo-input').click()}
-          >
-            {photoURL ? 'Modifier la photo' : 'Prendre une photo'}
-          </button>
+          {!photoURL && (
+            <button
+              className="btn btn-primary mb-3"
+              onClick={() => document.getElementById('photo-input').click()}
+            >
+              Prendre une photo
+            </button>
+          )}
+
           <input
             type="file"
             accept="image/*"
@@ -61,11 +64,18 @@ function PhotoCapture(props) {
       )}
 
       {photoURL && (
-        <div className="mt-3">
+        <div className="mt-3 text-center">
+          {' '}
+          {/* Ajouté text-center pour centrer les éléments */}
           <img
             src={photoURL}
             alt="Cropped"
-            style={{ width: '100px', height: '100px' }}
+            style={{
+              width: '100px',
+              height: '100px',
+              display: 'block',
+              margin: '0 auto',
+            }} // Ajouté display: 'block' et margin: '0 auto' pour centrer l'image
           />
           <button
             className="btn btn-secondary mt-3"
