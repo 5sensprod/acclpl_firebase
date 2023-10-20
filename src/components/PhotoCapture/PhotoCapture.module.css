@@ -17,10 +17,10 @@
 .figureImage {
     width: 100%;
     height: 100%;
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
     object-fit: cover;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
 }
 
 .captionStyle {

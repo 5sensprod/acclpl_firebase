@@ -160,7 +160,7 @@ function ObservationEntryForm({
             type="button"
             className="btn text-light mt-2"
             onClick={handleIDontKnowClick}
-            style={{ boxShadow: 'none', outline: 'none' }}
+            style={{ boxShadow: 'none', outline: 'none', border: 'none' }}
           >
             Je ne sais pas
           </button>
