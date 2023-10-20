@@ -2,7 +2,16 @@ import React, { useState, useCallback } from 'react'
 import CropEasy from './crop/CropEasy'
 import defaultPhoto from '../assets/images/defaultPhoto.jpg'
 import ValidatedToggleButton from './ValidatedToggleButton'
-import { Row, Col, Button, Image, InputGroup } from 'react-bootstrap'
+import {
+  Row,
+  Col,
+  Button,
+  Image,
+  InputGroup,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap'
+import { Trash } from 'react-bootstrap-icons'
 
 function PhotoCapture(props) {
   const [photoURL, setPhotoURL] = useState(null)
@@ -78,7 +87,11 @@ function PhotoCapture(props) {
           </InputGroup>
         </Col>
         <Col md={6} className="text-center">
-          <PhotoPreview photoURL={photoURL} capturedImage={capturedImage} />
+          <PhotoPreview
+            photoURL={photoURL}
+            capturedImage={capturedImage}
+            handleDeletePhoto={handleDeletePhoto}
+          />
         </Col>
       </Row>
 
@@ -143,23 +156,41 @@ const ActionButtonGroup = ({
       >
         {usingDefaultPhoto ? 'Prendre une photo' : 'Modifier'}
       </Button>
-      <Button variant="danger" className="mb-3" onClick={handleDeletePhoto}>
-        {usingDefaultPhoto ? 'Effacer' : 'Effacer la photo'}
-      </Button>
     </>
   )
 }
 
-const PhotoPreview = ({ photoURL }) => {
+const PhotoPreview = ({ photoURL, handleDeletePhoto }) => {
   if (!photoURL) return null
 
   return (
-    <Image
-      src={photoURL}
-      alt="Cropped"
-      thumbnail
-      style={{ width: '150px', height: 'auto' }}
-    />
+    <div style={{ position: 'relative', width: '150px', height: 'auto' }}>
+      <Image
+        src={photoURL}
+        alt="Cropped"
+        thumbnail
+        style={{ width: '100%', height: 'auto' }}
+      />
+      <OverlayTrigger
+        placement="top"
+        overlay={<Tooltip id="tooltip-top">Effacer la photo</Tooltip>}
+      >
+        <Trash
+          color="gray"
+          size={24}
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            cursor: 'pointer',
+            backgroundColor: 'white',
+            borderRadius: '50%',
+            padding: '2px',
+          }}
+          onClick={handleDeletePhoto}
+        />
+      </OverlayTrigger>
+    </div>
   )
 }
 
