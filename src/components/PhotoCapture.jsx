@@ -6,9 +6,10 @@ function PhotoCapture(props) {
   const [photoURL, setPhotoURL] = useState(null)
   const [originalPhotoURL, setOriginalPhotoURL] = useState(null)
   const [openCrop, setOpenCrop] = useState(false)
-  const [file, setFile] = useState(null)
+  const [usingDefaultPhoto, setUsingDefaultPhoto] = useState(false)
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
+  const [file, setFile] = useState(null)
 
   const DEFAULT_PHOTO_URL = defaultPhoto
 
@@ -20,6 +21,7 @@ function PhotoCapture(props) {
         setOriginalPhotoURL(e.target.result)
         setPhotoURL(e.target.result)
         setOpenCrop(true)
+        setUsingDefaultPhoto(false)
       }
       reader.readAsDataURL(file)
     }
@@ -35,6 +37,12 @@ function PhotoCapture(props) {
 
   const handleDefaultPhoto = () => {
     setPhotoURL(DEFAULT_PHOTO_URL)
+    setUsingDefaultPhoto(true)
+  }
+
+  const handleDeletePhoto = () => {
+    setPhotoURL(null)
+    setOriginalPhotoURL(null)
   }
 
   return (
@@ -44,8 +52,8 @@ function PhotoCapture(props) {
           {!photoURL && (
             <>
               <button
-                className="btn btn-primary mb-3 mr-2" // Ajout de 'mr-2' pour ajouter une marge à droite
-                onClick={() => document.getElementById('photo-input').click()}
+                className="btn btn-primary mb-3 mr-2"
+                onClick={triggerFileInput}
               >
                 Prendre une photo
               </button>
@@ -74,19 +82,17 @@ function PhotoCapture(props) {
           photoURL={originalPhotoURL}
           setOpenCrop={handleCloseCrop}
           setPhotoURL={setPhotoURL}
-          setFile={setFile}
           initialZoom={zoom}
           initialRotation={rotation}
           propagateZoom={setZoom}
           propagateRotation={setRotation}
           onNewPhoto={triggerFileInput}
+          setFile={setFile}
         />
       )}
 
       {photoURL && (
         <div className="mt-3 text-center">
-          {' '}
-          {/* Ajouté text-center pour centrer les éléments */}
           <img
             src={photoURL}
             alt="Cropped"
@@ -95,14 +101,27 @@ function PhotoCapture(props) {
               height: '100px',
               display: 'block',
               margin: '0 auto',
-            }} // Ajouté display: 'block' et margin: '0 auto' pour centrer l'image
+            }}
           />
-          <button
-            className="btn btn-secondary mt-3"
-            onClick={() => setOpenCrop(true)}
-          >
-            Modifier
-          </button>
+          {usingDefaultPhoto ? (
+            <div className="mt-2">
+              <button className="btn btn-primary" onClick={triggerFileInput}>
+                Prendre une photo
+              </button>
+            </div>
+          ) : (
+            <div className="mt-2 d-flex justify-content-center">
+              <button
+                className="btn btn-secondary mr-2"
+                onClick={() => setOpenCrop(true)}
+              >
+                Modifier
+              </button>
+              <button className="btn btn-danger" onClick={handleDeletePhoto}>
+                Effacer la photo
+              </button>
+            </div>
+          )}
         </div>
       )}
     </>
