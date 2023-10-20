@@ -51,46 +51,53 @@ function PhotoCapture(props) {
         <div className="col-md-6">
           {!photoURL && (
             <>
-              <button
-                className="btn btn-primary mb-3 mr-2"
-                onClick={triggerFileInput}
-              >
-                Prendre une photo
-              </button>
-              <button
-                className="btn btn-secondary mb-3"
-                onClick={handleDefaultPhoto}
-              >
-                Je n'ai pas de photo
-              </button>
+              <div className="mb-3">
+                <button className="btn btn-primary" onClick={triggerFileInput}>
+                  Prendre une photo
+                </button>
+              </div>
+              <div className="mb-3">
+                <button
+                  className="btn btn-secondary"
+                  onClick={handleDefaultPhoto}
+                >
+                  Je n'ai pas de photo
+                </button>
+              </div>
             </>
           )}
 
-          {photoURL && (
-            <div className="d-flex align-items-center">
-              {usingDefaultPhoto && (
-                <button
-                  className="btn btn-primary mb-3 mr-2"
-                  onClick={triggerFileInput}
-                >
+          {photoURL && usingDefaultPhoto && (
+            <>
+              <div className="mb-3">
+                <button className="btn btn-primary" onClick={triggerFileInput}>
                   Prendre une photo
                 </button>
-              )}
-              <button
-                className="btn btn-danger mb-3"
-                onClick={handleDeletePhoto}
-              >
-                Effacer la photo
-              </button>
-              {!usingDefaultPhoto && (
+              </div>
+              <div className="mb-3">
+                <button className="btn btn-danger" onClick={handleDeletePhoto}>
+                  Effacer la photo
+                </button>
+              </div>
+            </>
+          )}
+
+          {photoURL && !usingDefaultPhoto && (
+            <>
+              <div className="mb-3">
                 <button
-                  className="btn btn-secondary mb-3 mr-2"
+                  className="btn btn-secondary"
                   onClick={() => setOpenCrop(true)}
                 >
                   Modifier
                 </button>
-              )}
-            </div>
+              </div>
+              <div className="mb-3">
+                <button className="btn btn-danger" onClick={handleDeletePhoto}>
+                  Effacer la photo
+                </button>
+              </div>
+            </>
           )}
 
           <input
@@ -130,4 +137,5 @@ function PhotoCapture(props) {
     </>
   )
 }
+
 export default PhotoCapture
