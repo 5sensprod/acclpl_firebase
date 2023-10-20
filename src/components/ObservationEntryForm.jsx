@@ -239,7 +239,10 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
           />
         </div>
       </div>
-      <PhotoCapture />
+      <div className="form-group mb-3">
+        <label className="text-light">Ajouter une photo</label>
+        <PhotoCapture />
+      </div>
     </div>
   )
 }

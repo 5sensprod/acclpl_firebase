@@ -76,7 +76,7 @@ function PhotoCapture(props) {
               </div>
               <div className="mb-3">
                 <button className="btn btn-danger" onClick={handleDeletePhoto}>
-                  Effacer la photo
+                  Effacer
                 </button>
               </div>
             </>
