@@ -15,7 +15,7 @@ export default function PrivateHome() {
       <ObservationEntryForm
         currentCoords={markerCoords}
         onImageValidate={setValidatedImage}
-        onSelectImage={setValidatedImage} // ajoutez cette ligne
+        onSelectImage={setValidatedImage}
         onSelectAddress={({ coordinates, companyName: name }) => {
           setMarkerCoords(coordinates)
           setCompanyName(name)
