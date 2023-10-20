@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import CropEasy from './crop/CropEasy'
 import defaultPhoto from '../assets/images/defaultPhoto.jpg'
+import ValidatedToggleButton from './ValidatedToggleButton'
 
 function PhotoCapture(props) {
   const [photoURL, setPhotoURL] = useState(null)
@@ -10,6 +11,8 @@ function PhotoCapture(props) {
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
   const [file, setFile] = useState(null)
+  const [capturedImage, setCapturedImage] = useState(null)
+  const [isImageValidated, setIsImageValidated] = useState(false)
 
   const DEFAULT_PHOTO_URL = defaultPhoto
 
@@ -22,6 +25,8 @@ function PhotoCapture(props) {
         setPhotoURL(e.target.result)
         setOpenCrop(true)
         setUsingDefaultPhoto(false)
+        setIsImageValidated(false)
+        setCapturedImage(e.target.result)
       }
       reader.readAsDataURL(file)
     }
@@ -38,11 +43,15 @@ function PhotoCapture(props) {
   const handleDefaultPhoto = () => {
     setPhotoURL(DEFAULT_PHOTO_URL)
     setUsingDefaultPhoto(true)
+    setCapturedImage(DEFAULT_PHOTO_URL)
   }
 
   const handleDeletePhoto = () => {
     setPhotoURL(null)
     setOriginalPhotoURL(null)
+    setIsImageValidated(false)
+    props.onImageValidate(null)
+    setCapturedImage(null)
   }
 
   return (
@@ -134,6 +143,15 @@ function PhotoCapture(props) {
           setFile={setFile}
         />
       )}
+      <ValidatedToggleButton
+        isValidated={isImageValidated}
+        onValidation={() => {
+          setIsImageValidated(true)
+          props.onImageValidate(photoURL)
+        }}
+        onModification={() => setIsImageValidated(false)}
+        disabled={!photoURL}
+      />
     </>
   )
 }

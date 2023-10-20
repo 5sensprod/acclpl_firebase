@@ -3,7 +3,11 @@ import { reverseGeocode, geocodeAddress } from '../api/geocode'
 import ValidatedToggleButton from './ValidatedToggleButton'
 import PhotoCapture from './PhotoCapture'
 
-function ObservationEntryForm({ onSelectAddress, currentCoords }) {
+function ObservationEntryForm({
+  onSelectAddress,
+  currentCoords,
+  onSelectImage,
+}) {
   const [address, setAddress] = useState('')
   const [isAddressValidated, setIsAddressValidated] = useState(false)
   const [companyName, setCompanyName] = useState('')
@@ -12,6 +16,10 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
   const [autocompleteResults, setAutocompleteResults] = useState([])
   const [isNameValidated, setIsNameValidated] = useState(false)
   const defaultName = 'Entreprise X'
+
+  const handleImageValidation = (imageData) => {
+    onSelectImage(imageData)
+  }
 
   const handleAddressChange = async (e) => {
     const query = e.target.value
@@ -43,11 +51,10 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
 
   const handleCompanyNameValidation = () => {
     setIsNameValidated(true)
-    // Envoyer les informations mises à jour si une adresse est déjà sélectionnée
     if (address) {
       if (onSelectAddress) {
         onSelectAddress({
-          coordinates: currentCoords, // Utilise les coordonnées actuelles
+          coordinates: currentCoords,
           companyName: companyName,
         })
       }
@@ -241,7 +248,7 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
       </div>
       <div className="form-group mb-3">
         <label className="text-light">Ajouter une photo</label>
-        <PhotoCapture />
+        <PhotoCapture onImageValidate={handleImageValidation} />
       </div>
     </div>
   )
