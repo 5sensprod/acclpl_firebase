@@ -1,5 +1,5 @@
 .icon {
-    font-size: 20px;
+    font-size: 22px;
     color: #acacac;
     transition: color 0.3s ease;
   }
@@ -7,3 +7,27 @@
   .icon:hover {
     color: #424242;
   }
+
+  .figureStyle {
+    width: 150px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.figureImage {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0;
+    object-fit: cover;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.captionStyle {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    padding: 8px;
+    margin: 0;
+    border-radius: 0 0 0.25rem 0.25rem;
+}

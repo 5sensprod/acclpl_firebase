@@ -55,6 +55,7 @@ function PhotoCapture(props) {
           handleDeletePhoto={handleDeletePhoto}
           triggerFileInput={triggerFileInput}
           openCrop={() => setOpenCrop(true)}
+          capturedImage={capturedImage}
         />
       </div>
 
@@ -81,6 +82,7 @@ function PhotoCapture(props) {
           propagateRotation={setRotation}
           onNewPhoto={triggerFileInput}
           setFile={setFile}
+          file={file}
         />
       )}
 
@@ -106,10 +108,7 @@ const PhotoPreview = ({
   if (!photoURL) return null
 
   return (
-    <Figure
-      style={{ width: '150px', cursor: 'pointer', textAlign: 'left' }}
-      onClick={triggerFileInput}
-    >
+    <Figure className={styles.figureStyle} onClick={triggerFileInput}>
       <OverlayTrigger
         placement="top"
         overlay={<Tooltip id="tooltip-change">Changer la photo</Tooltip>}
@@ -119,17 +118,12 @@ const PhotoPreview = ({
             src={photoURL}
             alt=""
             thumbnail
-            className="w-100 h-100 mb-0" // mb-0 pour supprimer la marge en bas
-            style={{
-              objectFit: 'cover',
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-            }}
+            className={styles.figureImage}
           />
         </span>
       </OverlayTrigger>
 
-      <Figure.Caption className="d-flex justify-content-between bg-white p-2 m-0 rounded-bottom">
+      <Figure.Caption className={styles.captionStyle}>
         {photoURL !== defaultPhoto && (
           <Pencil
             className={styles.icon}
