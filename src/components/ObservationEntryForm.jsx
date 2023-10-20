@@ -202,10 +202,10 @@ function ObservationEntryForm({ onSelectAddress, currentCoords }) {
         {!isAddressValidated && (
           <button
             type="button"
-            className="btn text-light mt-2 btn"
+            className="btn text-light mt-2"
             onClick={handleGeolocationClick}
             disabled={!isNameValidated}
-            style={{ boxShadow: 'none', outline: 'none' }}
+            style={{ boxShadow: 'none', outline: 'none', border: 'none' }}
           >
             Me géolocaliser
           </button>

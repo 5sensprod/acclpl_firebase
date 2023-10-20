@@ -1,34 +1,38 @@
 import React, { useState } from 'react'
-import PhotoCropper from './PhotoCropper' // Assurez-vous que le chemin d'importation est correct
+import CropEasy from './crop/CropEasy'
+import { Button, Row, Col } from 'react-bootstrap' // Importation des composants react-bootstrap
 
 function PhotoCapture(props) {
-  const [photo, setPhoto] = useState(null)
+  const [photoURL, setPhotoURL] = useState(null)
+  const [openCrop, setOpenCrop] = useState(false)
+  const [file, setFile] = useState(null)
 
   const handlePhotoChange = (event) => {
     const file = event.target.files[0]
     if (file) {
       const reader = new FileReader()
       reader.onload = (e) => {
-        setPhoto(e.target.result)
+        setPhotoURL(e.target.result)
+        setOpenCrop(true)
       }
       reader.readAsDataURL(file)
     }
   }
 
-  const handleCropComplete = (croppedArea, croppedAreaPixels) => {
-    console.log(croppedArea, croppedAreaPixels)
+  const handleCloseCrop = () => {
+    setOpenCrop(false)
   }
 
   return (
     <>
-      <div className="row">
-        <div className="col-md-6">
-          <button
-            className="btn btn-primary mb-3"
+      <Row>
+        <Col md={6}>
+          <Button
+            className="mb-3"
             onClick={() => document.getElementById('photo-input').click()}
           >
-            {photo ? 'Modifier la photo' : 'Prendre une photo'}
-          </button>
+            {photoURL ? 'Modifier la photo' : 'Prendre une photo'}
+          </Button>
           <input
             type="file"
             accept="image/*"
@@ -37,16 +41,19 @@ function PhotoCapture(props) {
             id="photo-input"
             onChange={handlePhotoChange}
           />
-        </div>
-      </div>
+        </Col>
+      </Row>
 
-      {photo && (
-        <div className="row justify-content-center mt-4">
-          <div className="col-md-6">
-            <PhotoCropper photo={photo} onCropComplete={handleCropComplete} />
-          </div>
-        </div>
+      {openCrop && (
+        <CropEasy
+          photoURL={photoURL}
+          setOpenCrop={handleCloseCrop}
+          setPhotoURL={setPhotoURL}
+          setFile={setFile}
+        />
       )}
+
+      {/* Here you can use the `file` state to upload or do other operations */}
     </>
   )
 }

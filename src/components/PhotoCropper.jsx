@@ -30,13 +30,14 @@ function PhotoCropper({ photo, onCropComplete }) {
             </label>
             <input
               type="range"
+              style={{ zIndex: 999 }}
               value={zoom}
               min={1}
               max={3}
               step={0.1}
               id="zoom"
               onChange={(e) => setZoom(parseFloat(e.target.value))}
-              className="zoom-range form-range z-3"
+              className="zoom-range form-range"
             />
           </div>
         </div>

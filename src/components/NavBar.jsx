@@ -22,7 +22,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="navbar navbar-light bg-light px-4">
+    <nav className="navbar navbar-light bg-light px-4" style={{ zIndex: 6 }}>
       <Link to="/" className="navbar-brand">
         Ensemble contre la pollution lumineuse
       </Link>

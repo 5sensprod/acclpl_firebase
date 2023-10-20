@@ -57,7 +57,12 @@ function LeafletMap({
     map.setView(correctedCoords, 18)
   }, [markerCoords, zoom, companyName])
 
-  return <div ref={mapRef} style={{ width: '100%', height: '400px' }}></div>
+  return (
+    <div
+      ref={mapRef}
+      style={{ width: '100%', height: '400px', zIndex: '-1' }}
+    ></div>
+  )
 }
 
 export default LeafletMap

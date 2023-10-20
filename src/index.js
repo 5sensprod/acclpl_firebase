@@ -5,6 +5,7 @@ import { HashRouter } from 'react-router-dom'
 import { UserContextProvider } from './context/userContext'
 import './index.css'
 import 'leaflet/dist/leaflet.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const rootElement = document.getElementById('root')
 const root = createRoot(rootElement)
