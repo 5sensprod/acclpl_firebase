@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import cat from './cat.gif'
 import LeafletMap from '../../../components/LeafletMap'
 import ObservationEntryForm from '../../../components/ObservationEntryForm'
 
@@ -27,7 +26,6 @@ export default function PrivateHome() {
         companyName={companyName}
         imageURL={validatedImage}
       />
-      <img src={cat} alt="cat" className="mt-4" />
     </div>
   )
 }

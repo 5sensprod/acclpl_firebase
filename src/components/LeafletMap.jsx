@@ -53,6 +53,12 @@ function LeafletMap({
     if (companyName) {
       const popupContent = document.createElement('div')
 
+      // Ajoutez ces styles pour centrer les éléments dans popupContent
+      popupContent.style.display = 'flex'
+      popupContent.style.flexDirection = 'column' // pour les aligner verticalement
+      popupContent.style.alignItems = 'center' // pour centrer horizontalement
+      popupContent.style.justifyContent = 'center' // pour centrer verticalement
+
       const companyNameElement = document.createElement('p')
       companyNameElement.textContent = companyName
       popupContent.appendChild(companyNameElement)
