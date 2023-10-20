@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { reverseGeocode, geocodeAddress } from '../api/geocode'
-import ValidatedToggleButton from './ValidatedToggleButton'
-import PhotoCapture from './PhotoCapture'
+import { reverseGeocode, geocodeAddress } from '../../api/geocode'
+import ValidatedToggleButton from '../ValidatedToggleButton'
+import PhotoCapture from '../PhotoCapture'
 
 function ObservationEntryForm({
   onSelectAddress,
