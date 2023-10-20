@@ -12,6 +12,7 @@ const CropEasy = ({
   initialRotation,
   propagateZoom,
   propagateRotation,
+  onNewPhoto,
 }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(initialZoom)
@@ -34,13 +35,30 @@ const CropEasy = ({
         croppedAreaPixels,
         rotation,
       )
-      setPhotoURL(url)
+      setPhotoURL(url) // Ceci devrait mettre à jour la photo dans la miniature
       setFile(file)
       setOpenCrop(false)
     } catch (error) {
       console.log(error)
     }
   }
+
+  const handleRotationChange = (newRotation) => {
+    if (newRotation > 10) {
+      setRotation(10)
+    } else if (newRotation < -10) {
+      setRotation(-10)
+    } else {
+      setRotation(newRotation)
+    }
+  }
+
+  const resetZoomAndRotation = () => {
+    setZoom(1)
+    setRotation(0)
+  }
+
+  const isDefaultValues = zoom === 1 && rotation === 0
 
   return (
     <Modal show={true} onHide={() => setOpenCrop(false)} size="lg">
@@ -56,7 +74,7 @@ const CropEasy = ({
             rotation={rotation}
             aspect={1}
             onZoomChange={setZoom}
-            onRotationChange={setRotation}
+            onRotationChange={handleRotationChange}
             onCropChange={setCrop}
             onCropComplete={cropComplete}
           />
@@ -75,12 +93,22 @@ const CropEasy = ({
           <p>Rotation: {rotation + '°'}</p>
           <Form.Range
             value={rotation}
-            min={0}
-            max={360}
-            onChange={(e) => setRotation(parseFloat(e.target.value))}
+            min={-10}
+            max={10}
+            onChange={(e) => handleRotationChange(parseFloat(e.target.value))}
           />
         </div>
-        <Button variant="outline-primary" onClick={() => setOpenCrop(false)}>
+        <Button variant="outline-secondary" onClick={onNewPhoto}>
+          Nouvelle Photo
+        </Button>
+        <Button
+          variant="outline-secondary"
+          onClick={resetZoomAndRotation}
+          disabled={isDefaultValues}
+        >
+          Réinitialiser
+        </Button>
+        <Button variant="outline-primary" onClick={() => setOpenCrop()}>
           Annuler
         </Button>
         <Button variant="primary" onClick={cropImage}>

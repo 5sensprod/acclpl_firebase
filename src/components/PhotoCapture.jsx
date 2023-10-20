@@ -26,6 +26,10 @@ function PhotoCapture(props) {
     setOpenCrop(false)
   }
 
+  const triggerFileInput = () => {
+    document.getElementById('photo-input').click()
+  }
+
   return (
     <>
       <div className="row">
@@ -60,6 +64,7 @@ function PhotoCapture(props) {
           initialRotation={rotation}
           propagateZoom={setZoom}
           propagateRotation={setRotation}
+          onNewPhoto={triggerFileInput}
         />
       )}
 
