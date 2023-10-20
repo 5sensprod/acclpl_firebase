@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import CropEasy from './crop/CropEasy'
 import defaultPhoto from '../assets/images/defaultPhoto.jpg'
 import ValidatedToggleButton from './ValidatedToggleButton'
+import { Row, Col, Button, Image, InputGroup } from 'react-bootstrap'
 
 function PhotoCapture(props) {
   const [photoURL, setPhotoURL] = useState(null)
@@ -54,8 +55,8 @@ function PhotoCapture(props) {
 
   return (
     <>
-      <div className="row">
-        <div className="col-md-6">
+      <Row>
+        <Col md={6}>
           <ActionButtonGroup
             photoURL={photoURL}
             usingDefaultPhoto={usingDefaultPhoto}
@@ -64,19 +65,22 @@ function PhotoCapture(props) {
             handleDeletePhoto={handleDeletePhoto}
             openCrop={() => setOpenCrop(true)}
           />
-          <input
-            type="file"
-            accept="image/*"
-            capture
-            className="d-none"
-            id="photo-input"
-            onChange={handlePhotoChange}
-          />
-        </div>
-        <div className="col-md-6 text-center">
-          <PhotoPreview photoURL={photoURL} />
-        </div>
-      </div>
+          <InputGroup className="d-none">
+            <InputGroup.Text id="photo-input-label">Upload</InputGroup.Text>
+            <input
+              type="file"
+              accept="image/*"
+              capture
+              id="photo-input"
+              aria-describedby="photo-input-label"
+              onChange={handlePhotoChange}
+            />
+          </InputGroup>
+        </Col>
+        <Col md={6} className="text-center">
+          <PhotoPreview photoURL={photoURL} capturedImage={capturedImage} />
+        </Col>
+      </Row>
 
       {openCrop && (
         <CropEasy
@@ -116,47 +120,46 @@ const ActionButtonGroup = ({
   if (!photoURL) {
     return (
       <>
-        <div className="mb-3">
-          <button className="btn btn-primary" onClick={triggerFileInput}>
-            Prendre une photo
-          </button>
-        </div>
-        <div className="mb-3">
-          <button className="btn btn-secondary" onClick={handleDefaultPhoto}>
-            Je n'ai pas de photo
-          </button>
-        </div>
+        <Button variant="primary" className="mb-3" onClick={triggerFileInput}>
+          Prendre une photo
+        </Button>
+        <Button
+          variant="secondary"
+          className="mb-3"
+          onClick={handleDefaultPhoto}
+        >
+          Je n'ai pas de photo
+        </Button>
       </>
     )
   }
 
-  const buttonClass = usingDefaultPhoto ? 'btn-primary' : 'btn-secondary'
   return (
     <>
-      <div className="mb-3">
-        <button
-          className={`btn ${buttonClass}`}
-          onClick={usingDefaultPhoto ? triggerFileInput : openCrop}
-        >
-          {usingDefaultPhoto ? 'Prendre une photo' : 'Modifier'}
-        </button>
-      </div>
-      <div className="mb-3">
-        <button className="btn btn-danger" onClick={handleDeletePhoto}>
-          {usingDefaultPhoto ? 'Effacer' : 'Effacer la photo'}
-        </button>
-      </div>
+      <Button
+        variant={usingDefaultPhoto ? 'primary' : 'secondary'}
+        className="mb-3"
+        onClick={usingDefaultPhoto ? triggerFileInput : openCrop}
+      >
+        {usingDefaultPhoto ? 'Prendre une photo' : 'Modifier'}
+      </Button>
+      <Button variant="danger" className="mb-3" onClick={handleDeletePhoto}>
+        {usingDefaultPhoto ? 'Effacer' : 'Effacer la photo'}
+      </Button>
     </>
   )
 }
 
-const PhotoPreview = ({ photoURL }) => {
-  if (!photoURL) return null
+const PhotoPreview = ({ photoURL, capturedImage }) => {
+  const imageToShow = capturedImage || photoURL
+
+  if (!imageToShow) return null
+
   return (
-    <img
-      src={photoURL}
+    <Image
+      src={imageToShow}
       alt="Cropped"
-      className="img-thumbnail"
+      thumbnail
       style={{ width: '100px', height: '100px' }}
     />
   )
