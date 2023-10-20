@@ -1,13 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Cropper from 'react-easy-crop'
 import { Button, Modal, Form } from 'react-bootstrap'
 import getCroppedImg from './utils/CropImage'
 
-const CropEasy = ({ photoURL, setOpenCrop, setPhotoURL, setFile }) => {
+const CropEasy = ({
+  photoURL,
+  setOpenCrop,
+  setPhotoURL,
+  setFile,
+  initialZoom,
+  initialRotation,
+  propagateZoom,
+  propagateRotation,
+}) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 })
-  const [zoom, setZoom] = useState(1)
-  const [rotation, setRotation] = useState(0)
+  const [zoom, setZoom] = useState(initialZoom)
+  const [rotation, setRotation] = useState(initialRotation)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
+
+  useEffect(() => {
+    propagateZoom(zoom)
+    propagateRotation(rotation)
+  }, [zoom, rotation, propagateZoom, propagateRotation])
 
   const cropComplete = (croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels)

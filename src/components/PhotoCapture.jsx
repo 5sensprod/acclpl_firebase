@@ -1,17 +1,20 @@
 import React, { useState } from 'react'
 import CropEasy from './crop/CropEasy'
-import { Button, Row, Col } from 'react-bootstrap' // Importation des composants react-bootstrap
 
 function PhotoCapture(props) {
   const [photoURL, setPhotoURL] = useState(null)
+  const [originalPhotoURL, setOriginalPhotoURL] = useState(null)
   const [openCrop, setOpenCrop] = useState(false)
   const [file, setFile] = useState(null)
+  const [zoom, setZoom] = useState(1)
+  const [rotation, setRotation] = useState(0)
 
   const handlePhotoChange = (event) => {
     const file = event.target.files[0]
     if (file) {
       const reader = new FileReader()
       reader.onload = (e) => {
+        setOriginalPhotoURL(e.target.result)
         setPhotoURL(e.target.result)
         setOpenCrop(true)
       }
@@ -25,14 +28,14 @@ function PhotoCapture(props) {
 
   return (
     <>
-      <Row>
-        <Col md={6}>
-          <Button
-            className="mb-3"
+      <div className="row">
+        <div className="col-md-6">
+          <button
+            className="btn btn-primary mb-3"
             onClick={() => document.getElementById('photo-input').click()}
           >
             {photoURL ? 'Modifier la photo' : 'Prendre une photo'}
-          </Button>
+          </button>
           <input
             type="file"
             accept="image/*"
@@ -41,19 +44,37 @@ function PhotoCapture(props) {
             id="photo-input"
             onChange={handlePhotoChange}
           />
-        </Col>
-      </Row>
+        </div>
+      </div>
 
       {openCrop && (
         <CropEasy
-          photoURL={photoURL}
+          photoURL={originalPhotoURL}
           setOpenCrop={handleCloseCrop}
           setPhotoURL={setPhotoURL}
           setFile={setFile}
+          initialZoom={zoom}
+          initialRotation={rotation}
+          propagateZoom={setZoom}
+          propagateRotation={setRotation}
         />
       )}
 
-      {/* Here you can use the `file` state to upload or do other operations */}
+      {photoURL && (
+        <div className="mt-3">
+          <img
+            src={photoURL}
+            alt="Cropped"
+            style={{ width: '100px', height: '100px' }}
+          />
+          <button
+            className="btn btn-secondary mt-3"
+            onClick={() => setOpenCrop(true)}
+          >
+            Modifier
+          </button>
+        </div>
+      )}
     </>
   )
 }
