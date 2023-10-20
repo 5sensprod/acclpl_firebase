@@ -33,26 +33,16 @@ export function UserContextProvider(props) {
   })
 
   const toggleModals = (modal) => {
-    if (modal === 'signIn') {
-      setModalState({
-        signUpModal: false,
-        signInModal: true,
-      })
+    const modalMapping = {
+      signIn: { signUpModal: false, signInModal: true },
+      signUp: { signUpModal: true, signInModal: false },
+      close: { signUpModal: false, signInModal: false },
     }
-    if (modal === 'signUp') {
-      setModalState({
-        signUpModal: true,
-        signInModal: false,
-      })
-    }
-    if (modal === 'close') {
-      setModalState({
-        signUpModal: false,
-        signInModal: false,
-      })
-    }
-  }
 
+    setModalState(
+      modalMapping[modal] || { signUpModal: false, signInModal: false },
+    )
+  }
   return (
     <UserContext.Provider
       value={{ modalState, toggleModals, signUp, currentUser, signIn }}
