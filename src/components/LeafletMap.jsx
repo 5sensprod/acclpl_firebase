@@ -9,6 +9,7 @@ function LeafletMap({
   zoom = 13,
   markerCoords,
   companyName,
+  imageURL,
 }) {
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
@@ -50,19 +51,29 @@ function LeafletMap({
 
     // Ajouter le popup avec le nom de l'entreprise si présent
     if (companyName) {
-      marker.bindPopup(companyName).openPopup()
+      const popupContent = document.createElement('div')
+
+      const companyNameElement = document.createElement('p')
+      companyNameElement.textContent = companyName
+      popupContent.appendChild(companyNameElement)
+
+      if (imageURL) {
+        const imageElement = document.createElement('img')
+        imageElement.src = imageURL
+        imageElement.alt = 'Image associée'
+        imageElement.style.maxWidth = '100px'
+        imageElement.style.maxHeight = '100px'
+        popupContent.appendChild(imageElement)
+      }
+
+      marker.bindPopup(popupContent).openPopup()
     }
 
     markerRef.current = marker
     map.setView(correctedCoords, 18)
-  }, [markerCoords, zoom, companyName])
+  }, [markerCoords, zoom, companyName, imageURL])
 
-  return (
-    <div
-      ref={mapRef}
-      style={{ width: '100%', height: '400px', zIndex: '-1' }}
-    ></div>
-  )
+  return <div ref={mapRef} style={{ width: '100%', height: '400px' }}></div>
 }
 
 export default LeafletMap
