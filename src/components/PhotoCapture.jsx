@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import CropEasy from './crop/CropEasy'
+import defaultPhoto from '../assets/images/defaultPhoto.jpg'
 
 function PhotoCapture(props) {
   const [photoURL, setPhotoURL] = useState(null)
@@ -8,6 +9,8 @@ function PhotoCapture(props) {
   const [file, setFile] = useState(null)
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
+
+  const DEFAULT_PHOTO_URL = defaultPhoto
 
   const handlePhotoChange = (event) => {
     const file = event.target.files[0]
@@ -30,17 +33,29 @@ function PhotoCapture(props) {
     document.getElementById('photo-input').click()
   }
 
+  const handleDefaultPhoto = () => {
+    setPhotoURL(DEFAULT_PHOTO_URL)
+  }
+
   return (
     <>
       <div className="row">
         <div className="col-md-6">
           {!photoURL && (
-            <button
-              className="btn btn-primary mb-3"
-              onClick={() => document.getElementById('photo-input').click()}
-            >
-              Prendre une photo
-            </button>
+            <>
+              <button
+                className="btn btn-primary mb-3 mr-2" // Ajout de 'mr-2' pour ajouter une marge à droite
+                onClick={() => document.getElementById('photo-input').click()}
+              >
+                Prendre une photo
+              </button>
+              <button
+                className="btn btn-secondary mb-3"
+                onClick={handleDefaultPhoto}
+              >
+                Je n'ai pas de photo
+              </button>
+            </>
           )}
 
           <input

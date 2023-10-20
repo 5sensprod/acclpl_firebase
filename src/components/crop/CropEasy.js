@@ -108,9 +108,6 @@ const CropEasy = ({
         >
           Réinitialiser
         </Button>
-        <Button variant="outline-primary" onClick={() => setOpenCrop()}>
-          Annuler
-        </Button>
         <Button variant="primary" onClick={cropImage}>
           Valider
         </Button>
