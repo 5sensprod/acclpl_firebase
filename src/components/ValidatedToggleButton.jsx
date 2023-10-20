@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from 'react-bootstrap'
 
 function ValidatedToggleButton({
   isValidated,
@@ -6,28 +7,27 @@ function ValidatedToggleButton({
   onModification,
   disabled,
 }) {
-  if (isValidated) {
-    return (
-      <button
-        className="btn btn-warning mt-2 btn-sm"
-        onClick={onModification}
-        style={{ boxShadow: 'none', outline: 'none' }}
-      >
-        Modifier
-      </button>
-    )
-  } else {
-    return (
-      <button
-        className="btn btn-success mt-2"
-        onClick={onValidation}
-        disabled={disabled}
-        style={{ boxShadow: 'none', outline: 'none' }}
-      >
-        Valider
-      </button>
-    )
-  }
+  const buttonProps = isValidated
+    ? {
+        variant: 'warning',
+        size: 'sm',
+        onClick: onModification,
+        children: 'Modifier',
+      }
+    : {
+        variant: 'success',
+        onClick: onValidation,
+        disabled,
+        children: 'Valider',
+      }
+
+  return (
+    <Button
+      {...buttonProps}
+      style={{ boxShadow: 'none', outline: 'none' }}
+      className="mt-2"
+    />
+  )
 }
 
 export default ValidatedToggleButton
