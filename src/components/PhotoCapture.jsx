@@ -150,17 +150,15 @@ const ActionButtonGroup = ({
   )
 }
 
-const PhotoPreview = ({ photoURL, capturedImage }) => {
-  const imageToShow = capturedImage || photoURL
-
-  if (!imageToShow) return null
+const PhotoPreview = ({ photoURL }) => {
+  if (!photoURL) return null
 
   return (
     <Image
-      src={imageToShow}
+      src={photoURL}
       alt="Cropped"
       thumbnail
-      style={{ width: '100px', height: '100px' }}
+      style={{ width: '150px', height: 'auto' }}
     />
   )
 }
