@@ -100,7 +100,7 @@ function useCompanyAndAddress(onSelectAddress, currentCoords) {
         }
 
         onSelectAddress({
-          coordinates: currentCoords || [lon, lat], // Utilisation de currentCoords si disponible
+          coordinates: currentCoords || [lon, lat],
           companyName: companyName,
         })
       },
