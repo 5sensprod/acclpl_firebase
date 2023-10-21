@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { reverseGeocode, geocodeAddress } from '../../api/geocode'
-import ValidatedToggleButton from '../ValidatedToggleButton'
-import PhotoCapture from '../PhotoCapture'
+import CompanyNameInput from './CompanyNameInput'
+import AddressInput from './AddressInput'
+import DateTimeInput from './DateTimeInput'
+import PhotoCaptureInput from './PhotoCaptureInput'
 
 function ObservationEntryForm({
   onSelectAddress,
@@ -17,25 +19,8 @@ function ObservationEntryForm({
   const [isNameValidated, setIsNameValidated] = useState(false)
   const defaultName = 'Entreprise X'
 
-  const handleImageValidation = (imageData) => {
-    onSelectImage(imageData)
-  }
-
-  const handleAddressChange = async (e) => {
-    const query = e.target.value
-    setAddress(query)
-
-    if (query.length < 3) {
-      setAutocompleteResults([])
-      return
-    }
-
-    try {
-      const features = await geocodeAddress(query)
-      setAutocompleteResults(features || [])
-    } catch (err) {
-      console.error("Erreur lors de l'autocomplétion:", err)
-    }
+  const handleCompanyNameChange = (e) => {
+    setCompanyName(e.target.value)
   }
 
   const handleSuggestionClick = (feature) => {
@@ -70,12 +55,41 @@ function ObservationEntryForm({
     setIsNameValidated(true)
   }
 
+  const handleImageValidation = (imageData) => {
+    onSelectImage(imageData)
+  }
+
+  const handleAddressChange = async (e) => {
+    const query = e.target.value
+    setAddress(query)
+
+    if (query.length < 3) {
+      setAutocompleteResults([])
+      return
+    }
+
+    try {
+      const features = await geocodeAddress(query)
+      setAutocompleteResults(features || [])
+    } catch (err) {
+      console.error("Erreur lors de l'autocomplétion:", err)
+    }
+  }
+
   const handleAddressValidation = () => {
     setIsAddressValidated(true)
   }
 
   const handleAddressModification = () => {
     setIsAddressValidated(false)
+  }
+
+  const handleDateChange = (e) => {
+    setDateOfObservation(e.target.value)
+  }
+
+  const handleTimeChange = (e) => {
+    setTimeOfObservation(e.target.value)
   }
 
   const handleGeolocationClick = async () => {
@@ -134,122 +148,33 @@ function ObservationEntryForm({
 
   return (
     <div className="my-4">
-      <div className="form-group mb-3">
-        <label htmlFor="company-name-input" className="text-light">
-          Nom de l'entreprise
-        </label>
-        <input
-          id="company-name-input"
-          name="companyName"
-          type="text"
-          className="form-control"
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
-          placeholder="Entrez le nom de l'entreprise"
-          disabled={isNameValidated}
-        />
-        <ValidatedToggleButton
-          isValidated={isNameValidated}
-          onValidation={handleCompanyNameValidation}
-          onModification={handleCompanyNameModification}
-          disabled={!companyName.trim()}
-        />
+      <CompanyNameInput
+        companyName={companyName}
+        isNameValidated={isNameValidated}
+        onNameChange={handleCompanyNameChange}
+        onValidation={handleCompanyNameValidation}
+        onModification={handleCompanyNameModification}
+        onIDontKnowClick={handleIDontKnowClick}
+      />
+      <AddressInput
+        address={address}
+        isAddressValidated={isAddressValidated}
+        isNameValidated={isNameValidated} // en supposant que isNameValidated est défini
+        onAddressChange={handleAddressChange}
+        onValidation={handleAddressValidation}
+        onModification={handleAddressModification}
+        onSuggestionClick={handleSuggestionClick}
+        onGeolocationClick={handleGeolocationClick}
+        autocompleteResults={autocompleteResults}
+      />
 
-        {!isNameValidated && (
-          <button
-            type="button"
-            className="btn text-light mt-2"
-            onClick={handleIDontKnowClick}
-            style={{ boxShadow: 'none', outline: 'none', border: 'none' }}
-          >
-            Je ne sais pas
-          </button>
-        )}
-      </div>
-
-      <div className="form-group mb-3">
-        <label htmlFor="address-input" className="text-light">
-          Adresse de l'entreprise
-        </label>
-        <input
-          id="address-input"
-          name="companyAddress"
-          type="text"
-          className="form-control"
-          value={address}
-          onChange={handleAddressChange}
-          placeholder="Saisissez une adresse"
-          required
-          disabled={isAddressValidated || !isNameValidated}
-          style={{ zIndex: 6 }}
-        />
-        <div className="position-relative" style={{ zIndex: 3 }}>
-          <ul className="list-group autocomplete-list position-absolute w-100 bg-white p-0">
-            {autocompleteResults.map((feature, index) =>
-              feature.properties ? (
-                <li
-                  key={index}
-                  className="list-group-item list-group-item-action p-2"
-                  onClick={() => handleSuggestionClick(feature)}
-                  style={{ zIndex: 3 }}
-                >
-                  {feature.properties.label}
-                </li>
-              ) : null,
-            )}
-          </ul>
-        </div>
-        <ValidatedToggleButton
-          isValidated={isAddressValidated}
-          onValidation={handleAddressValidation}
-          onModification={handleAddressModification}
-          disabled={!address.trim()}
-        />
-
-        {!isAddressValidated && (
-          <button
-            type="button"
-            className="btn text-light mt-2"
-            onClick={handleGeolocationClick}
-            disabled={!isNameValidated}
-            style={{ boxShadow: 'none', outline: 'none', border: 'none' }}
-          >
-            Me géolocaliser
-          </button>
-        )}
-      </div>
-
-      <div className="row">
-        <div className="form-group col-md-6 mb-3">
-          <label htmlFor="date-input" className="text-light">
-            Date de la constatation
-          </label>
-          <input
-            id="date-input"
-            type="date"
-            className="form-control"
-            value={dateOfObservation}
-            onChange={(e) => setDateOfObservation(e.target.value)}
-          />
-        </div>
-
-        <div className="form-group col-md-6 mb-3">
-          <label htmlFor="time-input" className="text-light">
-            Heure de la constatation
-          </label>
-          <input
-            id="time-input"
-            type="time"
-            className="form-control"
-            value={timeOfObservation}
-            onChange={(e) => setTimeOfObservation(e.target.value)}
-          />
-        </div>
-      </div>
-      <div className="form-group mb-3">
-        <label className="text-light">Ajouter une photo</label>
-        <PhotoCapture onImageValidate={handleImageValidation} />
-      </div>
+      <DateTimeInput
+        dateOfObservation={dateOfObservation}
+        timeOfObservation={timeOfObservation}
+        onDateChange={handleDateChange}
+        onTimeChange={handleTimeChange}
+      />
+      <PhotoCaptureInput onImageValidate={handleImageValidation} />
     </div>
   )
 }
