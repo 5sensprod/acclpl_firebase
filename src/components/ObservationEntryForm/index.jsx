@@ -4,6 +4,7 @@ import CompanyNameInput from './CompanyNameInput'
 import AddressInput from './AddressInput'
 import DateTimeInput from './DateTimeInput'
 import PhotoCaptureInput from './PhotoCaptureInput'
+import useCompanyName from '../../hooks/useCompanyName'
 
 function ObservationEntryForm({
   onSelectAddress,
@@ -12,16 +13,18 @@ function ObservationEntryForm({
 }) {
   const [address, setAddress] = useState('')
   const [isAddressValidated, setIsAddressValidated] = useState(false)
-  const [companyName, setCompanyName] = useState('')
   const [dateOfObservation, setDateOfObservation] = useState('')
   const [timeOfObservation, setTimeOfObservation] = useState('')
   const [autocompleteResults, setAutocompleteResults] = useState([])
-  const [isNameValidated, setIsNameValidated] = useState(false)
-  const defaultName = 'Entreprise X'
 
-  const handleCompanyNameChange = (e) => {
-    setCompanyName(e.target.value)
-  }
+  const {
+    companyName,
+    isNameValidated,
+    handleCompanyNameChange,
+    handleCompanyNameValidation,
+    handleCompanyNameModification,
+    handleIDontKnowClick,
+  } = useCompanyName(onSelectAddress, currentCoords, address)
 
   const handleSuggestionClick = (feature) => {
     setAddress(feature.properties.label)
@@ -32,27 +35,6 @@ function ObservationEntryForm({
       })
     }
     setAutocompleteResults([])
-  }
-
-  const handleCompanyNameValidation = () => {
-    setIsNameValidated(true)
-    if (address) {
-      if (onSelectAddress) {
-        onSelectAddress({
-          coordinates: currentCoords,
-          companyName: companyName,
-        })
-      }
-    }
-  }
-
-  const handleCompanyNameModification = () => {
-    setIsNameValidated(false)
-  }
-
-  const handleIDontKnowClick = () => {
-    setCompanyName(defaultName)
-    setIsNameValidated(true)
   }
 
   const handleImageValidation = (imageData) => {
