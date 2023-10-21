@@ -1,7 +1,7 @@
 class EstablishmentModel {
-  constructor({ establishmentName, address, streetRef, coordinates }) {
+  constructor({ establishmentName, streetNumber, streetRef, coordinates }) {
     this.establishmentName = establishmentName
-    this.address = address
+    this.streetNumber = streetNumber
     this.streetRef = streetRef
     this.coordinates = coordinates
   }
@@ -9,9 +9,6 @@ class EstablishmentModel {
   validate() {
     if (!this.establishmentName || this.establishmentName.trim() === '') {
       throw new Error('Establishment name is required')
-    }
-    if (!this.address || this.address.trim() === '') {
-      throw new Error('Address is required')
     }
     if (!this.streetRef) {
       throw new Error('Street reference is required')
@@ -24,7 +21,7 @@ class EstablishmentModel {
   toFirebaseObject() {
     return {
       establishmentName: this.establishmentName,
-      address: this.address,
+      streetNumber: this.streetNumber,
       streetRef: this.streetRef,
       coordinates: {
         latitude: this.coordinates[0],

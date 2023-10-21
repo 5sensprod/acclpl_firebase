@@ -7,12 +7,23 @@ async function addEstablishment(establishmentData) {
   establishment.validate() // Assume you have a validate method to check the data
 
   try {
-    // Check for duplicate establishment
+    // Prepare the query
+    const establishmentQueryConditions = [
+      where('establishmentName', '==', establishment.establishmentName),
+      where('streetRef', '==', establishment.streetRef),
+    ]
+
+    if (establishment.streetNumber) {
+      establishmentQueryConditions.push(
+        where('streetNumber', '==', establishment.streetNumber),
+      )
+    }
+
     const establishmentQuery = query(
       collection(firestore, 'establishments'),
-      where('establishmentName', '==', establishment.establishmentName),
-      where('address', '==', establishment.address),
+      ...establishmentQueryConditions,
     )
+
     const querySnapshot = await getDocs(establishmentQuery)
     if (!querySnapshot.empty) {
       throw new Error('Establishment already exists')

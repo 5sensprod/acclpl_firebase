@@ -4,7 +4,7 @@ import AddressInput from './AddressInput'
 import DateTimeInput from './DateTimeInput'
 import PhotoCaptureInput from './PhotoCaptureInput'
 import useCompanyAndAddress from '../../hooks/useCompanyAndAddress'
-import { addObservation } from '../../services/firestore'
+import { handleObservationSubmit } from '../../services/handleObservationSubmit'
 
 function ObservationEntryForm({
   onSelectAddress,
@@ -43,22 +43,23 @@ function ObservationEntryForm({
     setTimeOfObservation(e.target.value)
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault() // Empêche le rechargement de la page lors de la soumission du formulaire
-    const formData = {
-      companyName,
-      address,
-      dateOfObservation,
-      timeOfObservation,
-    }
-    // Appellez addObservation avec les données du formulaire
-    await addObservation(formData)
-    console.log('Form data submitted:', formData)
-  }
+  console.log('Address value:', address)
 
   return (
     <div className="my-4">
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) =>
+          handleObservationSubmit(e, {
+            companyName,
+            address,
+            dateOfObservation,
+            timeOfObservation,
+            onSelectAddress,
+            currentCoords,
+            onSelectImage,
+          })
+        }
+      >
         <CompanyNameInput
           companyName={companyName}
           isNameValidated={isNameValidated}
