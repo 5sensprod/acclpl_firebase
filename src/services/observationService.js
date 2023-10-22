@@ -11,7 +11,7 @@ async function addObservation(observationData, establishmentRef) {
       collection(firestore, 'establishments', establishmentRef, 'observations'),
       observation.toFirebaseObject(),
     )
-    console.log('Observation document written with ID: ', docRef.id)
+    // console.log('Observation document written with ID: ', docRef.id)
     return docRef.id // Return the document ID for further use
   } catch (e) {
     console.error('Error adding observation document: ', e)

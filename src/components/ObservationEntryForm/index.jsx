@@ -50,7 +50,7 @@ function ObservationEntryForm({
   const handleFileSelected = (file) => {
     setSelectedFile(file)
   }
-  console.log('Address value:', address)
+  // console.log('Address value:', address)
 
   return (
     <div className="my-4">

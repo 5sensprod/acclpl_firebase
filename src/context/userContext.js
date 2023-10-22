@@ -21,15 +21,7 @@ export function UserContextProvider(props) {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setCurrentUser(currentUser)
       setLoadingData(false)
-
-      // Log the user ID to the console
-      if (currentUser) {
-        console.log('User ID:', currentUser.uid)
-      } else {
-        console.log('No user is signed in.')
-      }
     })
-
     return unsubscribe
   }, [])
 

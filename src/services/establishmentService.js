@@ -34,7 +34,7 @@ async function addEstablishment(establishmentData) {
       collection(firestore, 'establishments'),
       establishment.toFirebaseObject(),
     )
-    console.log('Establishment document written with ID: ', docRef.id)
+    // console.log('Establishment document written with ID: ', docRef.id)
     return docRef.id // Return the document ID for further use
   } catch (e) {
     console.error('Error adding establishment document: ', e)

@@ -19,7 +19,7 @@ async function handleObservationSubmit(
   e.preventDefault() // Pour empêcher le rechargement de la page
 
   try {
-    console.log(address) // Pour vérifier que address est reçu correctement
+    // console.log(address)
     const formattedAddress = formatAddress(address)
 
     // Vérification et/ou ajout de la rue
