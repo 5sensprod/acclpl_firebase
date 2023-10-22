@@ -14,6 +14,8 @@ function ObservationEntryForm({
 }) {
   const [dateOfObservation, setDateOfObservation] = useState('')
   const [timeOfObservation, setTimeOfObservation] = useState('')
+  const [selectedFile, setSelectedFile] = useState(null)
+
   const { currentUser } = useContext(UserContext)
 
   const {
@@ -45,6 +47,9 @@ function ObservationEntryForm({
     setTimeOfObservation(e.target.value)
   }
 
+  const handleFileSelected = (file) => {
+    setSelectedFile(file)
+  }
   console.log('Address value:', address)
 
   return (
@@ -60,6 +65,7 @@ function ObservationEntryForm({
             onSelectAddress,
             currentCoords,
             onSelectImage,
+            selectedFile,
           })
         }
       >
@@ -89,7 +95,10 @@ function ObservationEntryForm({
           onDateChange={handleDateChange}
           onTimeChange={handleTimeChange}
         />
-        <PhotoCaptureInput onImageValidate={handleImageValidation} />
+        <PhotoCaptureInput
+          onImageValidate={handleImageValidation}
+          onFileSelected={handleFileSelected}
+        />
         <button type="submit">Submit</button>
       </form>
     </div>

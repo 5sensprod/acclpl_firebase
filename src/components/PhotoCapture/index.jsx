@@ -16,20 +16,26 @@ function PhotoCapture(props) {
   const [capturedImage, setCapturedImage] = useState(null)
   const [isImageValidated, setIsImageValidated] = useState(false)
 
-  const handlePhotoChange = useCallback((event) => {
-    const file = event.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setOriginalPhotoURL(e.target.result)
-        setPhotoURL(e.target.result)
-        setOpenCrop(true)
-        setIsImageValidated(false)
-        setCapturedImage(e.target.result)
+  const { onFileSelected } = props
+
+  const handlePhotoChange = useCallback(
+    (event) => {
+      const file = event.target.files[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          setOriginalPhotoURL(e.target.result)
+          setPhotoURL(e.target.result)
+          setOpenCrop(true)
+          setIsImageValidated(false)
+          setCapturedImage(e.target.result)
+          onFileSelected(file)
+        }
+        reader.readAsDataURL(file)
       }
-      reader.readAsDataURL(file)
-    }
-  }, [])
+    },
+    [onFileSelected],
+  )
 
   const handleCloseCrop = useCallback(() => {
     setOpenCrop(false)

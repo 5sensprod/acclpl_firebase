@@ -2,6 +2,7 @@ import { addStreet } from './streetService'
 import { addEstablishment } from './establishmentService'
 import { addObservation } from './observationService'
 import { formatAddress } from '../utils/addressUtils'
+import { uploadImage } from './uploadImage'
 
 async function handleObservationSubmit(
   e,
@@ -12,6 +13,7 @@ async function handleObservationSubmit(
     dateOfObservation,
     timeOfObservation,
     currentCoords,
+    selectedFile,
   },
 ) {
   e.preventDefault() // Pour empêcher le rechargement de la page
@@ -51,11 +53,18 @@ async function handleObservationSubmit(
       }
     }
 
+    // Upload the image
+    let photoURL
+    if (selectedFile) {
+      photoURL = await uploadImage(selectedFile)
+    }
+
     // Ajout de l'observation
     const observationData = {
       userID,
       date: dateOfObservation,
       time: timeOfObservation,
+      photoURLs: photoURL ? [photoURL] : [],
       // ... autres données d'observation
     }
     const observationRef = await addObservation(
