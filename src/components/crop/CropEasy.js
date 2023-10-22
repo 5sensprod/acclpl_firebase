@@ -51,6 +51,7 @@ export default function CropEasy(props) {
       setPhotoURL(url)
       setFile(file)
       setOpenCrop(false)
+      props.onCroppedImage(url)
     } catch (error) {
       console.error('Error cropping the image:', error)
       // TODO: Handle the error and show a feedback message to the user if needed

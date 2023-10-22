@@ -14,6 +14,7 @@ async function handleObservationSubmit(
     timeOfObservation,
     currentCoords,
     selectedFile,
+    croppedImageUrl,
   },
 ) {
   e.preventDefault() // Pour empêcher le rechargement de la page
@@ -55,10 +56,13 @@ async function handleObservationSubmit(
 
     // Upload the image
     let photoURL
-    if (selectedFile) {
-      photoURL = await uploadImage(selectedFile)
+    if (croppedImageUrl) {
+      // Convert the cropped image URL to a File object or Blob
+      const response = await fetch(croppedImageUrl)
+      const blob = await response.blob()
+      const file = new File([blob], 'croppedImage.jpeg', { type: 'image/jpeg' })
+      photoURL = await uploadImage(file)
     }
-
     // Ajout de l'observation
     const observationData = {
       userID,

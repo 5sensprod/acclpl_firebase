@@ -15,6 +15,7 @@ function PhotoCapture(props) {
   const [file, setFile] = useState(null)
   const [capturedImage, setCapturedImage] = useState(null)
   const [isImageValidated, setIsImageValidated] = useState(false)
+  // const [croppedImageUrl, setCroppedImageUrl] = useState(null)
 
   const { onFileSelected } = props
 
@@ -53,6 +54,10 @@ function PhotoCapture(props) {
     setCapturedImage(defaultPhoto)
   }, [props])
 
+  const handleCroppedImage = (croppedImageUrl) => {
+    setPhotoURL(croppedImageUrl)
+  }
+
   return (
     <>
       <div style={{ textAlign: 'left' }}>
@@ -89,6 +94,7 @@ function PhotoCapture(props) {
           onNewPhoto={triggerFileInput}
           setFile={setFile}
           file={file}
+          onCroppedImage={handleCroppedImage}
         />
       )}
 
