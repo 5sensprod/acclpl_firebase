@@ -5,7 +5,14 @@ import { formatAddress } from '../utils/addressUtils'
 
 async function handleObservationSubmit(
   e,
-  { companyName, address, dateOfObservation, timeOfObservation, currentCoords },
+  {
+    userID,
+    companyName,
+    address,
+    dateOfObservation,
+    timeOfObservation,
+    currentCoords,
+  },
 ) {
   e.preventDefault() // Pour empêcher le rechargement de la page
 
@@ -46,6 +53,7 @@ async function handleObservationSubmit(
 
     // Ajout de l'observation
     const observationData = {
+      userID,
       date: dateOfObservation,
       time: timeOfObservation,
       // ... autres données d'observation

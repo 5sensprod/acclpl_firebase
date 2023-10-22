@@ -6,20 +6,23 @@ import SignInModal from './components/SignInModal'
 import Private from './pages/Private/Private'
 import PrivateHome from './pages/Private/PrivateHome/PrivateHome'
 import 'leaflet/dist/leaflet.css'
+import ErrorBoundary from './components/ErrorBoundary'
 
 function App() {
   return (
-    <>
-      <SignUpModal />
-      <SignInModal />
-      <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/private" element={<Private />}>
-          <Route path="/private/private-home" element={<PrivateHome />} />
-        </Route>
-      </Routes>
-    </>
+    <ErrorBoundary>
+      <>
+        <SignUpModal />
+        <SignInModal />
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/private" element={<Private />}>
+            <Route path="/private/private-home" element={<PrivateHome />} />
+          </Route>
+        </Routes>
+      </>
+    </ErrorBoundary>
   )
 }
 

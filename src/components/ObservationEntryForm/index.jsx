@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import CompanyNameInput from './CompanyNameInput'
 import AddressInput from './AddressInput'
 import DateTimeInput from './DateTimeInput'
 import PhotoCaptureInput from './PhotoCaptureInput'
 import useCompanyAndAddress from '../../hooks/useCompanyAndAddress'
 import { handleObservationSubmit } from '../../services/handleObservationSubmit'
+import { UserContext } from '../../context/userContext'
 
 function ObservationEntryForm({
   onSelectAddress,
@@ -13,6 +14,7 @@ function ObservationEntryForm({
 }) {
   const [dateOfObservation, setDateOfObservation] = useState('')
   const [timeOfObservation, setTimeOfObservation] = useState('')
+  const { currentUser } = useContext(UserContext)
 
   const {
     companyName,
@@ -50,6 +52,7 @@ function ObservationEntryForm({
       <form
         onSubmit={(e) =>
           handleObservationSubmit(e, {
+            userID: currentUser.uid,
             companyName,
             address,
             dateOfObservation,
