@@ -63,9 +63,7 @@ function ObservationEntryForm({
             address,
             dateOfObservation,
             timeOfObservation,
-            onSelectAddress,
             currentCoords,
-            onSelectImage,
             selectedFile,
             croppedImageUrl,
           })
