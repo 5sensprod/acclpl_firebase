@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import LeafletMap from '../../../components/LeafletMap'
 import ObservationEntryForm from '../../../components/ObservationEntryForm'
+import formatCompanyName from '../../../utils/formatCompanyName'
 
 export default function PrivateHome() {
   const [markerCoords, setMarkerCoords] = useState(null)
-  const [companyName, setCompanyName] = useState('')
   const [validatedImage, setValidatedImage] = useState(null)
+  const [normalizedCompanyName, setNormalizedCompanyName] = useState('')
 
   return (
     <div className="container p-3">
@@ -18,12 +19,13 @@ export default function PrivateHome() {
         onSelectImage={setValidatedImage}
         onSelectAddress={({ coordinates, companyName: name }) => {
           setMarkerCoords(coordinates)
-          setCompanyName(name)
+          const formatted = formatCompanyName(name) // Formattez le nom de l'entreprise ici.
+          setNormalizedCompanyName(formatted) // Mettez à jour l'état avec le nom d'entreprise formaté.
         }}
       />
       <LeafletMap
         markerCoords={markerCoords}
-        companyName={companyName}
+        normalizedCompanyName={normalizedCompanyName} // Remplacez companyName par normalizedCompanyName ici.
         imageURL={validatedImage}
       />
     </div>
