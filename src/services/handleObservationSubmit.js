@@ -2,6 +2,7 @@ import { addStreet } from './streetService'
 import { addEstablishment } from './establishmentService'
 import { addObservation } from './observationService'
 import { formatAddress } from '../utils/addressUtils'
+import { generateUniqueFileName } from '../utils/filenameUtils'
 import { uploadImage } from './uploadImage'
 
 async function handleObservationSubmit(
@@ -60,7 +61,9 @@ async function handleObservationSubmit(
       // Convert the cropped image URL to a File object or Blob
       const response = await fetch(croppedImageUrl)
       const blob = await response.blob()
-      const file = new File([blob], 'croppedImage.jpeg', { type: 'image/jpeg' })
+      const file = new File([blob], generateUniqueFileName('croppedImage'), {
+        type: 'image/jpeg',
+      })
       photoURL = await uploadImage(file)
     }
     // Ajout de l'observation
