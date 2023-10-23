@@ -3,6 +3,7 @@ import { addEstablishment } from './establishmentService'
 import { addObservation } from './observationService'
 import { formatAddress } from '../utils/addressUtils'
 import { generateUniqueFileName } from '../utils/filenameUtils'
+import { compressImage } from '../utils/imageCompression'
 import { uploadImage } from './uploadImage'
 
 async function handleObservationSubmit(
@@ -61,10 +62,17 @@ async function handleObservationSubmit(
       // Convert the cropped image URL to a File object or Blob
       const response = await fetch(croppedImageUrl)
       const blob = await response.blob()
+
+      // Créez un objet File à partir du blob
       const file = new File([blob], generateUniqueFileName('croppedImage'), {
         type: 'image/jpeg',
       })
-      photoURL = await uploadImage(file)
+
+      // Compress the image
+      const compressedFile = await compressImage(file)
+
+      // Upload the compressed image to Firebase Storage
+      photoURL = await uploadImage(compressedFile)
     }
     // Ajout de l'observation
     const observationData = {
