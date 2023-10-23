@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { reverseGeocode, geocodeAddress } from '../api/geocode'
 
-function useCompanyAndAddress(onSelectAddress, currentCoords) {
+function useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep) {
   const [companyName, setCompanyName] = useState('')
   const [isNameValidated, setIsNameValidated] = useState(false)
   const [address, setAddress] = useState('')
   const [isAddressValidated, setIsAddressValidated] = useState(false)
   const [autocompleteResults, setAutocompleteResults] = useState([])
   const defaultName = 'Entreprise X'
+
+  if (!onSelectAddress) return null // Si onSelectAddress n'est pas fourni, retournez null
 
   // Fonctions pour gérer le nom de l'entreprise
   const handleCompanyNameChange = (e) => {
@@ -24,8 +26,8 @@ function useCompanyAndAddress(onSelectAddress, currentCoords) {
         })
       }
     }
+    if (moveToNextStep) moveToNextStep()
   }
-
   const handleCompanyNameModification = () => {
     setIsNameValidated(false)
   }
