@@ -45,17 +45,19 @@ function AddressInput({
           )}
         </ul>
       </div>
-      <ValidatedToggleButton
-        isValidated={isAddressValidated}
-        onValidation={onValidation}
-        onModification={onModification}
-        disabled={!address.trim()}
-      />
+      <div className="col-md-12 mt-1">
+        <ValidatedToggleButton
+          isValidated={isAddressValidated}
+          onValidation={onValidation}
+          onModification={onModification}
+          disabled={!address.trim()}
+        />
+      </div>
 
       {!isAddressValidated && (
         <button
           type="button"
-          className="btn text-light mt-2"
+          className="btn text-light mt-1"
           onClick={onGeolocationClick}
           disabled={!isNameValidated}
           style={{ boxShadow: 'none', outline: 'none', border: 'none' }}

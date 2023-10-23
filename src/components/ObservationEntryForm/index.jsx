@@ -14,8 +14,6 @@ function ObservationEntryForm({
   currentCoords,
   onSelectImage,
 }) {
-  const [dateOfObservation, setDateOfObservation] = useState('')
-  const [timeOfObservation, setTimeOfObservation] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
   const [croppedImageUrl, setCroppedImageUrl] = useState(null)
 
@@ -41,24 +39,23 @@ function ObservationEntryForm({
     handleAddressValidation,
     handleAddressModification,
     handleGeolocationClick,
+    dateOfObservation,
+    timeOfObservation,
+    isDateTimeValidated,
+    handleDateChange,
+    handleTimeChange,
+    handleDateTimeValidation,
+    handleDateTimeModification,
   } = useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep)
 
   const handleImageValidation = (imageData) => {
     setCroppedImageUrl(imageData)
     onSelectImage(imageData)
   }
-  const handleDateChange = (e) => {
-    setDateOfObservation(e.target.value)
-  }
-
-  const handleTimeChange = (e) => {
-    setTimeOfObservation(e.target.value)
-  }
 
   const handleFileSelected = (file) => {
     setSelectedFile(file)
   }
-  // console.log('Address value:', address)
 
   const renderStep = () => {
     switch (currentStep) {
@@ -92,8 +89,11 @@ function ObservationEntryForm({
           <DateTimeInput
             dateOfObservation={dateOfObservation}
             timeOfObservation={timeOfObservation}
+            isDateTimeValidated={isDateTimeValidated}
             onDateChange={handleDateChange}
             onTimeChange={handleTimeChange}
+            onValidation={handleDateTimeValidation}
+            onModification={handleDateTimeModification}
           />
         )
       case 4:
@@ -112,14 +112,12 @@ function ObservationEntryForm({
   const isCurrentStepInputEmpty = () => {
     switch (currentStep) {
       case 1:
-        return !companyName
+        return !companyName || !isNameValidated
       case 2:
-        return !address
+        return !address || !isAddressValidated
       case 3:
-        return !dateOfObservation || !timeOfObservation
+        return !dateOfObservation || !timeOfObservation || !isDateTimeValidated
       case 4:
-        // Si vous avez un état qui conserve la valeur/image de la saisie PhotoCaptureInput, vous pouvez le vérifier ici.
-        // Pour l'instant, je vais supposer que c'est `selectedFile` :
         return !selectedFile
       default:
         return false

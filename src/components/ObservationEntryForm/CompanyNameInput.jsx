@@ -24,12 +24,14 @@ function CompanyNameInput({
         placeholder="Entrez le nom de l'entreprise"
         disabled={isNameValidated}
       />
-      <ValidatedToggleButton
-        isValidated={isNameValidated}
-        onValidation={onValidation}
-        onModification={onModification}
-        disabled={!companyName.trim()}
-      />
+      <div className="col-md-12 mt-1">
+        <ValidatedToggleButton
+          isValidated={isNameValidated}
+          onValidation={onValidation}
+          onModification={onModification}
+          disabled={!companyName.trim()}
+        />
+      </div>
 
       {!isNameValidated && (
         <button

@@ -7,6 +7,10 @@ function useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep) {
   const [address, setAddress] = useState('')
   const [isAddressValidated, setIsAddressValidated] = useState(false)
   const [autocompleteResults, setAutocompleteResults] = useState([])
+  const [dateOfObservation, setDateOfObservation] = useState('')
+  const [timeOfObservation, setTimeOfObservation] = useState('')
+  const [isDateTimeValidated, setIsDateTimeValidated] = useState(false)
+
   const defaultName = 'Entreprise X'
 
   if (!onSelectAddress) return null // Si onSelectAddress n'est pas fourni, retournez null
@@ -68,6 +72,7 @@ function useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep) {
 
   const handleAddressValidation = () => {
     setIsAddressValidated(true)
+    moveToNextStep()
   }
 
   const handleAddressModification = () => {
@@ -128,6 +133,23 @@ function useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep) {
     )
   }
 
+  const handleDateChange = (e) => {
+    setDateOfObservation(e.target.value)
+  }
+
+  const handleTimeChange = (e) => {
+    setTimeOfObservation(e.target.value)
+  }
+
+  const handleDateTimeValidation = () => {
+    setIsDateTimeValidated(true)
+    moveToNextStep()
+  }
+
+  const handleDateTimeModification = () => {
+    setIsDateTimeValidated(false)
+  }
+
   return {
     companyName,
     isNameValidated,
@@ -143,6 +165,13 @@ function useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep) {
     handleAddressValidation,
     handleAddressModification,
     handleGeolocationClick,
+    dateOfObservation,
+    timeOfObservation,
+    isDateTimeValidated,
+    handleDateChange,
+    handleTimeChange,
+    handleDateTimeValidation,
+    handleDateTimeModification,
   }
 }
 
