@@ -79,6 +79,7 @@ async function handleObservationSubmit(
         }
       }
     }
+    console.log('Establishment Ref:', establishmentRef)
 
     // Upload the image
     let photoURL
@@ -107,7 +108,7 @@ async function handleObservationSubmit(
       // ... autres données d'observation
     }
 
-    // console.log('Establishment Ref:', establishmentRef)
+    console.log('Establishment Ref:', establishmentRef)
     const observationRef = await addObservation(
       observationData,
       establishmentRef,

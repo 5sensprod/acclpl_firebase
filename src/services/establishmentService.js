@@ -38,8 +38,8 @@ async function addEstablishment(establishmentData) {
       collection(firestore, 'establishments'),
       establishment.toFirebaseObject(),
     )
-    // console.log('Establishment document written with ID: ', docRef.id);
-    return docRef.id // Return the document ID for further use
+    console.log('Establishment document written with ID: ', docRef.id) // Log the ID
+    return { id: docRef.id } // Retournez un objet avec une propriété id
   } catch (e) {
     if (e.message !== 'Establishment already exists') {
       // Seulement loguer l'erreur si ce n'est pas l'erreur "Establishment already exists"
@@ -60,7 +60,7 @@ async function getEstablishmentRef(normalizedEstablishmentName, streetRef) {
 
     const querySnapshot = await getDocs(establishmentQuery)
     if (!querySnapshot.empty) {
-      return querySnapshot.docs[0].ref // Retourne la référence du premier document trouvé
+      return { id: querySnapshot.docs[0].id }
     } else {
       throw new Error('No matching establishment found')
     }

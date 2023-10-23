@@ -8,6 +8,7 @@ async function addObservation(observationData, establishmentRef) {
 
   // Vérifiez si establishmentRef et establishmentRef.id sont bien définis
   if (!establishmentRef || !establishmentRef.id) {
+    console.log('Invalid establishmentRef:', establishmentRef) // Log the invalid ref
     throw new Error('Invalid establishment reference')
   }
 
