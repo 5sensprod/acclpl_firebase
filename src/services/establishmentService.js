@@ -9,7 +9,11 @@ async function addEstablishment(establishmentData) {
   try {
     // Prepare the query
     const establishmentQueryConditions = [
-      where('establishmentName', '==', establishment.establishmentName),
+      where(
+        'normalizedEstablishmentName',
+        '==',
+        establishment.normalizedEstablishmentName,
+      ), // Updated line
       where('streetRef', '==', establishment.streetRef),
     ]
 
@@ -34,7 +38,7 @@ async function addEstablishment(establishmentData) {
       collection(firestore, 'establishments'),
       establishment.toFirebaseObject(),
     )
-    // console.log('Establishment document written with ID: ', docRef.id)
+    // console.log('Establishment document written with ID: ', docRef.id);
     return docRef.id // Return the document ID for further use
   } catch (e) {
     if (e.message !== 'Establishment already exists') {
@@ -45,11 +49,12 @@ async function addEstablishment(establishmentData) {
   }
 }
 
-async function getEstablishmentRef(establishmentName, streetRef) {
+async function getEstablishmentRef(normalizedEstablishmentName, streetRef) {
+  // Updated parameter name
   try {
     const establishmentQuery = query(
       collection(firestore, 'establishments'),
-      where('establishmentName', '==', establishmentName),
+      where('normalizedEstablishmentName', '==', normalizedEstablishmentName), // Updated line
       where('streetRef', '==', streetRef),
     )
 
