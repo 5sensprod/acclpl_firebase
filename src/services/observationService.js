@@ -8,7 +8,12 @@ async function addObservation(observationData, establishmentRef) {
 
   try {
     const docRef = await addDoc(
-      collection(firestore, 'establishments', establishmentRef, 'observations'),
+      collection(
+        firestore,
+        'establishments',
+        establishmentRef.id,
+        'observations',
+      ),
       observation.toFirebaseObject(),
     )
     // console.log('Observation document written with ID: ', docRef.id)

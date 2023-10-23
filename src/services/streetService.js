@@ -4,10 +4,9 @@ import StreetModel from '../models/StreetModel'
 
 async function addStreet(streetData) {
   const street = new StreetModel(streetData)
-  street.validate() // Assume you have a validate method to check the data
+  street.validate()
 
   try {
-    // Check for duplicate street
     const streetQuery = query(
       collection(firestore, 'streets'),
       where('streetName', '==', street.streetName),
@@ -16,10 +15,10 @@ async function addStreet(streetData) {
     )
     const querySnapshot = await getDocs(streetQuery)
     if (!querySnapshot.empty) {
-      throw new Error('Street already exists')
+      // Street already exists, return the existing street reference
+      return querySnapshot.docs[0].id // Assuming the query will return the existing street document
     }
 
-    // If no duplicate is found, add the new street
     const docRef = await addDoc(
       collection(firestore, 'streets'),
       street.toFirebaseObject(),
@@ -28,7 +27,7 @@ async function addStreet(streetData) {
     return docRef.id // Return the document ID for further use
   } catch (e) {
     console.error('Error adding street document: ', e)
-    throw e // Propagate the error to be handled higher up in the call stack
+    throw e
   }
 }
 

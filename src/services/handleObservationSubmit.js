@@ -1,5 +1,5 @@
 import { addStreet } from './streetService'
-import { addEstablishment } from './establishmentService'
+import { addEstablishment, getEstablishmentRef } from './establishmentService'
 import { addObservation } from './observationService'
 import { formatAddress } from '../utils/addressUtils'
 import { generateUniqueFileName } from '../utils/filenameUtils'
@@ -36,23 +36,32 @@ async function handleObservationSubmit(
       streetRef = await addStreet(streetData)
     } catch (error) {
       if (error.message !== 'Street already exists') {
-        throw error // Propage l'erreur si ce n'est pas une duplication
+        throw error
       }
     }
 
     // Vérification et/ou ajout de l'établissement
     const establishmentData = {
       establishmentName: companyName,
-      streetNumber: formattedAddress.streetNumber, // Ajout du numéro de rue ici
-      streetRef,
+      streetNumber: formattedAddress.streetNumber,
+      streetRef, // passing the street reference here
       coordinates: currentCoords,
     }
+
     let establishmentRef
     try {
       establishmentRef = await addEstablishment(establishmentData)
     } catch (error) {
       if (error.message !== 'Establishment already exists') {
         throw error // Propage l'erreur si ce n'est pas une duplication
+      } else {
+        // Logique pour récupérer la référence de l'établissement existant
+        try {
+          establishmentRef = await getEstablishmentRef(companyName, streetRef)
+        } catch (error) {
+          console.error('Error fetching establishment reference:', error)
+          throw error // Propage l'erreur si l'établissement n'est pas trouvé
+        }
       }
     }
 
@@ -82,6 +91,8 @@ async function handleObservationSubmit(
       photoURLs: photoURL ? [photoURL] : [],
       // ... autres données d'observation
     }
+
+    console.log('Establishment Ref:', establishmentRef)
     const observationRef = await addObservation(
       observationData,
       establishmentRef,

@@ -37,9 +37,32 @@ async function addEstablishment(establishmentData) {
     // console.log('Establishment document written with ID: ', docRef.id)
     return docRef.id // Return the document ID for further use
   } catch (e) {
-    console.error('Error adding establishment document: ', e)
+    if (e.message !== 'Establishment already exists') {
+      // Seulement loguer l'erreur si ce n'est pas l'erreur "Establishment already exists"
+      console.error('Error adding establishment document: ', e)
+    }
     throw e // Propagate the error to be handled higher up in the call stack
   }
 }
 
-export { addEstablishment }
+async function getEstablishmentRef(establishmentName, streetRef) {
+  try {
+    const establishmentQuery = query(
+      collection(firestore, 'establishments'),
+      where('establishmentName', '==', establishmentName),
+      where('streetRef', '==', streetRef),
+    )
+
+    const querySnapshot = await getDocs(establishmentQuery)
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs[0].ref // Retourne la référence du premier document trouvé
+    } else {
+      throw new Error('No matching establishment found')
+    }
+  } catch (error) {
+    console.error('Error fetching establishment reference: ', error)
+    throw error
+  }
+}
+
+export { addEstablishment, getEstablishmentRef }
