@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import CompanyNameInput from './CompanyNameInput'
 import AddressInput from './AddressInput'
 import DateTimeInput from './DateTimeInput'
@@ -7,6 +7,10 @@ import useCompanyAddress from '../../hooks/useGeocodedAddress'
 import useCompanyName from '../../hooks/useCompanyName'
 import useDateTimeObservation from '../../hooks/useDateTimeObservation'
 import { useImageHandlers } from '../../hooks/useImageHandlers'
+import {
+  useNavigationLogic,
+  useStepValidation,
+} from '../../hooks/useFormNavigation'
 import { handleObservationSubmit } from '../../services/handleObservationSubmit'
 import { UserContext } from '../../context/userContext'
 import { Form } from 'react-bootstrap'
@@ -19,11 +23,8 @@ function ObservationEntryForm({
   onSelectImage,
 }) {
   const { currentUser } = useContext(UserContext)
-  const [currentStep, setCurrentStep] = useState(1)
 
-  const moveToNextStep = () => {
-    setCurrentStep(currentStep + 1)
-  }
+  const { currentStep, setCurrentStep, moveToNextStep } = useNavigationLogic()
 
   const {
     address,
@@ -62,6 +63,17 @@ function ObservationEntryForm({
     handleFileSelected,
     setCroppedImageUrl,
   } = useImageHandlers(onSelectImage)
+
+  const { isCurrentStepInputEmpty } = useStepValidation({
+    companyName,
+    isNameValidated,
+    address,
+    isAddressValidated,
+    dateOfObservation,
+    timeOfObservation,
+    isDateTimeValidated,
+    selectedFile,
+  })
 
   const renderStep = () => {
     switch (currentStep) {
@@ -112,21 +124,6 @@ function ObservationEntryForm({
         )
       default:
         return null
-    }
-  }
-
-  const isCurrentStepInputEmpty = () => {
-    switch (currentStep) {
-      case 1:
-        return !companyName || !isNameValidated
-      case 2:
-        return !address || !isAddressValidated
-      case 3:
-        return !dateOfObservation || !timeOfObservation || !isDateTimeValidated
-      case 4:
-        return !selectedFile
-      default:
-        return false
     }
   }
 
