@@ -21,17 +21,16 @@ async function handleObservationSubmit(
     croppedImageUrl,
   },
 ) {
-  e.preventDefault() // Pour empêcher le rechargement de la page
+  e.preventDefault()
 
   try {
-    // console.log(address)
     const formattedAddress = formatAddress(address)
 
     // Vérification et/ou ajout de la rue
     const streetData = {
-      streetName: formattedAddress.streetName, // Utilisez formattedAddress au lieu d'address
-      city: formattedAddress.city, // Utilisez formattedAddress au lieu d'address
-      postalCode: formattedAddress.postalCode, // Utilisez formattedAddress au lieu d'address
+      streetName: formattedAddress.streetName,
+      city: formattedAddress.city,
+      postalCode: formattedAddress.postalCode,
     }
     let streetRef
     try {
@@ -45,29 +44,24 @@ async function handleObservationSubmit(
     // Vérification et/ou ajout de l'établissement
 
     const formattedCompanyName = formatCompanyName(companyName)
-    // const normalizedCompanyNameResult =
-    //   normalizedCompanyName(formattedCompanyName)
 
     const establishmentData = {
       establishmentName: formattedCompanyName,
       streetNumber: formattedAddress.streetNumber,
-      streetRef, // passing the street reference here
+      streetRef,
       coordinates: currentCoords,
     }
-    // console.log(
-    //   'Establishment name before adding establishment:',
-    //   establishmentData.establishmentName,
-    // ) // Ajoutez cette ligne
+
     let establishmentRef
     try {
       establishmentRef = await addEstablishment(establishmentData)
     } catch (error) {
       if (error.message !== 'Establishment already exists') {
-        throw error // Propage l'erreur si ce n'est pas une duplication
+        throw error
       } else {
         // Logique pour récupérer la référence de l'établissement existant
         const normalizedCompanyNameResult =
-          normalizedCompanyName(formattedCompanyName) // Calculez la version normalisée ici
+          normalizedCompanyName(formattedCompanyName)
         try {
           establishmentRef = await getEstablishmentRef(
             normalizedCompanyNameResult,
@@ -75,7 +69,7 @@ async function handleObservationSubmit(
           )
         } catch (error) {
           console.error('Error fetching establishment reference:', error)
-          throw error // Propage l'erreur si l'établissement n'est pas trouvé
+          throw error
         }
       }
     }
@@ -118,7 +112,7 @@ async function handleObservationSubmit(
     return { streetRef, establishmentRef, observationRef }
   } catch (error) {
     console.error('Error handling observation submit: ', error)
-    throw error // Propage l'erreur pour la gérer dans la composante
+    throw error
   }
 }
 

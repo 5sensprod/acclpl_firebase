@@ -4,18 +4,15 @@ import ObservationModel from '../models/ObservationModel'
 
 async function addObservation(observationData, establishmentRef) {
   const observation = new ObservationModel(observationData)
-  observation.validate() // Assume you have a validate method to check the data
+  observation.validate()
 
   // Vérifiez si establishmentRef et establishmentRef.id sont bien définis
   if (!establishmentRef || !establishmentRef.id) {
-    console.log('Invalid establishmentRef:', establishmentRef) // Log the invalid ref
+    console.log('Invalid establishmentRef:', establishmentRef)
     throw new Error('Invalid establishment reference')
   }
 
   try {
-    // console.log(establishmentRef) // Log the entire object
-    // console.log(establishmentRef.id) // Log just the id property
-
     const docRef = await addDoc(
       collection(
         firestore,
@@ -25,11 +22,10 @@ async function addObservation(observationData, establishmentRef) {
       ),
       observation.toFirebaseObject(),
     )
-    // console.log('Observation document written with ID: ', docRef.id);
     return docRef.id // Return the document ID for further use
   } catch (e) {
     console.error('Error adding observation document: ', e)
-    throw e // Propagate the error to be handled higher up in the call stack
+    throw e
   }
 }
 

@@ -1,6 +1,29 @@
 import { firestore } from '../firebaseConfig'
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+} from 'firebase/firestore'
 import EstablishmentModel from '../models/EstablishmentModel'
+// import normalizedCompanyName from '../utils/normalizedCompanyName'
+
+async function getStreetByRef(streetRef) {
+  try {
+    const streetDoc = await getDoc(doc(firestore, 'streets', streetRef))
+    if (streetDoc.exists()) {
+      return streetDoc.data()
+    } else {
+      throw new Error('Street not found')
+    }
+  } catch (error) {
+    console.error('Error fetching street: ', error)
+    throw error
+  }
+}
 
 async function addEstablishment(establishmentData) {
   const establishment = new EstablishmentModel(establishmentData)
@@ -49,18 +72,21 @@ async function addEstablishment(establishmentData) {
   }
 }
 
-async function getEstablishmentRef(normalizedEstablishmentName, streetRef) {
-  // Updated parameter name
+async function getEstablishmentRef(normalizedEstablishmentName) {
+  if (!normalizedEstablishmentName) {
+    throw new Error('normalizedEstablishmentName is required.')
+  }
+
   try {
     const establishmentQuery = query(
       collection(firestore, 'establishments'),
       where('normalizedEstablishmentName', '==', normalizedEstablishmentName),
-      where('streetRef', '==', streetRef),
     )
 
     const querySnapshot = await getDocs(establishmentQuery)
     if (!querySnapshot.empty) {
-      return { id: querySnapshot.docs[0].id }
+      // Retournez l'établissement entier
+      return querySnapshot.docs[0].data()
     } else {
       throw new Error('No matching establishment found')
     }
@@ -70,4 +96,4 @@ async function getEstablishmentRef(normalizedEstablishmentName, streetRef) {
   }
 }
 
-export { addEstablishment, getEstablishmentRef }
+export { addEstablishment, getEstablishmentRef, getStreetByRef }
