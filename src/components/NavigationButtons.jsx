@@ -21,7 +21,7 @@ export function NavigationButtons({
         <Button
           variant="primary"
           onClick={moveToNextStep}
-          disabled={isCurrentStepInputEmpty()}
+          disabled={isCurrentStepInputEmpty(currentStep)}
         >
           Suivant <ArrowRight className="ml-2" />
         </Button>
