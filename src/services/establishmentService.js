@@ -54,7 +54,7 @@ async function getEstablishmentRef(normalizedEstablishmentName, streetRef) {
   try {
     const establishmentQuery = query(
       collection(firestore, 'establishments'),
-      where('normalizedEstablishmentName', '==', normalizedEstablishmentName), // Updated line
+      where('normalizedEstablishmentName', '==', normalizedEstablishmentName),
       where('streetRef', '==', streetRef),
     )
 
