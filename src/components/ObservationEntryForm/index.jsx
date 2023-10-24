@@ -3,7 +3,9 @@ import CompanyNameInput from './CompanyNameInput'
 import AddressInput from './AddressInput'
 import DateTimeInput from './DateTimeInput'
 import PhotoCaptureInput from './PhotoCaptureInput'
-import useCompanyAndAddress from '../../hooks/useCompanyAndAddress'
+import useCompanyAddress from '../../hooks/useGeocodedAddress'
+import useCompanyName from '../../hooks/useCompanyName'
+import useDateTimeObservation from '../../hooks/useDateTimeObservation'
 import { useImageHandlers } from '../../hooks/useImageHandlers'
 import { handleObservationSubmit } from '../../services/handleObservationSubmit'
 import { UserContext } from '../../context/userContext'
@@ -12,6 +14,7 @@ import { NavigationButtons } from '../NavigationButtons'
 
 function ObservationEntryForm({
   onSelectAddress,
+  onSelectCompanyName,
   currentCoords,
   onSelectImage,
 }) {
@@ -23,12 +26,6 @@ function ObservationEntryForm({
   }
 
   const {
-    companyName,
-    isNameValidated,
-    handleCompanyNameChange,
-    handleCompanyNameValidation,
-    handleCompanyNameModification,
-    handleIDontKnowClick,
     address,
     isAddressValidated,
     autocompleteResults,
@@ -37,6 +34,18 @@ function ObservationEntryForm({
     handleAddressValidation,
     handleAddressModification,
     handleGeolocationClick,
+  } = useCompanyAddress(onSelectAddress, currentCoords, moveToNextStep)
+
+  const {
+    companyName,
+    isNameValidated,
+    handleCompanyNameChange,
+    handleCompanyNameValidation,
+    handleCompanyNameModification,
+    handleIDontKnowClick,
+  } = useCompanyName(onSelectCompanyName, moveToNextStep)
+
+  const {
     dateOfObservation,
     timeOfObservation,
     isDateTimeValidated,
@@ -44,7 +53,7 @@ function ObservationEntryForm({
     handleTimeChange,
     handleDateTimeValidation,
     handleDateTimeModification,
-  } = useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep)
+  } = useDateTimeObservation(moveToNextStep)
 
   const {
     selectedFile,
