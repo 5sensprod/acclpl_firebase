@@ -1,5 +1,9 @@
 function formatCompanyName(str) {
-  //   console.log('Original string:', str) // Log original string
+  if (!str) {
+    // vérifie si la valeur est null, undefined ou une chaîne vide
+    console.warn('formatCompanyName reçue une valeur null ou undefined') // log d'avertissement
+    return '' // retourne une chaîne vide ou vous pouvez choisir de retourner autre chose
+  }
 
   // Supprimez les espaces en début et en fin de chaîne
   const trimmedStr = str.trim()
