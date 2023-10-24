@@ -1,23 +1,28 @@
-import { useState } from 'react'
+import { useReducer } from 'react'
+import { imageHandlersReducer } from '../reducers/imageHandlersReducer'
 
 export function useImageHandlers(onSelectImage) {
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [croppedImageUrl, setCroppedImageUrl] = useState(null)
+  const initialState = {
+    selectedFile: null,
+    croppedImageUrl: null,
+  }
+
+  const [state, dispatch] = useReducer(imageHandlersReducer, initialState)
 
   const handleImageValidation = (imageData) => {
-    setCroppedImageUrl(imageData)
+    dispatch({ type: 'SET_CROPPED_IMAGE_URL', payload: imageData })
     onSelectImage(imageData)
   }
 
   const handleFileSelected = (file) => {
-    setSelectedFile(file)
+    dispatch({ type: 'SET_SELECTED_FILE', payload: file })
   }
 
   return {
-    selectedFile,
-    croppedImageUrl,
+    ...state,
     handleImageValidation,
     handleFileSelected,
-    setCroppedImageUrl, // Ajoutez cette ligne
+    setCroppedImageUrl: (url) =>
+      dispatch({ type: 'SET_CROPPED_IMAGE_URL', payload: url }),
   }
 }
