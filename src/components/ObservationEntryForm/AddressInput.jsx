@@ -26,7 +26,7 @@ function AddressInput({
         onChange={onAddressChange}
         placeholder="Saisissez une adresse"
         required
-        disabled={isAddressValidated || !isNameValidated}
+        disabled={isAddressValidated}
         style={{ zIndex: 6 }}
       />
       <div className="position-relative" style={{ zIndex: 3 }}>
