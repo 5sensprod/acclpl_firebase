@@ -1,12 +1,10 @@
 import { useReducer } from 'react'
-import { imageHandlersReducer } from '../reducers/imageHandlersReducer'
+import {
+  imageHandlersReducer,
+  initialState,
+} from '../reducers/imageHandlersReducer'
 
 export function useImageHandlers(onSelectImage) {
-  const initialState = {
-    selectedFile: null,
-    croppedImageUrl: null,
-  }
-
   const [state, dispatch] = useReducer(imageHandlersReducer, initialState)
 
   const handleImageValidation = (imageData) => {
