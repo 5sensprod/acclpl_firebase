@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { reverseGeocode, geocodeAddress } from '../api/geocode'
+import useDateTimeObservation from './useDateTimeObservation'
 
 function useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep) {
   const [companyName, setCompanyName] = useState('')
@@ -7,11 +8,18 @@ function useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep) {
   const [address, setAddress] = useState('')
   const [isAddressValidated, setIsAddressValidated] = useState(false)
   const [autocompleteResults, setAutocompleteResults] = useState([])
-  const [dateOfObservation, setDateOfObservation] = useState('')
-  const [timeOfObservation, setTimeOfObservation] = useState('')
-  const [isDateTimeValidated, setIsDateTimeValidated] = useState(false)
 
   const defaultName = 'Entreprise X'
+
+  const {
+    dateOfObservation,
+    timeOfObservation,
+    isDateTimeValidated,
+    handleDateChange,
+    handleTimeChange,
+    handleDateTimeValidation,
+    handleDateTimeModification,
+  } = useDateTimeObservation(moveToNextStep)
 
   if (!onSelectAddress) return null // Si onSelectAddress n'est pas fourni, retournez null
 
@@ -131,23 +139,6 @@ function useCompanyAndAddress(onSelectAddress, currentCoords, moveToNextStep) {
         }
       },
     )
-  }
-
-  const handleDateChange = (e) => {
-    setDateOfObservation(e.target.value)
-  }
-
-  const handleTimeChange = (e) => {
-    setTimeOfObservation(e.target.value)
-  }
-
-  const handleDateTimeValidation = () => {
-    setIsDateTimeValidated(true)
-    moveToNextStep()
-  }
-
-  const handleDateTimeModification = () => {
-    setIsDateTimeValidated(false)
   }
 
   return {
