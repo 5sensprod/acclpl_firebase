@@ -17,23 +17,17 @@ export const WizardProvider = ({ children, steps }) => {
     if (!isFirstStep) setCurrentStep((prevStep) => prevStep - 1)
   }, [isFirstStep])
 
-  const CurrentComponent = steps[currentStep - 1].component
-
   const value = useMemo(
     () => ({
       currentStep,
       totalSteps,
       moveToNextStep,
       moveToPrevStep,
-      CurrentComponent,
     }),
-    [currentStep, totalSteps, moveToNextStep, moveToPrevStep, CurrentComponent],
+    [currentStep, totalSteps, moveToNextStep, moveToPrevStep],
   )
 
   return (
-    <WizardContext.Provider value={value}>
-      <CurrentComponent />
-      {children}
-    </WizardContext.Provider>
+    <WizardContext.Provider value={value}>{children}</WizardContext.Provider>
   )
 }
