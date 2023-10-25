@@ -29,7 +29,7 @@ function useStepValidation({
       case 3:
         return !dateOfObservation || !timeOfObservation || !isDateTimeValidated
       case 4:
-        return !selectedFile
+        return !selectedFile || selectedFile
       default:
         return false
     }

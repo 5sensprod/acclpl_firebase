@@ -6,6 +6,7 @@ export function NavigationButtons({
   isCurrentStepInputEmpty,
   moveToNextStep,
   setCurrentStep,
+  handleVisualizeClick,
 }) {
   return (
     <div className="d-flex justify-content-between mb-3">
@@ -27,9 +28,18 @@ export function NavigationButtons({
         </Button>
       )}
       {currentStep === 4 && (
-        <Button variant="primary" type="submit">
-          Envoyer
-        </Button>
+        <>
+          <button
+            type="button"
+            onClick={handleVisualizeClick}
+            className="btn btn-primary mr-2"
+          >
+            Visualiser
+          </button>
+          <button type="submit" className="btn btn-success">
+            Envoyer
+          </button>
+        </>
       )}
     </div>
   )

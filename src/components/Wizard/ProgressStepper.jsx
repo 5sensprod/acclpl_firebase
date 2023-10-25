@@ -3,6 +3,7 @@ import useWizard from './useWizard'
 import { ProgressBar, Container, Row, Col } from 'react-bootstrap'
 
 const ProgressStepper = () => {
+  console.log('Rendu de ProgressStepper')
   const { currentStep, totalSteps } = useWizard()
 
   // Calculer le pourcentage de progression basé sur l'étape actuelle

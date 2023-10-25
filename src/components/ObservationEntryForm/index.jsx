@@ -7,6 +7,7 @@ import {
   useNavigationLogic,
   useStepValidation,
 } from '../../hooks/useFormNavigation'
+// import useMapVisualization from '../../hooks/useMapVisualization'
 import { handleObservationSubmit } from '../../services/handleObservationSubmit'
 import { UserContext } from '../../context/userContext'
 import { Form } from 'react-bootstrap'
@@ -18,6 +19,7 @@ function ObservationEntryForm({
   onSelectCompanyName,
   currentCoords,
   onSelectImage,
+  onVisualizeClick,
 }) {
   const { currentUser } = useContext(UserContext)
 
@@ -93,6 +95,7 @@ function ObservationEntryForm({
           isCurrentStepInputEmpty={isCurrentStepInputEmpty}
           moveToNextStep={moveToNextStep}
           setCurrentStep={setCurrentStep}
+          handleVisualizeClick={onVisualizeClick}
         />
 
         {RenderSteps({

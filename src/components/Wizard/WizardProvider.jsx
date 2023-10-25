@@ -1,6 +1,6 @@
 import React, { createContext, useState, useMemo, useCallback } from 'react'
 
-export const WizardContext = createContext()
+export const WizardContext = createContext(null)
 
 export const WizardProvider = ({ children, steps }) => {
   const [currentStep, setCurrentStep] = useState(1)
@@ -25,8 +25,9 @@ export const WizardProvider = ({ children, steps }) => {
       totalSteps,
       moveToNextStep,
       moveToPrevStep,
+      CurrentComponent,
     }),
-    [currentStep, totalSteps, moveToNextStep, moveToPrevStep],
+    [currentStep, totalSteps, moveToNextStep, moveToPrevStep, CurrentComponent],
   )
 
   return (

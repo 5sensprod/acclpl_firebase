@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap'
 import useWizard from './useWizard'
 
 const NavigationButtons = () => {
+  console.log('Rendu de NavigationButtons')
   const { currentStep, totalSteps, moveToNextStep, moveToPrevStep } =
     useWizard()
 
