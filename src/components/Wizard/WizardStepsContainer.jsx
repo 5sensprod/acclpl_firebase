@@ -1,9 +1,10 @@
+// src/components/Wizard/WizardStepsContainer.jsx
+
 import React from 'react'
+import Wizard from './index'
 import { Container, Row, Col } from 'react-bootstrap'
 import CompanyNameInput from '../ObservationEntryForm/CompanyNameInput'
 import useCompanyName from '../../hooks/useCompanyName'
-import Wizard from './Wizard'
-import { WizardProvider } from './WizardProvider'
 
 const Step1 = () => {
   const {
@@ -54,18 +55,15 @@ const Step3 = () => (
   </Container>
 )
 
-const Steps = () => {
+const WizardStepsContainer = () => {
   const steps = [
     { component: Step1 },
     { component: Step2 },
     { component: Step3 },
+    // ... ajoutez autant d'étapes que nécessaire
   ]
 
-  return (
-    <WizardProvider>
-      <Wizard steps={steps} />
-    </WizardProvider>
-  )
+  return <Wizard steps={steps} />
 }
 
-export default Steps
+export default WizardStepsContainer
