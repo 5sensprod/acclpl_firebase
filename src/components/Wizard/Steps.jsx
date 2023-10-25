@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
-import { UserContext } from '../context/userContext'
-import Wizard from '../components/Wizard'
+import React from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
-import CompanyNameInput from '../components/ObservationEntryForm/CompanyNameInput'
-import useCompanyName from '../hooks/useCompanyName'
+import CompanyNameInput from '../ObservationEntryForm/CompanyNameInput'
+import useCompanyName from '../../hooks/useCompanyName'
+import Wizard from './Wizard'
+import { WizardProvider } from './WizardProvider'
 
 const Step1 = () => {
   const {
@@ -54,27 +54,18 @@ const Step3 = () => (
   </Container>
 )
 
-export default function Home() {
-  const { currentUser } = useContext(UserContext)
-
-  // 2. Définissez les étapes du Wizard
+const Steps = () => {
   const steps = [
     { component: Step1 },
     { component: Step2 },
     { component: Step3 },
-    // ... ajoutez autant d'étapes que nécessaire
   ]
 
   return (
-    <div className="container p-3">
-      <h1 className="display-3 text-light">
-        {currentUser
-          ? 'Bienvenue, Gros !'
-          : "Bonjour, S'inscrire ou se connecter"}
-      </h1>
-
-      {/* 3. Utilisez le composant Wizard dans le rendu */}
-      <Wizard steps={steps}></Wizard>
-    </div>
+    <WizardProvider>
+      <Wizard steps={steps} />
+    </WizardProvider>
   )
 }
+
+export default Steps

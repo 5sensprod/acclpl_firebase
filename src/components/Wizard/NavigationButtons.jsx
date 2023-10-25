@@ -8,7 +8,7 @@ const NavigationButtons = () => {
     useWizard()
 
   return (
-    <div className="d-flex justify-content-between my-3 p-3">
+    <div className="d-flex justify-content-between my-3">
       {currentStep > 1 && (
         <Button variant="outline-primary" onClick={moveToPrevStep}>
           Revenir
