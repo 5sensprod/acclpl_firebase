@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { geocodeAddress } from '../../../api/geocode'
 import { InputWrapper, StyledInput } from './InputWrapper'
+import { useFormWizardState } from '../wizard/FormWizardContext'
 
-const AddressCompany = ({ dispatch }) => {
-  const [address, setAddress] = useState('')
+const AddressCompany = () => {
+  const { state, dispatch } = useFormWizardState()
+  const [address, setAddress] = useState(state.formData.companyAddress || '')
   const [autocompleteResults, setAutocompleteResults] = useState([])
 
   const handleAddressChange = async (e) => {
@@ -23,15 +25,16 @@ const AddressCompany = ({ dispatch }) => {
     }
   }
 
-  const handleSuggestionClick = (feature) => {
-    setAddress(feature.properties.label)
+  const handleSuggestionClick = ({ properties }) => {
+    if (!properties) return
+
+    const { label } = properties
+    setAddress(label)
     setAutocompleteResults([])
 
-    // Si vous avez besoin de faire quelque chose avec l'adresse sélectionnée
-    // comme la mettre à jour dans l'état global, vous pouvez le faire ici.
     dispatch({
       type: 'UPDATE_FORM_DATA',
-      payload: { companyAddress: feature.properties.label },
+      payload: { companyAddress: label },
     })
   }
 
@@ -48,16 +51,17 @@ const AddressCompany = ({ dispatch }) => {
       />
       <div className="position-relative">
         <ul className="list-group autocomplete-list position-absolute w-100 bg-white p-0">
-          {autocompleteResults.map((feature, index) =>
-            feature.properties ? (
-              <li
-                key={index}
-                className="list-group-item list-group-item-action p-2"
-                onClick={() => handleSuggestionClick(feature)}
-              >
-                {feature.properties.label}
-              </li>
-            ) : null,
+          {autocompleteResults.map(
+            (feature, index) =>
+              feature.properties && (
+                <li
+                  key={index}
+                  className="list-group-item list-group-item-action p-2"
+                  onClick={() => handleSuggestionClick(feature)}
+                >
+                  {feature.properties.label}
+                </li>
+              ),
           )}
         </ul>
       </div>
