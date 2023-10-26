@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
+import { Spinner } from 'react-bootstrap'
 import { useFormWizardState } from './FormWizardContext'
 import { checkDuplicateEstablishment } from '../../../services/establishmentCheckerService'
 import DynamicModal from './DynamicModal'
@@ -7,10 +8,11 @@ import formatCompanyName from '../../../utils/formatCompanyName'
 import normalizedCompanyName from '../../../utils/normalizedCompanyName'
 import { useModal } from './ModalContext'
 
-const WizardNavigationButtons = () => {
+const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
   const { setModalConfig } = useModal()
-  const [isCheckPending, setIsCheckPending] = React.useState(false) // Nouveau state
+  const [isCheckPending, setIsCheckPending] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
 
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
@@ -20,6 +22,8 @@ const WizardNavigationButtons = () => {
   }
 
   const moveToNextStep = async () => {
+    setIsLoading(true)
+
     if (currentStep === 1 && state.formData.companyName.trim() !== '') {
       const formattedName = formatCompanyName(state.formData.companyName)
       const normalized = normalizedCompanyName(formattedName)
@@ -27,7 +31,7 @@ const WizardNavigationButtons = () => {
       const duplicateCheckResult = await checkDuplicateEstablishment(normalized)
 
       if (duplicateCheckResult.found) {
-        // Si un doublon est détecté, construisez l'adresse pour l'affichage
+        // Si un doublon est détecté, adresse pour l'affichage
         const {
           establishmentName,
           streetName,
@@ -38,31 +42,39 @@ const WizardNavigationButtons = () => {
         } = duplicateCheckResult.details
         const fullAddress = `${streetNumber} ${streetName}, ${postalCode} ${city}`
 
-        // Construisez le contenu de la modal
+        // Le contenu de la modal
         const modalBodyContent = (
-          <>
-            <p>
-              S'agit-il de {establishmentName} situé à {fullAddress} ?
-            </p>
-            {photoURL && (
-              <img
-                src={photoURL}
-                alt="Observation"
-                style={{
-                  width: '100px',
-                  height: '100px',
-                  marginBottom: '10px',
-                }}
-              />
-            )}
-          </>
+          <div>
+            <div className="bg-dark text-light d-flex justify-content-around align-items-center p-3 mb-3 rounded">
+              <div>
+                {' '}
+                <h3 className="mb-2">{establishmentName}</h3>
+                <p className="mb-0">{fullAddress.split(',')[0]}</p>{' '}
+                <p className="mb-2">{city}</p>
+              </div>
+              <div>
+                {' '}
+                {photoURL && (
+                  <img
+                    src={photoURL}
+                    alt="Observation"
+                    className="rounded"
+                    style={{
+                      width: '80px',
+                      height: '80px',
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+            <h5 className="mb-2">Est-il en lien avec votre signalement ?</h5>
+          </div>
         )
-
-        // Affichez le modal d'information
+        // Le modal d'information
         setModalConfig({
           isVisible: true,
           title: 'Etablissement existant',
-          body: modalBodyContent, // Utilisez le contenu construit pour le corps de la modal
+          body: modalBodyContent,
           buttons: [
             {
               text: 'Oui',
@@ -76,17 +88,18 @@ const WizardNavigationButtons = () => {
                 // TODO: Gérez le scénario "Non" ici (peut-être aller à l'étape suivante pour saisir l'adresse manuellement)
               },
             },
-            {
-              text: 'Fermer',
-              onClick: () =>
-                setModalConfig((prev) => ({ ...prev, isVisible: false })),
-            },
+            // {
+            //   text: 'Fermer',
+            //   onClick: () =>
+            //     setModalConfig((prev) => ({ ...prev, isVisible: false })),
+            // },
           ],
         })
+        setIsLoading(false)
         return
       }
 
-      // Si tout est ok (pas de doublon), appliquez la mise en forme et la normalisation dans l'état
+      // Si pas de doublon, normalisation dans l'état
       dispatch({
         type: 'FORMAT_COMPANY',
         payload: state.formData.companyName,
@@ -95,6 +108,7 @@ const WizardNavigationButtons = () => {
 
     // Si tout est ok, allez à l'étape suivante
     dispatch({ type: 'NEXT_STEP' })
+    setIsLoading(false)
   }
 
   React.useEffect(() => {
@@ -143,8 +157,14 @@ const WizardNavigationButtons = () => {
       )}
 
       {currentStep < totalSteps && (
-        <Button variant="primary" onClick={moveToNextStep}>
-          Suivant
+        <Button variant="primary" onClick={moveToNextStep} disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Spinner animation="border" size="sm" />
+            </>
+          ) : (
+            'Suivant'
+          )}
         </Button>
       )}
       <DynamicModal />
@@ -152,4 +172,4 @@ const WizardNavigationButtons = () => {
   )
 }
 
-export default WizardNavigationButtons
+export default WizardStepManager

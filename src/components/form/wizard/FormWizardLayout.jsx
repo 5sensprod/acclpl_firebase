@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Container } from 'react-bootstrap'
 import { useFormWizardState } from './FormWizardContext'
 import StepProgressIndicator from './StepProgressIndicator'
-import WizardNavigationButtons from './WizardNavigationButtons'
+import WizardStepManager from './WizardStepManager'
 
 const FormWizardLayout = ({ children }) => {
   const { state } = useFormWizardState()
@@ -18,7 +18,7 @@ const FormWizardLayout = ({ children }) => {
           {/* Afficher le label de l'étape active */}
           {children}{' '}
           {/* C'est ici que votre composant d'étape actif sera rendu */}
-          <WizardNavigationButtons />
+          <WizardStepManager />
         </Container>
       </Card.Body>
     </Card>
