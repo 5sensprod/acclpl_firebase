@@ -24,15 +24,58 @@ const WizardNavigationButtons = () => {
       const formattedName = formatCompanyName(state.formData.companyName)
       const normalized = normalizedCompanyName(formattedName)
 
-      const isDuplicate = await checkDuplicateEstablishment(normalized)
+      const duplicateCheckResult = await checkDuplicateEstablishment(normalized)
 
-      if (isDuplicate) {
-        // Affichez le modal d'erreur si un doublon est détecté
+      if (duplicateCheckResult.found) {
+        // Si un doublon est détecté, construisez l'adresse pour l'affichage
+        const {
+          establishmentName,
+          streetName,
+          city,
+          postalCode,
+          streetNumber,
+          photoURL, // Nouveau : URL de la photo associée
+        } = duplicateCheckResult.details
+        const fullAddress = `${streetNumber} ${streetName}, ${postalCode} ${city}`
+
+        // Construisez le contenu de la modal
+        const modalBodyContent = (
+          <>
+            <p>
+              S'agit-il de {establishmentName} situé à {fullAddress} ?
+            </p>
+            {photoURL && (
+              <img
+                src={photoURL}
+                alt="Observation"
+                style={{
+                  width: '100px',
+                  height: '100px',
+                  marginBottom: '10px',
+                }}
+              />
+            )}
+          </>
+        )
+
+        // Affichez le modal d'information
         setModalConfig({
           isVisible: true,
-          title: 'Erreur',
-          body: 'Un doublon a été détecté !',
+          title: 'Etablissement existant',
+          body: modalBodyContent, // Utilisez le contenu construit pour le corps de la modal
           buttons: [
+            {
+              text: 'Oui',
+              onClick: () => {
+                // TODO: Gérez le scénario "Oui" ici (peut-être remplir l'adresse pour l'étape suivante automatiquement)
+              },
+            },
+            {
+              text: 'Non',
+              onClick: () => {
+                // TODO: Gérez le scénario "Non" ici (peut-être aller à l'étape suivante pour saisir l'adresse manuellement)
+              },
+            },
             {
               text: 'Fermer',
               onClick: () =>
@@ -42,12 +85,14 @@ const WizardNavigationButtons = () => {
         })
         return
       }
-      // Appliquez la mise en forme et la normalisation dans l'état
+
+      // Si tout est ok (pas de doublon), appliquez la mise en forme et la normalisation dans l'état
       dispatch({
         type: 'FORMAT_COMPANY',
         payload: state.formData.companyName,
       })
     }
+
     // Si tout est ok, allez à l'étape suivante
     dispatch({ type: 'NEXT_STEP' })
   }
