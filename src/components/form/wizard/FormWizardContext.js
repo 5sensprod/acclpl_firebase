@@ -10,6 +10,8 @@ const initialState = {
   formData: {
     companyName: '',
     normalizedCompanyName: '',
+    companyAddress: '', // Ajouté
+    companyCoordinates: [], // Ajouté
     // ... d'autres champs que vous pourriez avoir
   },
 }
@@ -35,6 +37,12 @@ const wizardReducer = (state, action) => {
           ...state.formData,
           ...action.payload,
         },
+      }
+
+    case 'CLOSE_MODAL':
+      return {
+        ...state,
+        hasClosedModal: true,
       }
 
     default:

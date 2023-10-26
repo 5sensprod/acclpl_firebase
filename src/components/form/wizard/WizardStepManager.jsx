@@ -64,7 +64,13 @@ const WizardStepManager = () => {
           },
           {
             text: 'Non',
-            onClick: () => {},
+            onClick: () => {
+              setModalConfig((prevConfig) => ({
+                ...prevConfig,
+                isVisible: false,
+              }))
+              dispatch({ type: 'CLOSE_MODAL' })
+            },
           },
         ],
       })
@@ -75,7 +81,11 @@ const WizardStepManager = () => {
   const moveToNextStep = async () => {
     setIsLoading(true)
 
-    if (currentStep === 1 && state.formData.companyName.trim() !== '') {
+    if (
+      currentStep === 1 &&
+      state.formData.companyName.trim() !== '' &&
+      !state.hasClosedModal
+    ) {
       const formattedName = formatCompanyName(state.formData.companyName)
       const normalized = normalizedCompanyName(formattedName)
 

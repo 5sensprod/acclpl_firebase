@@ -1,6 +1,7 @@
+import React from 'react'
 import { useFormWizardState } from './FormWizardContext'
 import NameCompany from '../inputs/NameCompany'
-import EmailInput from '../inputs/EmailInput'
+import AddressCompany from '../inputs/AddressCompany'
 
 // Composant pour l'étape 1
 export const Step1Component = (props) => {
@@ -27,22 +28,9 @@ export const Step1Component = (props) => {
   )
 }
 
-// Composant pour l'étape 2 (e-mail)
+// Composant pour l'étape 2 (address)
 export const Step2Component = (props) => {
-  const { state, dispatch } = useFormWizardState()
+  const { dispatch } = useFormWizardState()
 
-  const handleEmailChange = (event) => {
-    dispatch({
-      type: 'UPDATE_FORM_DATA',
-      payload: { email: event.target.value },
-    })
-  }
-
-  return (
-    <EmailInput
-      value={state.formData.email || ''}
-      onChange={handleEmailChange}
-      {...props}
-    />
-  )
+  return <AddressCompany dispatch={dispatch} {...props} />
 }
