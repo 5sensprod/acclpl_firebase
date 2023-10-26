@@ -1,5 +1,3 @@
-// StepComponents.jsx
-import React from 'react'
 import { useFormWizardState } from './FormWizardContext'
 import NameCompany from '../inputs/NameCompany'
 import EmailInput from '../inputs/EmailInput'
@@ -10,17 +8,24 @@ export const Step1Component = (props) => {
 
   const handleCompanyNameChange = (event) => {
     dispatch({
-      type: 'UPDATE_FORM_DATA',
-      payload: { companyName: event.target.value },
+      type: 'FORMAT_COMPANY',
+      payload: event.target.value,
     })
+
+    console.log(
+      'Normalized Company Name in Step1Component:',
+      state.formData.normalizedCompanyName,
+    )
   }
 
   return (
-    <NameCompany
-      value={state.formData.companyName}
-      onChange={handleCompanyNameChange}
-      {...props}
-    />
+    <>
+      <NameCompany
+        value={state.formData.companyName}
+        onChange={handleCompanyNameChange}
+        {...props}
+      />
+    </>
   )
 }
 
@@ -43,5 +48,3 @@ export const Step2Component = (props) => {
     />
   )
 }
-
-// ... vous pouvez continuer à ajouter d'autres composants d'étape ici.

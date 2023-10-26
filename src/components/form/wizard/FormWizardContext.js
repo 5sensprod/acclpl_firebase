@@ -9,6 +9,7 @@ const initialState = {
   steps: [],
   formData: {
     companyName: '',
+    normalizedCompanyName: '',
     // ... d'autres champs que vous pourriez avoir
   },
 }
@@ -17,12 +18,16 @@ const wizardReducer = (state, action) => {
   switch (action.type) {
     case 'SET_STEP':
       return { ...state, currentStep: action.payload }
+
     case 'NEXT_STEP':
       return { ...state, currentStep: state.currentStep + 1 }
+
     case 'PREV_STEP':
       return { ...state, currentStep: state.currentStep - 1 }
-    case 'FORMAT_COMPANY_NAME':
+
+    case 'FORMAT_COMPANY':
       return formatCompanyAction(state, action)
+
     case 'UPDATE_FORM_DATA':
       return {
         ...state,
@@ -31,6 +36,7 @@ const wizardReducer = (state, action) => {
           ...action.payload,
         },
       }
+
     default:
       throw new Error(`Unhandled action type: ${action.type}`)
   }

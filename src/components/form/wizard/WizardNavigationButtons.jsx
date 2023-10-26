@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react' // Ajoutez useState
 import { Button } from 'react-bootstrap'
 import { useFormWizardState } from './FormWizardContext'
+import { checkDuplicateEstablishment } from '../../../services/establishmentCheckerService'
+import DuplicateModal from './DuplicateModal' // Importez le modal
 
 const WizardNavigationButtons = () => {
   const { state, dispatch } = useFormWizardState()
+  const [showModal, setShowModal] = useState(false) // Gérez l'état du modal ici
 
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
@@ -12,16 +15,24 @@ const WizardNavigationButtons = () => {
     dispatch({ type: 'PREV_STEP' })
   }
 
-  const moveToNextStep = () => {
-    // Si nous sommes à la première étape, formatons le nom de l'entreprise avant de passer à la prochaine étape.
+  const moveToNextStep = async () => {
     if (currentStep === 1 && state.formData.companyName.trim() !== '') {
       dispatch({
-        type: 'FORMAT_COMPANY_NAME',
+        type: 'FORMAT_COMPANY',
         payload: state.formData.companyName,
       })
+
+      if (state.formData.normalizedCompanyName) {
+        const isDuplicate = await checkDuplicateEstablishment(
+          state.formData.normalizedCompanyName,
+        )
+        if (isDuplicate) {
+          setShowModal(true) // Affichez le modal si un doublon est détecté
+          return
+        }
+      }
     }
 
-    // Passez à la prochaine étape.
     dispatch({ type: 'NEXT_STEP' })
   }
 
@@ -38,6 +49,12 @@ const WizardNavigationButtons = () => {
           Suivant
         </Button>
       )}
+
+      {/* Affichez le modal ici */}
+      <DuplicateModal
+        show={showModal}
+        handleClose={() => setShowModal(false)}
+      />
     </div>
   )
 }
