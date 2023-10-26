@@ -8,14 +8,9 @@ export const Step1Component = (props) => {
 
   const handleCompanyNameChange = (event) => {
     dispatch({
-      type: 'FORMAT_COMPANY',
-      payload: event.target.value,
+      type: 'UPDATE_FORM_DATA',
+      payload: { companyName: event.target.value },
     })
-
-    console.log(
-      'Normalized Company Name in Step1Component:',
-      state.formData.normalizedCompanyName,
-    )
   }
 
   return (
