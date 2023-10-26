@@ -7,9 +7,12 @@ export const Step1Component = (props) => {
   const { state, dispatch } = useFormWizardState()
 
   const handleCompanyNameChange = (event) => {
+    const value = event.target.value
+
+    // Mettez uniquement à jour les données du formulaire pour l'affichage
     dispatch({
       type: 'UPDATE_FORM_DATA',
-      payload: { companyName: event.target.value },
+      payload: { companyName: value },
     })
   }
 

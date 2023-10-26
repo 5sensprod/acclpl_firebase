@@ -1,12 +1,15 @@
 import React from 'react'
 import FormWizardLayout from './FormWizardLayout'
 import { FormWizardProvider, useFormWizardState } from './FormWizardContext'
+import { ModalProvider } from './ModalContext'
 
 const FormWizard = ({ steps }) => {
   return (
-    <FormWizardProvider steps={steps}>
-      <WizardContent />
-    </FormWizardProvider>
+    <ModalProvider>
+      <FormWizardProvider steps={steps}>
+        <WizardContent />
+      </FormWizardProvider>
+    </ModalProvider>
   )
 }
 
