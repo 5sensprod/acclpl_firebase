@@ -3,17 +3,26 @@ import { Button } from 'react-bootstrap'
 import { useFormWizardState } from './FormWizardContext'
 
 const WizardNavigationButtons = () => {
-  const { state, actions } = useFormWizardState()
+  const { state, dispatch } = useFormWizardState()
 
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
 
   const moveToPrevStep = () => {
-    actions.moveToStep(currentStep - 1)
+    dispatch({ type: 'PREV_STEP' })
   }
 
   const moveToNextStep = () => {
-    actions.moveToStep(currentStep + 1)
+    // Si nous sommes à la première étape, formatons le nom de l'entreprise avant de passer à la prochaine étape.
+    if (currentStep === 1 && state.formData.companyName.trim() !== '') {
+      dispatch({
+        type: 'FORMAT_COMPANY_NAME',
+        payload: state.formData.companyName,
+      })
+    }
+
+    // Passez à la prochaine étape.
+    dispatch({ type: 'NEXT_STEP' })
   }
 
   return (
