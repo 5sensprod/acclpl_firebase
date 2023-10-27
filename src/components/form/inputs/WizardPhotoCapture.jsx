@@ -113,35 +113,38 @@ function WizardPhotoCapture() {
               }}
             />
           )}
+
           {state.photoURL === defaultPhoto ? (
             <Camera className={styles.icon} />
           ) : (
-            <Trash
-              className={styles.icon}
-              onClick={(e) => {
-                e.stopPropagation()
-                // Mettre à jour l'état local avec les valeurs par défaut
-                setState((prevState) => ({
-                  ...prevState,
-                  photoURL: defaultPhoto,
-                  originalPhotoURL: null,
-                  capturedImage: null,
-                }))
-                // Si nécessaire, mettez à jour le contexte
-                dispatch({
-                  type: 'UPDATE_FORM_DATA',
-                  payload: {
-                    photoURLs: [defaultPhoto],
-                    croppedImageUrl: null,
+            <>
+              <Trash
+                className={styles.icon}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  // Mettre à jour l'état local avec les valeurs par défaut
+                  setState((prevState) => ({
+                    ...prevState,
+                    photoURL: defaultPhoto,
                     originalPhotoURL: null,
-                    photoBlob: null, // Réinitialiser photoBlob
-                    // ... autres mises à jour si nécessaire
-                  },
-                })
-                dispatch({ type: 'SET_ZOOM', payload: 1 }) // Valeur par défaut du zoom
-                dispatch({ type: 'SET_ROTATION', payload: 0 }) // Valeur par défaut de la rotation
-              }}
-            />
+                    capturedImage: null,
+                  }))
+                  // Si nécessaire, mettez à jour le contexte
+                  dispatch({
+                    type: 'UPDATE_FORM_DATA',
+                    payload: {
+                      photoURLs: [defaultPhoto],
+                      croppedImageUrl: null,
+                      originalPhotoURL: null,
+                      photoBlob: null, // Réinitialiser photoBlob
+                      // ... autres mises à jour si nécessaire
+                    },
+                  })
+                  dispatch({ type: 'SET_ZOOM', payload: 1 }) // Valeur par défaut du zoom
+                  dispatch({ type: 'SET_ROTATION', payload: 0 }) // Valeur par défaut de la rotation
+                }}
+              />
+            </>
           )}
         </Figure.Caption>
       </Figure>

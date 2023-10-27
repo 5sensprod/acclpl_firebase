@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Cropper from 'react-easy-crop'
 import { Button, Modal, Form } from 'react-bootstrap'
 import getCroppedImg from '../../crop/utils/CropImage'
@@ -22,17 +22,13 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
   const [rotation, setRotation] = useState(initialRotation)
 
-  useEffect(() => {
-    // Mettez à jour le state global lorsque le zoom ou la rotation change.
-    dispatch({ type: 'SET_ZOOM', payload: zoom })
-    dispatch({ type: 'SET_ROTATION', payload: rotation })
-  }, [zoom, rotation, dispatch])
-
   const cropImage = async () => {
     try {
       const { url } = await getCroppedImg(photoURL, croppedAreaPixels, rotation)
       setOpenCrop(false)
       onCroppedImage(url)
+      dispatch({ type: 'SET_ZOOM', payload: zoom })
+      dispatch({ type: 'SET_ROTATION', payload: rotation })
     } catch (error) {
       console.error('Error cropping the image:', error)
     }
@@ -43,14 +39,11 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
   }
 
   const handleReset = () => {
-    // Réinitialiser le zoom et la rotation
-    setZoom(1) // Mettre à jour l'état local du zoom
-    setRotation(0) // Mettre à jour l'état local de la rotation
-
-    // Mettre à jour le state global
-    dispatch({ type: 'SET_ZOOM', payload: 1 }) // Valeur par défaut du zoom
-    dispatch({ type: 'SET_ROTATION', payload: 0 }) // Valeur par défaut de la rotation
+    // Réinitialiser le zoom et la rotation de l'état local
+    setZoom(1)
+    setRotation(0)
   }
+
   return (
     <Modal show={true} onHide={() => setOpenCrop(false)} size="lg">
       <Modal.Header closeButton>
