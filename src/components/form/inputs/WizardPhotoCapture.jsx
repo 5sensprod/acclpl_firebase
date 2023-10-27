@@ -120,12 +120,7 @@ function WizardPhotoCapture() {
               className={styles.icon}
               onClick={(e) => {
                 e.stopPropagation()
-                setState((prevState) => ({
-                  ...prevState,
-                  photoURL: defaultPhoto,
-                  originalPhotoURL: null,
-                  capturedImage: defaultPhoto,
-                }))
+                // Votre logique de suppression ici
               }}
             />
           )}
