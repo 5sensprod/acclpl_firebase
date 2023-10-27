@@ -3,6 +3,7 @@ import { useFormWizardState } from './FormWizardContext'
 import NameCompany from '../inputs/NameCompany'
 import GeolocateAddress from '../inputs/GeolocateAddress'
 import DateTimeInput from '../inputs/DateTimeInput'
+import WizardPhotoCapture from '../inputs/WizardPhotoCapture'
 import { motion } from 'framer-motion'
 
 const slideVariants = {
@@ -77,3 +78,11 @@ export const Step3Component = () => (
     <DateTimeInput />
   </AnimatedWrapper>
 )
+
+export const Step4Component = () => {
+  return (
+    <AnimatedWrapper>
+      <WizardPhotoCapture />
+    </AnimatedWrapper>
+  )
+}

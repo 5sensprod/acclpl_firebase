@@ -14,6 +14,7 @@ const initialState = {
     companyCoordinates: [], // Ajouté
     dateOfObservation: '',
     timeOfObservation: '',
+    photoURLs: [],
     // ... d'autres champs que vous pourriez avoir
   },
 }

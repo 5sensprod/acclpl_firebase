@@ -2,6 +2,7 @@ import {
   Step1Component,
   Step2Component,
   Step3Component,
+  Step4Component,
 } from './StepComponents'
 
 const wizardSteps = [
@@ -21,6 +22,12 @@ const wizardSteps = [
     id: 3,
     label: 'Étape 3',
     component: Step3Component,
+    props: {},
+  },
+  {
+    id: 4,
+    label: 'Étape 4',
+    component: Step4Component,
     props: {},
   },
   // ... ajoutez d'autres étapes si nécessaire
