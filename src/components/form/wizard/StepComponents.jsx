@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFormWizardState } from './FormWizardContext'
 import NameCompany from '../inputs/NameCompany'
-import AddressCompany from '../inputs/AddressCompany'
+import GeolocateAddress from '../inputs/GeolocateAddress'
 
 // Composant pour l'étape 1
 export const Step1Component = (props) => {
@@ -30,7 +30,25 @@ export const Step1Component = (props) => {
 
 // Composant pour l'étape 2 (address)
 export const Step2Component = (props) => {
-  const { dispatch } = useFormWizardState()
+  const { state, dispatch } = useFormWizardState()
 
-  return <AddressCompany dispatch={dispatch} {...props} />
+  // Fonction pour mettre à jour l'adresse dans le contexte
+  const handleSelectAddress = (coords) => {
+    dispatch({
+      type: 'UPDATE_FORM_DATA',
+      payload: {
+        companyCoordinates: coords,
+      },
+    })
+  }
+
+  return (
+    <div>
+      <GeolocateAddress
+        onSelectAddress={handleSelectAddress}
+        currentCoords={state.formData.companyCoordinates}
+        moveToNextStep={() => dispatch({ type: 'NEXT_STEP' })}
+      />
+    </div>
+  )
 }
