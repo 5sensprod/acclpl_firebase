@@ -30,8 +30,8 @@ const DateTimeInput = () => {
   }
 
   return (
-    <div className="row">
-      <div className="form-group col-md-6 mb-1">
+    <div className="d-flex justify-content-between mb-0 gap-3">
+      <div className="mb-0 w-50">
         <InputWrapper label="Date de la constatation" id="date-input">
           <input
             id="date-input"
@@ -42,7 +42,7 @@ const DateTimeInput = () => {
           />
           <Button
             variant="link"
-            className="btn text-light mt-1 p-0 d-block"
+            className="btn text-light mb-1 p-1 "
             style={{ textDecoration: 'none' }}
             onClick={setToCurrentDateTime}
           >
@@ -51,7 +51,7 @@ const DateTimeInput = () => {
         </InputWrapper>
       </div>
 
-      <div className="form-group col-md-6 mb-1">
+      <div className="mb-0 w-50">
         <InputWrapper label="Heure de la constatation" id="time-input">
           <input
             id="time-input"
