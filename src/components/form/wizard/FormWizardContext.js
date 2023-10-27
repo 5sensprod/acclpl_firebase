@@ -33,6 +33,7 @@ const wizardReducer = (state, action) => {
       return formatCompanyAction(state, action)
 
     case 'UPDATE_FORM_DATA':
+      console.log('companyCoordinates:', action.payload.companyCoordinates) // Ajouté console.log
       return {
         ...state,
         formData: {
@@ -41,10 +42,22 @@ const wizardReducer = (state, action) => {
         },
       }
 
+    case 'UPDATE_HAS_CLOSED_MODAL':
+      return {
+        ...state,
+        hasClosedModal: action.payload,
+      }
+
     case 'CLOSE_MODAL':
       return {
         ...state,
         hasClosedModal: true,
+      }
+
+    case 'RESET_HAS_CLOSED_MODAL':
+      return {
+        ...state,
+        hasClosedModal: false,
       }
 
     default:

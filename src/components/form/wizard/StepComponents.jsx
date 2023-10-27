@@ -27,10 +27,15 @@ export const Step1Component = (props) => {
 
   const handleCompanyNameChange = (event) => {
     const value = event.target.value
+
+    // Mettre à jour le nom de l'entreprise dans l'état global
     dispatch({
       type: 'UPDATE_FORM_DATA',
       payload: { companyName: value },
     })
+
+    // Réinitialiser l'état hasClosedModal
+    dispatch({ type: 'RESET_HAS_CLOSED_MODAL' })
   }
 
   return (

@@ -60,11 +60,26 @@ const WizardStepManager = () => {
         buttons: [
           {
             text: 'Oui',
-            onClick: () => {},
+            onClick: () => {
+              dispatch({
+                type: 'UPDATE_FORM_DATA',
+                payload: {
+                  companyAddress: fullAddress,
+                },
+              })
+              dispatch({ type: 'NEXT_STEP' })
+              dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
+              setModalConfig((prevConfig) => ({
+                ...prevConfig,
+                isVisible: false,
+              }))
+            },
           },
           {
             text: 'Non',
             onClick: () => {
+              dispatch({ type: 'NEXT_STEP' }) // Pour s'assurer de passer à l'étape suivante
+              dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
               setModalConfig((prevConfig) => ({
                 ...prevConfig,
                 isVisible: false,
