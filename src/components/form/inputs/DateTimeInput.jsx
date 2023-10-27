@@ -1,5 +1,6 @@
 import React from 'react'
 import { InputWrapper } from './InputWrapper'
+import { Button } from 'react-bootstrap'
 import { useFormWizardState } from '../wizard/FormWizardContext'
 
 const DateTimeInput = () => {
@@ -19,6 +20,15 @@ const DateTimeInput = () => {
     })
   }
 
+  const setToCurrentDateTime = () => {
+    const currentDate = new Date()
+    const formattedDate = currentDate.toISOString().slice(0, 10)
+    const formattedTime = currentDate.toTimeString().slice(0, 5)
+
+    handleDateChange({ target: { value: formattedDate } })
+    handleTimeChange({ target: { value: formattedTime } })
+  }
+
   return (
     <div className="row">
       <div className="form-group col-md-6 mb-1">
@@ -30,6 +40,14 @@ const DateTimeInput = () => {
             value={state.formData.dateOfObservation}
             onChange={handleDateChange}
           />
+          <Button
+            variant="link"
+            className="btn text-light mt-1 p-0 d-block"
+            style={{ textDecoration: 'none' }}
+            onClick={setToCurrentDateTime}
+          >
+            Maintenant
+          </Button>
         </InputWrapper>
       </div>
 

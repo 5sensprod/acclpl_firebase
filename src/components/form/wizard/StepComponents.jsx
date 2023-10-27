@@ -3,15 +3,30 @@ import { useFormWizardState } from './FormWizardContext'
 import NameCompany from '../inputs/NameCompany'
 import GeolocateAddress from '../inputs/GeolocateAddress'
 import DateTimeInput from '../inputs/DateTimeInput'
+import { motion } from 'framer-motion'
 
-// Composant pour l'étape 1
+const slideVariants = {
+  initial: { opacity: 0, x: '-100vw' },
+  enter: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: '100vw' },
+}
+
+const AnimatedWrapper = ({ children }) => (
+  <motion.div
+    initial="initial"
+    animate="enter"
+    exit="exit"
+    variants={slideVariants}
+  >
+    {children}
+  </motion.div>
+)
+
 export const Step1Component = (props) => {
   const { state, dispatch } = useFormWizardState()
 
   const handleCompanyNameChange = (event) => {
     const value = event.target.value
-
-    // Mettez uniquement à jour les données du formulaire pour l'affichage
     dispatch({
       type: 'UPDATE_FORM_DATA',
       payload: { companyName: value },
@@ -19,21 +34,19 @@ export const Step1Component = (props) => {
   }
 
   return (
-    <>
+    <AnimatedWrapper>
       <NameCompany
         value={state.formData.companyName}
         onChange={handleCompanyNameChange}
         {...props}
       />
-    </>
+    </AnimatedWrapper>
   )
 }
 
-// Composant pour l'étape 2 (address)
 export const Step2Component = (props) => {
   const { state, dispatch } = useFormWizardState()
 
-  // Fonction pour mettre à jour l'adresse dans le contexte
   const handleSelectAddress = (coords) => {
     dispatch({
       type: 'UPDATE_FORM_DATA',
@@ -44,16 +57,18 @@ export const Step2Component = (props) => {
   }
 
   return (
-    <div>
+    <AnimatedWrapper>
       <GeolocateAddress
         onSelectAddress={handleSelectAddress}
         currentCoords={state.formData.companyCoordinates}
         moveToNextStep={() => dispatch({ type: 'NEXT_STEP' })}
       />
-    </div>
+    </AnimatedWrapper>
   )
 }
 
-export const Step3Component = () => {
-  return <DateTimeInput />
-}
+export const Step3Component = () => (
+  <AnimatedWrapper>
+    <DateTimeInput />
+  </AnimatedWrapper>
+)
