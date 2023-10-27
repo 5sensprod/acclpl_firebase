@@ -12,6 +12,8 @@ const initialState = {
     normalizedCompanyName: '',
     companyAddress: '', // Ajouté
     companyCoordinates: [], // Ajouté
+    dateOfObservation: '',
+    timeOfObservation: '',
     // ... d'autres champs que vous pourriez avoir
   },
 }

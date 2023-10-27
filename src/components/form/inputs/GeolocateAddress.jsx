@@ -35,7 +35,12 @@ const GeolocateAddress = (props) => {
           placeholder="Saisissez une adresse"
           required
         />
-        <Button variant="secondary" onClick={handleGeolocationClick}>
+        <Button
+          variant="link"
+          className="btn text-light mt-1 p-0"
+          style={{ textDecoration: 'none' }}
+          onClick={handleGeolocationClick}
+        >
           Me géolocaliser
         </Button>
       </InputWrapper>

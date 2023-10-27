@@ -1,4 +1,8 @@
-import { Step1Component, Step2Component } from './StepComponents'
+import {
+  Step1Component,
+  Step2Component,
+  Step3Component,
+} from './StepComponents'
 
 const wizardSteps = [
   {
@@ -11,6 +15,12 @@ const wizardSteps = [
     id: 2,
     label: 'Étape 2',
     component: Step2Component,
+    props: {},
+  },
+  {
+    id: 3,
+    label: 'Étape 3',
+    component: Step3Component,
     props: {},
   },
   // ... ajoutez d'autres étapes si nécessaire

@@ -2,6 +2,7 @@ import React from 'react'
 import { useFormWizardState } from './FormWizardContext'
 import NameCompany from '../inputs/NameCompany'
 import GeolocateAddress from '../inputs/GeolocateAddress'
+import DateTimeInput from '../inputs/DateTimeInput'
 
 // Composant pour l'étape 1
 export const Step1Component = (props) => {
@@ -51,4 +52,8 @@ export const Step2Component = (props) => {
       />
     </div>
   )
+}
+
+export const Step3Component = () => {
+  return <DateTimeInput />
 }
