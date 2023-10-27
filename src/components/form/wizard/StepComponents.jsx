@@ -5,6 +5,7 @@ import GeolocateAddress from '../inputs/GeolocateAddress'
 import DateTimeInput from '../inputs/DateTimeInput'
 import WizardPhotoCapture from '../inputs/WizardPhotoCapture'
 import { motion } from 'framer-motion'
+import { Button } from 'react-bootstrap'
 
 const slideVariants = {
   initial: { opacity: 0, x: '-100vw' },
@@ -80,9 +81,16 @@ export const Step3Component = () => (
 )
 
 export const Step4Component = () => {
+  const handleTestClick = () => {
+    alert('Bouton cliqué!') // Ceci affichera une alerte pour confirmer que le clic fonctionne.
+  }
+
   return (
     <AnimatedWrapper>
       <WizardPhotoCapture />
+      <Button variant="success" onClick={handleTestClick}>
+        Terminer
+      </Button>
     </AnimatedWrapper>
   )
 }
