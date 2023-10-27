@@ -40,9 +40,11 @@ function WizardPhotoCapture() {
         }))
         dispatch({
           type: 'UPDATE_FORM_DATA',
-          payload: { photoURLs: [e.target.result] },
+          payload: {
+            photoURLs: [e.target.result],
+            originalPhotoURL: e.target.result,
+          },
         })
-
         // Dispatch action to update selectedFile in context
         dispatch({
           type: 'SET_SELECTED_FILE',
@@ -150,7 +152,7 @@ function WizardPhotoCapture() {
       </InputGroup>
       {state.openCrop && (
         <CropEasy
-          photoURL={state.originalPhotoURL}
+          photoURL={formWizardState.formData.originalPhotoURL}
           onCroppedImage={handleCroppedImage}
           setOpenCrop={(open) =>
             setState((prevState) => ({ ...prevState, openCrop: open }))

@@ -18,9 +18,7 @@ export default function CropEasy(props) {
       const { url } = await getCroppedImg(photoURL, croppedAreaPixels)
       setOpenCrop(false)
       onCroppedImage(url)
-    } catch (error) {
-      console.error('Error cropping the image:', error)
-    }
+    } catch (error) {}
   }
 
   const cropComplete = (_, croppedPixels) => {

@@ -18,6 +18,7 @@ const initialState = {
     photoURLs: [],
     selectedFile: null, // Ajouté
     croppedImageUrl: null, // Ajouté
+    originalPhotoURL: null,
     // ... d'autres champs que vous pourriez avoir
   },
 }
@@ -37,7 +38,6 @@ const wizardReducer = (state, action) => {
       return formatCompanyAction(state, action)
 
     case 'UPDATE_FORM_DATA':
-      console.log('Updating form data:', action.payload)
       return {
         ...state,
         formData: {
