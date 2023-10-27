@@ -42,6 +42,15 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
     setCroppedAreaPixels(croppedPixels)
   }
 
+  const handleReset = () => {
+    // Réinitialiser le zoom et la rotation
+    setZoom(1) // Mettre à jour l'état local du zoom
+    setRotation(0) // Mettre à jour l'état local de la rotation
+
+    // Mettre à jour le state global
+    dispatch({ type: 'SET_ZOOM', payload: 1 }) // Valeur par défaut du zoom
+    dispatch({ type: 'SET_ROTATION', payload: 0 }) // Valeur par défaut de la rotation
+  }
   return (
     <Modal show={true} onHide={() => setOpenCrop(false)} size="lg">
       <Modal.Header closeButton>
@@ -64,6 +73,9 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
         <ZoomSlider zoom={zoom} setZoom={setZoom} />
         <RotationSlider rotation={rotation} setRotation={setRotation} />{' '}
         {/* Nouveau slider de rotation */}
+        <Button variant="primary" onClick={handleReset}>
+          Réinitialiser
+        </Button>
         <Button variant="primary" onClick={cropImage}>
           Valider
         </Button>
