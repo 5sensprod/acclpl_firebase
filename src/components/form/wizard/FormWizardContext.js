@@ -19,6 +19,8 @@ const initialState = {
     selectedFile: null, // Ajouté
     croppedImageUrl: null, // Ajouté
     originalPhotoURL: null,
+    zoom: 1,
+    rotation: 0,
     // ... d'autres champs que vous pourriez avoir
   },
 }
@@ -78,6 +80,24 @@ const wizardReducer = (state, action) => {
         formData: {
           ...state.formData,
           croppedImageUrl: action.payload,
+        },
+      }
+
+    case 'SET_ZOOM':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          zoom: action.payload,
+        },
+      }
+
+    case 'SET_ROTATION':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          rotation: action.payload,
         },
       }
 
