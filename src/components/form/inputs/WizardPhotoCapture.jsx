@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import CropEasy from '../../crop/CropEasy'
+import React, { useState, useEffect } from 'react'
+import CropEasy from '../wizard/CropEasy'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 import { useFormWizardState } from '../wizard/FormWizardContext'
 import { Figure, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -7,7 +7,16 @@ import { Trash, Camera, Pencil } from 'react-bootstrap-icons'
 import styles from '../../PhotoCapture/PhotoCapture.module.css'
 
 function WizardPhotoCapture() {
-  const { dispatch } = useFormWizardState()
+  const { state: formWizardState, dispatch } = useFormWizardState()
+
+  useEffect(() => {
+    if (formWizardState.formData.croppedImageUrl) {
+      setState((prevState) => ({
+        ...prevState,
+        photoURL: formWizardState.formData.croppedImageUrl,
+      }))
+    }
+  }, [formWizardState.formData.croppedImageUrl])
 
   const [state, setState] = useState({
     photoURL: defaultPhoto,
@@ -33,20 +42,46 @@ function WizardPhotoCapture() {
           type: 'UPDATE_FORM_DATA',
           payload: { photoURLs: [e.target.result] },
         })
+
+        // Dispatch action to update selectedFile in context
+        dispatch({
+          type: 'SET_SELECTED_FILE',
+          payload: file,
+        })
       }
       reader.readAsDataURL(file)
     }
   }
 
-  const handleCroppedImage = (croppedImageUrl) => {
+  const handleCroppedImage = async (croppedImageUrl) => {
+    const imageBlob = await fetch(croppedImageUrl).then((r) => r.blob())
+
     setState((prevState) => ({
       ...prevState,
-      photoURL: croppedImageUrl,
+      photoURL: croppedImageUrl + '?' + new Date().getTime(), // Ajout d'un timestamp pour forcer un changement d'URL
     }))
+
+    dispatch({
+      type: 'UPDATE_FORM_DATA',
+      payload: {
+        photoURLs: [croppedImageUrl],
+        photoBlob: imageBlob,
+      },
+    })
+
+    // Dispatch action to update croppedImageUrl in context
+    dispatch({
+      type: 'SET_CROPPED_IMAGE_URL',
+      payload: croppedImageUrl,
+    })
   }
 
-  const PhotoPreview = () => {
-    if (!state.photoURL) return null
+  const imageUrl = formWizardState.formData.photoBlob
+    ? URL.createObjectURL(formWizardState.formData.photoBlob)
+    : defaultPhoto
+
+  const PhotoPreview = ({ imageUrl }) => {
+    if (!imageUrl) return null
 
     return (
       <Figure
@@ -59,7 +94,7 @@ function WizardPhotoCapture() {
         >
           <span>
             <Figure.Image
-              src={state.photoURL}
+              src={imageUrl}
               alt=""
               thumbnail
               className={styles.figureImage}
@@ -100,7 +135,7 @@ function WizardPhotoCapture() {
   return (
     <>
       <div style={{ textAlign: 'left' }}>
-        <PhotoPreview />
+        <PhotoPreview imageUrl={imageUrl} />
       </div>
       <InputGroup className="d-none">
         <InputGroup.Text id="photo-input-label">Upload</InputGroup.Text>
@@ -116,6 +151,7 @@ function WizardPhotoCapture() {
       {state.openCrop && (
         <CropEasy
           photoURL={state.originalPhotoURL}
+          onCroppedImage={handleCroppedImage}
           setOpenCrop={(open) =>
             setState((prevState) => ({ ...prevState, openCrop: open }))
           }

@@ -14,7 +14,10 @@ const initialState = {
     companyCoordinates: [], // Ajouté
     dateOfObservation: '',
     timeOfObservation: '',
+    photoBlob: null,
     photoURLs: [],
+    selectedFile: null, // Ajouté
+    croppedImageUrl: null, // Ajouté
     // ... d'autres champs que vous pourriez avoir
   },
 }
@@ -34,7 +37,7 @@ const wizardReducer = (state, action) => {
       return formatCompanyAction(state, action)
 
     case 'UPDATE_FORM_DATA':
-      console.log('companyCoordinates:', action.payload.companyCoordinates) // Ajouté console.log
+      console.log('Updating form data:', action.payload)
       return {
         ...state,
         formData: {
@@ -59,6 +62,23 @@ const wizardReducer = (state, action) => {
       return {
         ...state,
         hasClosedModal: false,
+      }
+
+    case 'SET_SELECTED_FILE':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          selectedFile: action.payload,
+        },
+      }
+    case 'SET_CROPPED_IMAGE_URL':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          croppedImageUrl: action.payload,
+        },
       }
 
     default:
