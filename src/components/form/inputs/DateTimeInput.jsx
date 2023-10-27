@@ -32,7 +32,7 @@ const DateTimeInput = () => {
   return (
     <div className="d-flex justify-content-between mb-0 gap-3">
       <div className="mb-0 w-50">
-        <InputWrapper label="Date de la constatation" id="date-input">
+        <InputWrapper label="Date" id="date-input">
           <input
             id="date-input"
             type="date"
@@ -42,7 +42,7 @@ const DateTimeInput = () => {
           />
           <Button
             variant="link"
-            className="btn text-light mb-1 p-1 "
+            className="btn text-light mb-0 p-1 ps-0 pb-0 "
             style={{ textDecoration: 'none' }}
             onClick={setToCurrentDateTime}
           >
@@ -52,7 +52,7 @@ const DateTimeInput = () => {
       </div>
 
       <div className="mb-0 w-50">
-        <InputWrapper label="Heure de la constatation" id="time-input">
+        <InputWrapper label="Heure" id="time-input">
           <input
             id="time-input"
             type="time"

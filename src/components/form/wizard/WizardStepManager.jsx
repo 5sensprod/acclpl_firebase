@@ -107,7 +107,7 @@ const WizardStepManager = () => {
   }
 
   return (
-    <div className="d-flex justify-content-between my-3">
+    <div className="d-flex justify-content-between mb-2">
       {currentStep > 1 && (
         <Button variant="outline-primary" onClick={moveToPrevStep}>
           Revenir

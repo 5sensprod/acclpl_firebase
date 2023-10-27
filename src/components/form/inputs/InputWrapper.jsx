@@ -1,5 +1,5 @@
 export const InputWrapper = ({ label, children, id }) => (
-  <div className="form-group mb-3">
+  <div className="form-group mb-4">
     <label htmlFor={id} className="text-light">
       {label}
     </label>
