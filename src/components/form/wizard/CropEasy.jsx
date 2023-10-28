@@ -9,7 +9,7 @@ const ZOOM_MAX = 3
 const ROTATION_MIN = -10
 const ROTATION_MAX = 10
 
-const modalBodyStyle = { height: 400, minWidth: 500 }
+const modalBodyStyle = { height: 400, minWidth: 400 }
 
 export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
   const { state: formWizardState, dispatch } = useFormWizardState()
@@ -21,6 +21,31 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
   const [zoom, setZoom] = useState(initialZoom)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
   const [rotation, setRotation] = useState(initialRotation)
+
+  const ZoomSlider = ({ zoom, setZoom }) => (
+    <>
+      <p>Zoom: {Math.round(zoom * 100)}%</p>
+      <Form.Range
+        value={zoom}
+        min={ZOOM_MIN}
+        max={ZOOM_MAX}
+        step={0.1}
+        onChange={(e) => setZoom(parseFloat(e.target.value))}
+      />
+    </>
+  )
+  const RotationSlider = ({ rotation, setRotation }) => (
+    <>
+      <p>Rotation: {rotation}°</p>
+      <Form.Range
+        value={rotation}
+        min={ROTATION_MIN}
+        max={ROTATION_MAX}
+        step={1}
+        onChange={(e) => handleRotationChange(parseInt(e.target.value, 10))}
+      />
+    </>
+  )
 
   const cropImage = async () => {
     try {
@@ -43,6 +68,16 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
     setRotation(0)
   }
 
+  const handleRotationChange = (newRotation) => {
+    if (newRotation > ROTATION_MAX) {
+      setRotation(ROTATION_MAX)
+    } else if (newRotation < ROTATION_MIN) {
+      setRotation(ROTATION_MIN)
+    } else {
+      setRotation(newRotation)
+    }
+  }
+
   return (
     <Modal show={true} onHide={() => setOpenCrop(false)} size="lg">
       <Modal.Header closeButton>
@@ -54,11 +89,10 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
           crop={crop}
           zoom={zoom}
           rotation={rotation}
-          n
           aspect={1}
           onZoomChange={setZoom}
           onCropChange={setCrop}
-          onRotationChange={setRotation}
+          onRotationChange={handleRotationChange}
           onCropComplete={cropComplete}
         />
       </Modal.Body>
@@ -75,29 +109,3 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
     </Modal>
   )
 }
-
-const ZoomSlider = ({ zoom, setZoom }) => (
-  <>
-    <p>Zoom: {Math.round(zoom * 100)}%</p>
-    <Form.Range
-      value={zoom}
-      min={ZOOM_MIN}
-      max={ZOOM_MAX}
-      step={0.1}
-      onChange={(e) => setZoom(parseFloat(e.target.value))}
-    />
-  </>
-)
-
-const RotationSlider = ({ rotation, setRotation }) => (
-  <>
-    <p>Rotation: {rotation}°</p>
-    <Form.Range
-      value={rotation}
-      min={ROTATION_MIN}
-      max={ROTATION_MAX}
-      step={1}
-      onChange={(e) => setRotation(parseInt(e.target.value, 10))}
-    />
-  </>
-)
