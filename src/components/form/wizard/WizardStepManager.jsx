@@ -121,6 +121,11 @@ const WizardStepManager = () => {
     setIsLoading(false)
   }
 
+  const handleFinishClick = () => {
+    // Traitement à effectuer lorsque l'utilisateur clique sur "Terminer"
+    alert('Formulaire terminé!') // Ceci est juste un exemple. Vous pouvez y ajouter votre propre logique.
+  }
+
   return (
     <div className="d-flex justify-content-between mb-2">
       {currentStep > 1 && (
@@ -132,6 +137,16 @@ const WizardStepManager = () => {
       {currentStep < totalSteps && (
         <Button variant="primary" onClick={moveToNextStep} disabled={isLoading}>
           {isLoading ? <Spinner animation="border" size="sm" /> : 'Suivant'}
+        </Button>
+      )}
+
+      {currentStep === totalSteps && (
+        <Button
+          variant="success"
+          onClick={handleFinishClick}
+          disabled={isLoading}
+        >
+          {isLoading ? <Spinner animation="border" size="sm" /> : 'Terminer'}
         </Button>
       )}
       <DynamicModal />
