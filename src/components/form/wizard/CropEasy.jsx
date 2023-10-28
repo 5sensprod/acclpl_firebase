@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Cropper from 'react-easy-crop'
 import { Button, Modal, Form } from 'react-bootstrap'
 import getCroppedImg from '../../crop/utils/CropImage'
-import { useFormWizardState } from '../wizard/FormWizardContext' // Importez votre hook personnalisé ou tout autre moyen que vous utilisez pour accéder à votre contexte.
+import { useFormWizardState } from '../wizard/FormWizardContext'
 
 const ZOOM_MIN = 1
 const ZOOM_MAX = 3
@@ -39,7 +39,6 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
   }
 
   const handleReset = () => {
-    // Réinitialiser le zoom et la rotation de l'état local
     setZoom(1)
     setRotation(0)
   }
@@ -54,18 +53,18 @@ export default function CropEasy({ photoURL, setOpenCrop, onCroppedImage }) {
           image={photoURL}
           crop={crop}
           zoom={zoom}
-          rotation={rotation} // Ajouter la rotation
+          rotation={rotation}
+          n
           aspect={1}
           onZoomChange={setZoom}
           onCropChange={setCrop}
-          onRotationChange={setRotation} // Ajouter le gestionnaire de rotation
+          onRotationChange={setRotation}
           onCropComplete={cropComplete}
         />
       </Modal.Body>
       <Modal.Footer>
         <ZoomSlider zoom={zoom} setZoom={setZoom} />
         <RotationSlider rotation={rotation} setRotation={setRotation} />{' '}
-        {/* Nouveau slider de rotation */}
         <Button variant="primary" onClick={handleReset}>
           Réinitialiser
         </Button>
