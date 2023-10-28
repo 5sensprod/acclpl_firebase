@@ -4,7 +4,6 @@ import { zoomPercent } from './imageUtils'
 import { ZOOM_MIN, ZOOM_MAX, ROTATION_MIN, ROTATION_MAX } from './constants'
 
 function CropFooter({
-  onNewPhoto,
   zoom,
   rotation,
   resetZoomAndRotation,
@@ -32,9 +31,6 @@ function CropFooter({
           onChange={(e) => onRotationChange(parseFloat(e.target.value))}
         />
       </div>
-      <Button variant="outline-secondary" onClick={onNewPhoto}>
-        Nouvelle Photo
-      </Button>
       <Button
         variant="outline-secondary"
         onClick={resetZoomAndRotation}

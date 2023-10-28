@@ -3,7 +3,7 @@ import { useFormWizardState } from './FormWizardContext'
 import NameCompany from '../inputs/NameCompany'
 import GeolocateAddress from '../inputs/GeolocateAddress'
 import DateTimeInput from '../inputs/DateTimeInput'
-import WizardPhotoCapture from '../inputs/WizardPhotoCapture'
+import PhotoCapture from '../PhotoCapture'
 import { motion } from 'framer-motion'
 // import { Button } from 'react-bootstrap'
 
@@ -83,7 +83,7 @@ export const Step3Component = () => (
 export const Step4Component = () => {
   return (
     <AnimatedWrapper>
-      <WizardPhotoCapture />
+      <PhotoCapture />
     </AnimatedWrapper>
   )
 }

@@ -1,10 +1,14 @@
 import React, { createContext, useReducer, useContext } from 'react'
 import { formatCompanyAction } from './wizardTransformations'
 import wizardSteps from './WizardSteps'
+import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 
 const FormWizardContext = createContext()
 
 const initialState = {
+  photoURL: defaultPhoto,
+  isDefaultPhoto: true,
+  openCrop: false,
   currentStep: 1,
   steps: [],
   formData: {
@@ -27,6 +31,26 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'UPDATE_PHOTO_URL':
+      return {
+        ...state,
+        photoURL: action.payload,
+        isDefaultPhoto: false,
+      }
+    case 'RESET_TO_DEFAULT_PHOTO':
+      return {
+        ...state,
+        photoURL: defaultPhoto,
+        isDefaultPhoto: true,
+      }
+    case 'OPEN_CROP':
+      return { ...state, openCrop: true }
+    case 'CLOSE_CROP':
+      return { ...state, openCrop: false }
+    case 'SET_PHOTO':
+      return { ...state, photoURL: action.payload, photoModified: true }
+    case 'RESET_PHOTO':
+      return { ...state, photoURL: defaultPhoto, photoModified: false }
     case 'SET_STEP':
       return { ...state, currentStep: action.payload }
 
@@ -47,7 +71,6 @@ const wizardReducer = (state, action) => {
           ...action.payload,
         },
       }
-
     case 'UPDATE_HAS_CLOSED_MODAL':
       return {
         ...state,

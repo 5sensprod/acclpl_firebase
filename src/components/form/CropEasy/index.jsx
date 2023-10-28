@@ -5,16 +5,16 @@ import CropHeader from './CropHeader'
 import CropBody from './CropBody'
 import CropFooter from './CropFooter'
 import { ZOOM_MIN, ROTATION_MIN, ROTATION_MAX } from './constants'
+import { useFormWizardState } from '../wizard/FormWizardContext'
 
 export default function CropEasy({
   photoURL,
   setOpenCrop,
-  setPhotoURL,
   initialZoom = ZOOM_MIN,
   initialRotation = 0,
-  onNewPhoto,
   onCroppedImage,
 }) {
+  const { dispatch } = useFormWizardState()
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(initialZoom)
   const [rotation, setRotation] = useState(initialRotation)
@@ -44,9 +44,8 @@ export default function CropEasy({
       setZoom(tempZoom)
       setRotation(tempRotation)
 
-      setPhotoURL(url)
-      setOpenCrop(false)
       onCroppedImage(url)
+      dispatch({ type: 'CLOSE_CROP' }) // Fermeture de la modal une fois que l'image est rognée
     } catch (error) {
       console.error('Error cropping the image:', error)
     }
@@ -77,7 +76,6 @@ export default function CropEasy({
         onCropComplete={cropComplete}
       />
       <CropFooter
-        onNewPhoto={onNewPhoto}
         zoom={tempZoom}
         rotation={tempRotation}
         resetZoomAndRotation={resetZoomAndRotation}
