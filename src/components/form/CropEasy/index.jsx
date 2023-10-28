@@ -8,13 +8,13 @@ import { ZOOM_MIN, ROTATION_MIN, ROTATION_MAX } from './constants'
 import { useFormWizardState } from '../wizard/FormWizardContext'
 
 export default function CropEasy({
-  photoURL,
   setOpenCrop,
   initialZoom = ZOOM_MIN,
   initialRotation = 0,
   onCroppedImage,
 }) {
-  const { dispatch } = useFormWizardState()
+  const { state, dispatch } = useFormWizardState()
+  const { tempPhotoURL } = state
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(initialZoom)
   const [rotation, setRotation] = useState(initialRotation)
@@ -37,7 +37,7 @@ export default function CropEasy({
 
   const handleCrop = async () => {
     try {
-      const url = await cropImage(photoURL, croppedAreaPixels, tempRotation)
+      const url = await cropImage(tempPhotoURL, croppedAreaPixels, tempRotation)
 
       // Applying temporary states to main states
       setCrop(tempCrop)
@@ -63,10 +63,17 @@ export default function CropEasy({
   const isDefaultValues = tempZoom === ZOOM_MIN && tempRotation === 0
 
   return (
-    <Modal show={true} onHide={() => setOpenCrop(false)} size="lg">
+    <Modal
+      show={true}
+      onHide={() => {
+        setOpenCrop(false)
+        dispatch({ type: 'RESET_TEMP_PHOTO' })
+      }}
+      size="lg"
+    >
       <CropHeader title="Envoyer une photo" />
       <CropBody
-        photoURL={photoURL}
+        tempPhotoURL={tempPhotoURL}
         crop={tempCrop}
         zoom={tempZoom}
         rotation={tempRotation}

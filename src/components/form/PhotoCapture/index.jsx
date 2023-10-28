@@ -13,17 +13,17 @@ function PhotoCapture() {
     if (file) {
       const reader = new FileReader()
       reader.onload = (e) => {
+        // Mettre à jour tempPhotoURL et autres états temporaires
         dispatch({
-          type: 'UPDATE_FORM_DATA',
+          type: 'SET_TEMP_PHOTO',
           payload: {
-            photoURLs: [e.target.result],
-            originalPhotoURL: e.target.result,
+            photoURL: e.target.result,
+            selectedFile: file,
+            croppedImageUrl: null,
           },
         })
-        dispatch({
-          type: 'SET_SELECTED_FILE',
-          payload: file,
-        })
+
+        // Si nécessaire, conservez l'action pour ouvrir la modal de recadrage
         dispatch({
           type: 'OPEN_CROP',
         })
@@ -35,6 +35,7 @@ function PhotoCapture() {
   const handleCroppedImage = async (croppedImageUrl) => {
     const imageBlob = await fetch(croppedImageUrl).then((r) => r.blob())
 
+    // 1. Mise à jour des états permanents
     dispatch({
       type: 'UPDATE_FORM_DATA',
       payload: {
@@ -42,9 +43,14 @@ function PhotoCapture() {
         photoBlob: imageBlob,
       },
     })
+    // 2. Mise à jour du photoURL
     dispatch({
       type: 'UPDATE_PHOTO_URL',
       payload: croppedImageUrl,
+    })
+    // 3. Réinitialisation des états temporaires
+    dispatch({
+      type: 'RESET_TEMP_PHOTO',
     })
   }
 
@@ -74,7 +80,7 @@ function PhotoCapture() {
       </InputGroup>
       {formWizardState.openCrop && (
         <CropEasy
-          photoURL={formWizardState.formData.originalPhotoURL}
+          photoURL={formWizardState.tempPhotoURL}
           onCroppedImage={handleCroppedImage}
           setOpenCrop={(open) => {
             if (!open) {

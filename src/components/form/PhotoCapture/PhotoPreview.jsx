@@ -38,6 +38,14 @@ const PhotoPreview = () => {
               onClick={(e) => {
                 e.stopPropagation()
                 dispatch({
+                  type: 'SET_TEMP_PHOTO',
+                  payload: {
+                    photoURL: formWizardState.photoURL,
+                    selectedFile: null,
+                    croppedImageUrl: null,
+                  },
+                })
+                dispatch({
                   type: 'OPEN_CROP',
                 })
               }}

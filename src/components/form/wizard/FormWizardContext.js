@@ -6,6 +6,9 @@ import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 const FormWizardContext = createContext()
 
 const initialState = {
+  tempPhotoURL: null,
+  tempSelectedFile: null,
+  tempCroppedImageUrl: null,
   photoURL: defaultPhoto,
   isDefaultPhoto: true,
   openCrop: false,
@@ -31,6 +34,34 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_TEMP_PHOTO':
+      return {
+        ...state,
+        tempPhotoURL: action.payload.photoURL,
+        tempSelectedFile: action.payload.selectedFile,
+        tempCroppedImageUrl: action.payload.croppedImageUrl,
+      }
+
+    // Pour réinitialiser l'état temporaire (par exemple, lors de l'annulation)
+    case 'RESET_TEMP_PHOTO':
+      return {
+        ...state,
+        tempPhotoURL: null,
+        tempSelectedFile: null,
+        tempCroppedImageUrl: null,
+      }
+
+    // Pour confirmer le recadrage et copier l'état temporaire dans l'état permanent
+    case 'CONFIRM_CROP':
+      return {
+        ...state,
+        photoURL: state.tempPhotoURL,
+        selectedFile: state.tempSelectedFile,
+        croppedImageUrl: state.tempCroppedImageUrl,
+        tempPhotoURL: null, // Réinitialisation après la confirmation
+        tempSelectedFile: null,
+        tempCroppedImageUrl: null,
+      }
     case 'UPDATE_PHOTO_URL':
       return {
         ...state,

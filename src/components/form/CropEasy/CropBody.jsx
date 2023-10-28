@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import Cropper from 'react-easy-crop'
 
 function CropBody({
-  photoURL,
+  tempPhotoURL,
   crop,
   zoom,
   rotation,
@@ -16,7 +16,7 @@ function CropBody({
     <Modal.Body>
       <div style={{ height: 400, minWidth: 400 }}>
         <Cropper
-          image={photoURL}
+          image={tempPhotoURL}
           crop={crop}
           zoom={zoom}
           rotation={rotation}
