@@ -81,16 +81,9 @@ export const Step3Component = () => (
 )
 
 export const Step4Component = () => {
-  // const handleTestClick = () => {
-  //   alert('Bouton cliqué!') // Ceci affichera une alerte pour confirmer que le clic fonctionne.
-  // }
-
   return (
     <AnimatedWrapper>
       <WizardPhotoCapture />
-      {/* <Button variant="success" onClick={handleTestClick}>
-        Terminer
-      </Button> */}
     </AnimatedWrapper>
   )
 }

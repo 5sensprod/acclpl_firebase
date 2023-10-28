@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import CropEasy from '../cropping'
+import CropEasy from '../CropEasy'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 import { useFormWizardState } from '../wizard/FormWizardContext'
 import { Figure, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
