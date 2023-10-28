@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import CropEasy from '../wizard/CropEasy'
+import CropEasy from '../cropping'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 import { useFormWizardState } from '../wizard/FormWizardContext'
 import { Figure, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -25,6 +25,9 @@ function WizardPhotoCapture() {
     file: null,
     capturedImage: null,
   })
+  const updateFile = (file) => {
+    setState((prevState) => ({ ...prevState, file: file }))
+  }
 
   const handlePhotoChange = (event) => {
     const file = event.target.files[0]
@@ -176,6 +179,7 @@ function WizardPhotoCapture() {
           }
           setPhotoURL={handleCroppedImage}
           onNewPhoto={() => document.getElementById('photo-input').click()}
+          setFile={updateFile}
         />
       )}
     </>
