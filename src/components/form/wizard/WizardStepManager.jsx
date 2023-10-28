@@ -78,7 +78,7 @@ const WizardStepManager = () => {
           {
             text: 'Non',
             onClick: () => {
-              dispatch({ type: 'NEXT_STEP' }) // Pour s'assurer de passer à l'étape suivante
+              dispatch({ type: 'NEXT_STEP' })
               dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
               setModalConfig((prevConfig) => ({
                 ...prevConfig,
