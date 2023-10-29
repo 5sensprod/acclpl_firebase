@@ -7,52 +7,46 @@ import CropFooter from './CropFooter'
 import { ZOOM_MIN, ROTATION_MIN, ROTATION_MAX } from './constants'
 import { useFormWizardState } from '../wizard/FormWizardContext'
 
-export default function CropEasy({
-  setOpenCrop,
-  initialZoom = ZOOM_MIN,
-  initialRotation = 0,
-  onCroppedImage,
-}) {
+export default function CropEasy({ setOpenCrop, onCroppedImage }) {
   const { state, dispatch } = useFormWizardState()
   const { tempPhotoURL } = state
   const [crop, setCrop] = useState({ x: 0, y: 0 })
-  const [zoom, setZoom] = useState(initialZoom)
-  const [rotation, setRotation] = useState(initialRotation)
+  const [zoom, setZoom] = useState(state.zoom)
+  const [rotation, setRotation] = useState(state.rotation)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
 
-  // Temp states
-  const [tempCrop, setTempCrop] = useState(crop)
-  const [tempZoom, setTempZoom] = useState(zoom)
-  const [tempRotation, setTempRotation] = useState(rotation)
-
-  const handleTempRotationChange = useCallback((newRotation) => {
+  const handleRotationChange = useCallback((newRotation) => {
     if (newRotation > ROTATION_MAX) {
-      setTempRotation(ROTATION_MAX)
+      setRotation(ROTATION_MAX)
     } else if (newRotation < ROTATION_MIN) {
-      setTempRotation(ROTATION_MIN)
+      setRotation(ROTATION_MIN)
     } else {
-      setTempRotation(newRotation)
+      setRotation(newRotation)
     }
   }, [])
 
   const handleCrop = async () => {
     try {
-      const url = await cropImage(tempPhotoURL, croppedAreaPixels, tempRotation)
-
-      // Applying temporary states to main states
-      setCrop(tempCrop)
-      setZoom(tempZoom)
-      setRotation(tempRotation)
-
+      const url = await cropImage(
+        tempPhotoURL,
+        croppedAreaPixels,
+        rotation,
+        zoom,
+      )
+      dispatch({
+        type: 'UPDATE_ZOOM_AND_ROTATION',
+        payload: {
+          zoom: zoom,
+          rotation: rotation,
+        },
+      })
       onCroppedImage(url)
-
-      // Enregistrer tempOriginalPhotoURL à originalPhotoURL
       dispatch({
         type: 'SET_ORIGINAL_PHOTO',
         payload: state.tempOriginalPhotoURL,
       })
 
-      dispatch({ type: 'CLOSE_CROP' }) // Fermeture de la modal une fois que l'image est rognée
+      dispatch({ type: 'CLOSE_CROP' })
     } catch (error) {
       console.error('Error cropping the image:', error)
     }
@@ -63,11 +57,11 @@ export default function CropEasy({
   }
 
   const resetZoomAndRotation = () => {
-    setTempZoom(ZOOM_MIN)
-    setTempRotation(0)
+    setZoom(ZOOM_MIN)
+    setRotation(0)
   }
 
-  const isDefaultValues = tempZoom === ZOOM_MIN && tempRotation === 0
+  const isDefaultValues = zoom === ZOOM_MIN && rotation === 0
 
   return (
     <Modal
@@ -81,22 +75,22 @@ export default function CropEasy({
       <CropHeader title="Envoyer une photo" />
       <CropBody
         tempPhotoURL={tempPhotoURL}
-        crop={tempCrop}
-        zoom={tempZoom}
-        rotation={tempRotation}
-        onZoomChange={setTempZoom}
-        onRotationChange={handleTempRotationChange}
-        onCropChange={setTempCrop}
+        crop={crop}
+        zoom={zoom}
+        rotation={rotation}
+        onZoomChange={setZoom}
+        onRotationChange={handleRotationChange}
+        onCropChange={setCrop}
         onCropComplete={cropComplete}
       />
       <CropFooter
-        zoom={tempZoom}
-        rotation={tempRotation}
+        zoom={zoom}
+        rotation={rotation}
         resetZoomAndRotation={resetZoomAndRotation}
         cropImage={handleCrop}
         isDefaultValues={isDefaultValues}
-        onZoomChange={setTempZoom}
-        onRotationChange={handleTempRotationChange}
+        onZoomChange={setZoom}
+        onRotationChange={handleRotationChange}
       />
     </Modal>
   )

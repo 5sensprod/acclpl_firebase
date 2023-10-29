@@ -6,6 +6,8 @@ import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 const FormWizardContext = createContext()
 
 const initialState = {
+  zoom: 1,
+  rotation: 0,
   tempOriginalPhotoURL: null,
   tempPhotoURL: null,
   tempSelectedFile: null,
@@ -36,6 +38,13 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'UPDATE_ZOOM_AND_ROTATION':
+      return {
+        ...state,
+        zoom: action.payload.zoom,
+        rotation: action.payload.rotation,
+      }
+
     case 'SET_ORIGINAL_PHOTO':
       return {
         ...state,
