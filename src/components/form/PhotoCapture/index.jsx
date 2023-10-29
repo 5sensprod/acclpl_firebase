@@ -13,6 +13,11 @@ function PhotoCapture() {
     if (file) {
       const reader = new FileReader()
       reader.onload = (e) => {
+        // Mettre à jour l'image originale temporaire avec la nouvelle image sélectionnée
+        dispatch({
+          type: 'SET_TEMP_ORIGINAL_PHOTO',
+          payload: e.target.result,
+        })
         // Mettre à jour tempPhotoURL et autres états temporaires
         dispatch({
           type: 'SET_TEMP_PHOTO',
@@ -23,7 +28,7 @@ function PhotoCapture() {
           },
         })
 
-        // Si nécessaire, conservez l'action pour ouvrir la modal de recadrage
+        // Ouvrir la modal de recadrage
         dispatch({
           type: 'OPEN_CROP',
         })

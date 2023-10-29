@@ -45,6 +45,13 @@ export default function CropEasy({
       setRotation(tempRotation)
 
       onCroppedImage(url)
+
+      // Enregistrer tempOriginalPhotoURL à originalPhotoURL
+      dispatch({
+        type: 'SET_ORIGINAL_PHOTO',
+        payload: state.tempOriginalPhotoURL,
+      })
+
       dispatch({ type: 'CLOSE_CROP' }) // Fermeture de la modal une fois que l'image est rognée
     } catch (error) {
       console.error('Error cropping the image:', error)

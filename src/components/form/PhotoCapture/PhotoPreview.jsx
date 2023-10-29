@@ -6,7 +6,7 @@ import { useFormWizardState } from '../wizard/FormWizardContext'
 
 const PhotoPreview = () => {
   const { state: formWizardState, dispatch } = useFormWizardState()
-  const { photoURL, isDefaultPhoto } = formWizardState
+  const { photoURL, originalPhotoURL, isDefaultPhoto } = formWizardState
 
   if (!photoURL) return null
 
@@ -40,7 +40,7 @@ const PhotoPreview = () => {
                 dispatch({
                   type: 'SET_TEMP_PHOTO',
                   payload: {
-                    photoURL: formWizardState.photoURL,
+                    photoURL: originalPhotoURL || photoURL,
                     selectedFile: null,
                     croppedImageUrl: null,
                   },

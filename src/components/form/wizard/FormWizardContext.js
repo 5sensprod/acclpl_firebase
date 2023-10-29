@@ -6,9 +6,11 @@ import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 const FormWizardContext = createContext()
 
 const initialState = {
+  tempOriginalPhotoURL: null,
   tempPhotoURL: null,
   tempSelectedFile: null,
   tempCroppedImageUrl: null,
+  originalPhotoURL: null,
   photoURL: defaultPhoto,
   isDefaultPhoto: true,
   openCrop: false,
@@ -25,7 +27,7 @@ const initialState = {
     photoURLs: [],
     selectedFile: null, // Ajouté
     croppedImageUrl: null, // Ajouté
-    originalPhotoURL: null,
+    // originalPhotoURL: null,
     zoom: 1,
     rotation: 0,
     // ... d'autres champs que vous pourriez avoir
@@ -34,6 +36,23 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_ORIGINAL_PHOTO':
+      return {
+        ...state,
+        originalPhotoURL: action.payload,
+      }
+    case 'SET_TEMP_ORIGINAL_PHOTO':
+      return {
+        ...state,
+        tempOriginalPhotoURL: action.payload,
+      }
+
+    case 'RESET_TEMP_ORIGINAL_PHOTO':
+      return {
+        ...state,
+        tempOriginalPhotoURL: null,
+      }
+
     case 'SET_TEMP_PHOTO':
       return {
         ...state,
