@@ -143,12 +143,17 @@ const wizardReducer = (state, action) => {
       return formatCompanyAction(state, action)
 
     case 'UPDATE_FORM_DATA':
+      const updatedFormData = {
+        ...state.formData,
+        ...action.payload,
+      }
+
+      // Log ici
+      console.log('Updated formData:', updatedFormData)
+
       return {
         ...state,
-        formData: {
-          ...state.formData,
-          ...action.payload,
-        },
+        formData: updatedFormData,
       }
     case 'UPDATE_HAS_CLOSED_MODAL':
       return {

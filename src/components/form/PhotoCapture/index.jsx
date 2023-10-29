@@ -70,7 +70,7 @@ function PhotoCapture() {
 
   return (
     <>
-      <div style={{ textAlign: 'left' }}>
+      <div style={{ textAlign: 'center' }}>
         <PhotoPreview
           imageUrl={imageUrl}
           defaultPhoto={defaultPhoto}

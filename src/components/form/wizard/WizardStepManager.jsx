@@ -6,6 +6,7 @@ import DynamicModal from './DynamicModal'
 import formatCompanyName from '../../../utils/formatCompanyName'
 import normalizedCompanyName from '../../../utils/normalizedCompanyName'
 import { useModal } from './ModalContext'
+import { isFormComplete } from './wizardValidation'
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
@@ -14,6 +15,8 @@ const WizardStepManager = () => {
 
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
+
+  const canFinish = isFormComplete(state.formData)
 
   const moveToPrevStep = () => {
     dispatch({ type: 'PREV_STEP' })
@@ -104,23 +107,31 @@ const WizardStepManager = () => {
       const formattedName = formatCompanyName(state.formData.companyName)
       const normalized = normalizedCompanyName(formattedName)
 
+      // LOGGING HERE
+      console.log('Dispatching FORMAT_COMPANY with:', {
+        companyName: formattedName, // <-- Notez cette modification
+        normalizedCompanyName: normalized,
+      })
+
+      dispatch({
+        type: 'FORMAT_COMPANY',
+        payload: {
+          companyName: formattedName, // <-- Notez cette modification
+          normalizedCompanyName: normalized,
+        },
+      })
+
       const duplicateCheckResult = await checkDuplicateEstablishment(normalized)
 
       if (duplicateCheckResult.found) {
         showEstablishmentModal(duplicateCheckResult)
         return
       }
-
-      dispatch({
-        type: 'FORMAT_COMPANY',
-        payload: state.formData.companyName,
-      })
     }
 
     dispatch({ type: 'NEXT_STEP' })
     setIsLoading(false)
   }
-
   const handleFinishClick = () => {
     // Traitement à effectuer lorsque l'utilisateur clique sur "Terminer"
     alert('Formulaire terminé!') // Ceci est juste un exemple. Vous pouvez y ajouter votre propre logique.
@@ -144,7 +155,7 @@ const WizardStepManager = () => {
         <Button
           variant="success"
           onClick={handleFinishClick}
-          disabled={isLoading}
+          disabled={!canFinish || isLoading}
         >
           {isLoading ? <Spinner animation="border" size="sm" /> : 'Terminer'}
         </Button>

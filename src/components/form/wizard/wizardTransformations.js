@@ -3,11 +3,11 @@ import normalizedCompanyName from '../../../utils/normalizedCompanyName'
 
 export const formatCompanyAction = (state, action) => {
   // Si action.payload est null ou undefined, retournez l'état actuel sans modifications
-  if (action.payload == null) {
+  if (!action.payload || !action.payload.companyName) {
     return state
   }
 
-  const formattedName = formatCompanyName(action.payload)
+  const formattedName = formatCompanyName(action.payload.companyName)
   const normalized = normalizedCompanyName(formattedName)
 
   return {
