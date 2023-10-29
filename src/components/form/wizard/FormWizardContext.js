@@ -38,6 +38,27 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SAVE_PREVIOUS_ZOOM_AND_ROTATION':
+      return {
+        ...state,
+        previousZoom: state.zoom,
+        previousRotation: state.rotation,
+      }
+
+    case 'RESTORE_PREVIOUS_ZOOM_AND_ROTATION':
+      return {
+        ...state,
+        zoom: state.previousZoom,
+        rotation: state.previousRotation,
+      }
+
+    case 'RESET_ZOOM_AND_ROTATION_TO_DEFAULT':
+      return {
+        ...state,
+        zoom: 1, // Vérifiez que cette constante est disponible
+        rotation: 0,
+      }
+
     case 'UPDATE_ZOOM_AND_ROTATION':
       return {
         ...state,

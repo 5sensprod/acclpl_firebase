@@ -69,6 +69,7 @@ export default function CropEasy({ setOpenCrop, onCroppedImage }) {
       onHide={() => {
         setOpenCrop(false)
         dispatch({ type: 'RESET_TEMP_PHOTO' })
+        dispatch({ type: 'RESTORE_PREVIOUS_ZOOM_AND_ROTATION' })
       }}
       size="lg"
     >
