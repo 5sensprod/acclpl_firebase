@@ -1,3 +1,5 @@
+//src\components\form\CropEasy\index.jsx
+
 import React, { useState, useCallback } from 'react'
 import { Modal } from 'react-bootstrap'
 import { cropImage } from './imageUtils'
@@ -10,7 +12,8 @@ import { useFormWizardState } from '../wizard/FormWizardContext'
 export default function CropEasy({ setOpenCrop, onCroppedImage }) {
   const { state, dispatch } = useFormWizardState()
   const { tempPhotoURL } = state
-  const [crop, setCrop] = useState({ x: 0, y: 0 })
+  const [crop, setCrop] = useState(state.crop)
+  // console.log('CropEasy - current value of crop:', crop)
   const [zoom, setZoom] = useState(state.zoom)
   const [rotation, setRotation] = useState(state.rotation)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
@@ -32,10 +35,12 @@ export default function CropEasy({ setOpenCrop, onCroppedImage }) {
         croppedAreaPixels,
         rotation,
         zoom,
+        crop,
       )
       dispatch({
-        type: 'UPDATE_ZOOM_AND_ROTATION',
+        type: 'UPDATE_CROP_ZOOM_AND_ROTATION',
         payload: {
+          crop: crop,
           zoom: zoom,
           rotation: rotation,
         },
@@ -69,7 +74,7 @@ export default function CropEasy({ setOpenCrop, onCroppedImage }) {
       onHide={() => {
         setOpenCrop(false)
         dispatch({ type: 'RESET_TEMP_PHOTO' })
-        dispatch({ type: 'RESTORE_PREVIOUS_ZOOM_AND_ROTATION' })
+        dispatch({ type: 'RESTORE_PREVIOUS_CROP_ZOOM_AND_ROTATION' })
       }}
       size="lg"
     >

@@ -11,12 +11,12 @@ function PhotoCapture() {
   const handlePhotoChange = (event) => {
     const file = event.target.files[0]
     if (file) {
-      dispatch({ type: 'SAVE_PREVIOUS_ZOOM_AND_ROTATION' })
+      dispatch({ type: 'SAVE_PREVIOUS_CROP_ZOOM_AND_ROTATION' })
       const reader = new FileReader()
       reader.onload = (e) => {
         // Réinitialiser les valeurs de zoom et de rotation à leurs valeurs par défaut
         dispatch({
-          type: 'RESET_ZOOM_AND_ROTATION_TO_DEFAULT',
+          type: 'RESET_CROP_ZOOM_AND_ROTATION_TO_DEFAULT',
         })
         // Mettre à jour l'image originale temporaire avec la nouvelle image sélectionnée
         dispatch({

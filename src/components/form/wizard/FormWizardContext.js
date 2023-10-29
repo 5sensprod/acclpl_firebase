@@ -8,6 +8,7 @@ const FormWizardContext = createContext()
 const initialState = {
   zoom: 1,
   rotation: 0,
+  crop: { x: 0, y: 0 },
   tempOriginalPhotoURL: null,
   tempPhotoURL: null,
   tempSelectedFile: null,
@@ -30,38 +31,42 @@ const initialState = {
     selectedFile: null, // Ajouté
     croppedImageUrl: null, // Ajouté
     // originalPhotoURL: null,
-    zoom: 1,
-    rotation: 0,
+    // zoom: 1,
+    // rotation: 0,
     // ... d'autres champs que vous pourriez avoir
   },
 }
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
-    case 'SAVE_PREVIOUS_ZOOM_AND_ROTATION':
+    case 'SAVE_PREVIOUS_CROP_ZOOM_AND_ROTATION':
       return {
         ...state,
+        previousCrop: state.crop,
         previousZoom: state.zoom,
         previousRotation: state.rotation,
       }
 
-    case 'RESTORE_PREVIOUS_ZOOM_AND_ROTATION':
+    case 'RESTORE_PREVIOUS_CROP_ZOOM_AND_ROTATION':
       return {
         ...state,
+        crop: state.previousCrop,
         zoom: state.previousZoom,
         rotation: state.previousRotation,
       }
 
-    case 'RESET_ZOOM_AND_ROTATION_TO_DEFAULT':
+    case 'RESET_CROP_ZOOM_AND_ROTATION_TO_DEFAULT':
       return {
         ...state,
-        zoom: 1, // Vérifiez que cette constante est disponible
+        crop: { x: 0, y: 0 },
+        zoom: 1,
         rotation: 0,
       }
 
-    case 'UPDATE_ZOOM_AND_ROTATION':
+    case 'UPDATE_CROP_ZOOM_AND_ROTATION':
       return {
         ...state,
+        crop: action.payload.crop,
         zoom: action.payload.zoom,
         rotation: action.payload.rotation,
       }
