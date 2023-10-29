@@ -22,18 +22,14 @@ const initialState = {
   formData: {
     companyName: '',
     normalizedCompanyName: '',
-    companyAddress: '', // Ajouté
-    companyCoordinates: [], // Ajouté
+    companyAddress: '',
+    companyCoordinates: [],
     dateOfObservation: '',
     timeOfObservation: '',
     photoBlob: null,
     photoURLs: [],
-    selectedFile: null, // Ajouté
-    croppedImageUrl: null, // Ajouté
-    // originalPhotoURL: null,
-    // zoom: 1,
-    // rotation: 0,
-    // ... d'autres champs que vous pourriez avoir
+    selectedFile: null,
+    croppedImageUrl: null,
   },
 }
 
@@ -96,7 +92,6 @@ const wizardReducer = (state, action) => {
         tempCroppedImageUrl: action.payload.croppedImageUrl,
       }
 
-    // Pour réinitialiser l'état temporaire (par exemple, lors de l'annulation)
     case 'RESET_TEMP_PHOTO':
       return {
         ...state,
@@ -105,14 +100,13 @@ const wizardReducer = (state, action) => {
         tempCroppedImageUrl: null,
       }
 
-    // Pour confirmer le recadrage et copier l'état temporaire dans l'état permanent
     case 'CONFIRM_CROP':
       return {
         ...state,
         photoURL: state.tempPhotoURL,
         selectedFile: state.tempSelectedFile,
         croppedImageUrl: state.tempCroppedImageUrl,
-        tempPhotoURL: null, // Réinitialisation après la confirmation
+        tempPhotoURL: null,
         tempSelectedFile: null,
         tempCroppedImageUrl: null,
       }
