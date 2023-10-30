@@ -1,62 +1,36 @@
-import { useReducer } from 'react'
+import { useState } from 'react'
 import { reverseGeocode, geocodeAddress } from '../../../api/geocode'
 
-const initialState = {
-  address: '',
-  autocompleteResults: [],
-}
-
-const ACTIONS = {
-  SET_ADDRESS: 'SET_ADDRESS',
-  SET_AUTOCOMPLETE_RESULTS: 'SET_AUTOCOMPLETE_RESULTS',
-}
-
-function addressReducer(state, action) {
-  switch (action.type) {
-    case ACTIONS.SET_ADDRESS:
-      return { ...state, address: action.payload }
-    case ACTIONS.SET_AUTOCOMPLETE_RESULTS:
-      return { ...state, autocompleteResults: action.payload }
-    default:
-      return state
-  }
-}
-
 function useGeolocationAddress(initialAddress, onSelectAddress) {
-  const [state, dispatch] = useReducer(addressReducer, {
-    ...initialState,
-    address: initialAddress,
-  })
+  const [address, setAddress] = useState(initialAddress || '')
+  const [autocompleteResults, setAutocompleteResults] = useState([])
 
   const handleAddressChange = async (e) => {
     const query = e.target.value
-    dispatch({ type: ACTIONS.SET_ADDRESS, payload: query })
+    setAddress(query)
 
     if (query.length < 3) {
-      dispatch({ type: ACTIONS.SET_AUTOCOMPLETE_RESULTS, payload: [] })
+      setAutocompleteResults([])
       return
     }
 
     try {
       const features = await geocodeAddress(query)
-      dispatch({
-        type: ACTIONS.SET_AUTOCOMPLETE_RESULTS,
-        payload: features || [],
-      })
+      setAutocompleteResults(features || [])
     } catch (err) {
       console.error("Erreur lors de l'autocomplétion:", err)
     }
   }
 
   const handleSuggestionClick = (feature) => {
-    dispatch({ type: ACTIONS.SET_ADDRESS, payload: feature.properties.label })
+    setAddress(feature.properties.label)
     if (onSelectAddress && feature.geometry) {
       onSelectAddress(
         [feature.geometry.coordinates[1], feature.geometry.coordinates[0]],
         feature.properties.label,
       )
     }
-    dispatch({ type: ACTIONS.SET_AUTOCOMPLETE_RESULTS, payload: [] })
+    setAutocompleteResults([])
   }
 
   const handleGeolocationClick = () => {
@@ -73,10 +47,10 @@ function useGeolocationAddress(initialAddress, onSelectAddress) {
         const lon = position.coords.longitude
 
         try {
-          const address = await reverseGeocode(lat, lon)
-          if (address) {
-            dispatch({ type: ACTIONS.SET_ADDRESS, payload: address })
-            onSelectAddress([lat, lon], address)
+          const addressFound = await reverseGeocode(lat, lon)
+          if (addressFound) {
+            setAddress(addressFound)
+            onSelectAddress([lat, lon], addressFound)
           } else {
             console.warn(
               'Géocodage inverse: aucune adresse trouvée pour ces coordonnées.',
@@ -109,8 +83,8 @@ function useGeolocationAddress(initialAddress, onSelectAddress) {
   }
 
   return {
-    address: state.address,
-    autocompleteResults: state.autocompleteResults,
+    address,
+    autocompleteResults,
     handleAddressChange,
     handleSuggestionClick,
     handleGeolocationClick,
