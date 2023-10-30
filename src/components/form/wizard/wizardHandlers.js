@@ -5,32 +5,42 @@ import {
 } from '../../../services/establishmentServiceWizard'
 import { addObservation } from '../../../services/observationService'
 
-export async function submitData(formData, currentUser) {
-  try {
-    // 2. Add or get street reference
-    const streetRef = await addStreet({
-      streetName: formData.formattedAddress.streetName,
-      city: formData.formattedAddress.city,
-      postalCode: formData.formattedAddress.postalCode,
+async function handleStreet(formData) {
+  return await addStreet({
+    streetName: formData.formattedAddress.streetName,
+    city: formData.formattedAddress.city,
+    postalCode: formData.formattedAddress.postalCode,
+  })
+}
+
+async function handleEstablishment(formData, streetRef) {
+  let establishmentRef = await getEstablishmentRef(
+    formData.normalizedCompanyName,
+  )
+
+  if (!establishmentRef) {
+    establishmentRef = await addEstablishment({
+      establishmentName: formData.companyName,
+      normalizedEstablishmentName: formData.normalizedCompanyName,
+      streetRef: streetRef,
+      coordinates: formData.companyCoordinates,
     })
-
-    // 3. Add or get establishment reference
-    let establishmentRef = await getEstablishmentRef(
-      formData.normalizedCompanyName,
-    )
-
-    if (!establishmentRef) {
-      // Si establishmentRef est null, ajoutez un nouvel établissement
-      establishmentRef = await addEstablishment({
-        establishmentName: formData.companyName,
-        normalizedEstablishmentName: formData.normalizedCompanyName,
-        streetRef: streetRef,
-        coordinates: formData.companyCoordinates,
-      })
-    }
-
-    await addObservation(formData, establishmentRef)
-  } catch (error) {
-    throw error
   }
+
+  return establishmentRef
+}
+
+async function handleObservation(formData, establishmentRef) {
+  return await addObservation(formData, establishmentRef)
+}
+
+export async function submitData(formData, currentUser) {
+  // 1. Add or get street reference
+  const streetRef = await handleStreet(formData)
+
+  // 2. Add or get establishment reference
+  const establishmentRef = await handleEstablishment(formData, streetRef)
+
+  // 3. Add observation
+  await handleObservation(formData, establishmentRef)
 }
