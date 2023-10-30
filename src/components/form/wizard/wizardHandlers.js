@@ -1,11 +1,8 @@
-// src\components\form\wizard\wizardHandlers.js
-
-// import { uploadImage } from '../../../services/uploadImage'
 import { addStreet } from '../../../services/streetService'
 import {
   addEstablishment,
   getEstablishmentRef,
-} from '../../../services/establishmentService'
+} from '../../../services/establishmentServiceWizard'
 import { addObservation } from '../../../services/observationService'
 
 export async function submitData(formData, currentUser) {
@@ -18,13 +15,12 @@ export async function submitData(formData, currentUser) {
     })
 
     // 3. Add or get establishment reference
-    let establishmentRef
-    try {
-      establishmentRef = await getEstablishmentRef(
-        formData.normalizedCompanyName,
-      )
-    } catch (error) {
-      // If establishment is not found, add it
+    let establishmentRef = await getEstablishmentRef(
+      formData.normalizedCompanyName,
+    )
+
+    if (!establishmentRef) {
+      // Si establishmentRef est null, ajoutez un nouvel établissement
       establishmentRef = await addEstablishment({
         establishmentName: formData.companyName,
         normalizedEstablishmentName: formData.normalizedCompanyName,
@@ -33,14 +29,8 @@ export async function submitData(formData, currentUser) {
       })
     }
 
-    console.log('userID:', currentUser.uid)
-    console.log('Submitting with image URL:', formData.photoURLs)
-
     await addObservation(formData, establishmentRef)
-
-    console.log('Data submitted successfully')
   } catch (error) {
-    console.error('Error submitting data:', error)
     throw error
   }
 }

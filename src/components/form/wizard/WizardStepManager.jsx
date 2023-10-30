@@ -21,7 +21,6 @@ const WizardStepManager = () => {
   const totalSteps = state.steps.length
 
   const { currentUser } = useContext(UserContext)
-  console.log('Current User:', currentUser)
 
   const [showPreview, setShowPreview] = useState(false)
 
@@ -163,7 +162,6 @@ const WizardStepManager = () => {
     setIsLoading(false)
   }
   const handleVisualizeClick = () => {
-    console.log('Le bouton Terminer a été cliqué')
     setShowPreview(true)
   }
 
