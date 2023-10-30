@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Button, Spinner } from 'react-bootstrap'
 import { useFormWizardState } from './FormWizardContext'
 import { checkDuplicateEstablishment } from '../../../services/establishmentCheckerService'
@@ -8,6 +8,9 @@ import normalizedCompanyName from '../../../utils/normalizedCompanyName'
 import { useModal } from './ModalContext'
 import { isFormReadyToSubmit } from './wizardValidation'
 import PreviewModal from './PreviewModal'
+import { UserContext } from '../../../context/userContext'
+import { submitData } from '../wizard/wizardHandlers'
+import { uploadImage } from '../../../services/uploadImage'
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
@@ -17,9 +20,39 @@ const WizardStepManager = () => {
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
 
+  const { currentUser } = useContext(UserContext)
+  console.log('Current User:', currentUser)
+
   const [showPreview, setShowPreview] = useState(false)
 
   const canFinish = isFormReadyToSubmit(state.formData)
+
+  const handleUploadImage = async () => {
+    setIsLoading(true)
+    try {
+      // Récupérez le blob de l'image recadrée de l'état global
+      const imageBlob = state.formData.photoBlob
+
+      if (imageBlob) {
+        const downloadURL = await uploadImage(imageBlob)
+        alert(`Image uploaded successfully! URL: ${downloadURL}`)
+
+        // Si vous souhaitez également mettre à jour l'état avec l'URL téléchargée :
+        dispatch({
+          type: 'UPDATE_FORM_DATA',
+          payload: {
+            photoURLs: [downloadURL],
+          },
+        })
+      } else {
+        alert('No image to upload.')
+      }
+    } catch (error) {
+      alert('Error uploading the image.')
+      console.error('Error uploading the image:', error)
+    }
+    setIsLoading(false)
+  }
 
   const moveToPrevStep = () => {
     dispatch({ type: 'PREV_STEP' })
@@ -129,7 +162,7 @@ const WizardStepManager = () => {
     dispatch({ type: 'NEXT_STEP' })
     setIsLoading(false)
   }
-  const handleFinishClick = () => {
+  const handleVisualizeClick = () => {
     console.log('Le bouton Terminer a été cliqué')
     setShowPreview(true)
   }
@@ -138,8 +171,47 @@ const WizardStepManager = () => {
     setShowPreview(false)
   }
 
+  const handleSubmitClick = async () => {
+    setIsLoading(true)
+
+    let downloadURL = null // Initialisation de l'URL à null
+
+    try {
+      // Récupérez le blob de l'image recadrée de l'état global
+      const imageBlob = state.formData.photoBlob
+
+      // Si l'imageBlob existe, uploadez-la sur Firebase Storage
+      if (imageBlob) {
+        downloadURL = await uploadImage(imageBlob)
+      }
+
+      // Création des données pour la soumission
+      const observationData = {
+        ...state.formData,
+        userID: currentUser ? currentUser.uid : null,
+        photoURLs: downloadURL ? [downloadURL] : state.formData.photoURLs,
+        // Si downloadURL existe, utilisez-le, sinon utilisez photoURLs de l'état
+      }
+      observationData.date = observationData.dateOfObservation
+      observationData.time = observationData.timeOfObservation
+
+      // Soumettez toutes les données à Firebase Firestore ou à la base de données que vous utilisez
+      await submitData(observationData, currentUser) // Utilisez observationData ici
+
+      alert('Soumission réussie!')
+    } catch (error) {
+      alert("Une erreur s'est produite lors de la soumission des données.")
+      console.error('Erreur lors de la soumission des données:', error)
+    }
+
+    setIsLoading(false)
+  }
+
   return (
     <div className="d-flex justify-content-between mb-2">
+      <Button variant="info" onClick={handleUploadImage} disabled={isLoading}>
+        {isLoading ? <Spinner animation="border" size="sm" /> : 'Upload Image'}
+      </Button>
       {currentStep > 1 && (
         <Button variant="outline-primary" onClick={moveToPrevStep}>
           Revenir
@@ -153,13 +225,22 @@ const WizardStepManager = () => {
       )}
 
       {currentStep === totalSteps && (
-        <Button
-          variant="success"
-          onClick={handleFinishClick}
-          disabled={!canFinish || isLoading}
-        >
-          {isLoading ? <Spinner animation="border" size="sm" /> : 'Terminer'}
-        </Button>
+        <>
+          <Button
+            variant="secondary"
+            onClick={handleVisualizeClick}
+            disabled={!canFinish || isLoading}
+          >
+            Voir sur la carte
+          </Button>
+          <Button
+            variant="success"
+            onClick={handleSubmitClick}
+            disabled={!canFinish || isLoading}
+          >
+            {isLoading ? <Spinner animation="border" size="sm" /> : 'Terminer'}
+          </Button>
+        </>
       )}
       <DynamicModal />
       {showPreview && (

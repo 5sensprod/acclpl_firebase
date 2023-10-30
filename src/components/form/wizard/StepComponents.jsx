@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFormWizardState } from './FormWizardContext'
 import NameCompany from '../inputs/NameCompany'
 import GeolocateAddress from '../inputs/GeolocateAddress'
 import DateTimeInput from '../inputs/DateTimeInput'
 import PhotoCapture from '../PhotoCapture'
 import { motion } from 'framer-motion'
+import { formatAddress } from '../../../utils/addressUtils'
 // import { Button } from 'react-bootstrap'
 
 const slideVariants = {
@@ -53,6 +54,22 @@ export const Step1Component = (props) => {
 
 export const Step2Component = (props) => {
   const { state, dispatch } = useFormWizardState()
+
+  useEffect(() => {
+    // Effectuer l'opération de formatage de l'adresse
+    if (state.formData.companyAddress) {
+      try {
+        const addressComponents = formatAddress(state.formData.companyAddress)
+        console.log('Résultat du formatage:', addressComponents)
+        dispatch({
+          type: 'FORMAT_ADDRESS',
+          payload: addressComponents,
+        })
+      } catch (error) {
+        console.error("Erreur lors du formatage de l'adresse:", error)
+      }
+    }
+  }, [state.formData.companyAddress, dispatch])
 
   const handleSelectAddress = (coords) => {
     dispatch({

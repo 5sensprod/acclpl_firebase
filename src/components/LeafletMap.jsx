@@ -8,7 +8,7 @@ function LeafletMap({
   center = [48.9562, 4.3653],
   zoom = 13,
   markerCoords,
-  normalizedCompanyName,
+  companyName,
   imageURL,
 }) {
   const mapRef = useRef(null)
@@ -50,7 +50,7 @@ function LeafletMap({
     const marker = L.marker(correctedCoords).addTo(map)
 
     // Ajouter le popup avec le nom de l'entreprise si présent
-    if (normalizedCompanyName) {
+    if (companyName) {
       const popupContent = document.createElement('div')
 
       // Ajoutez ces styles pour centrer les éléments dans popupContent
@@ -60,7 +60,7 @@ function LeafletMap({
       popupContent.style.justifyContent = 'center' // pour centrer verticalement
 
       const companyNameElement = document.createElement('p')
-      companyNameElement.textContent = normalizedCompanyName
+      companyNameElement.textContent = companyName
       popupContent.appendChild(companyNameElement)
 
       if (imageURL) {
@@ -76,8 +76,8 @@ function LeafletMap({
     }
 
     markerRef.current = marker
-    map.setView(correctedCoords, 18)
-  }, [markerCoords, zoom, normalizedCompanyName, imageURL])
+    map.setView(correctedCoords, 16)
+  }, [markerCoords, zoom, companyName, imageURL])
 
   return <div ref={mapRef} style={{ width: '100%', height: '400px' }}></div>
 }

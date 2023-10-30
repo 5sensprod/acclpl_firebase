@@ -24,16 +24,21 @@ class EstablishmentModel {
   }
 
   toFirebaseObject() {
-    return {
-      establishmentName: this.establishmentName, // Utiliser la version formatée ici
-      normalizedEstablishmentName: this.normalizedEstablishmentName, // Utiliser la version normalisée ici
-      streetNumber: this.streetNumber,
+    const firebaseObject = {
+      establishmentName: this.establishmentName,
+      normalizedEstablishmentName: this.normalizedEstablishmentName,
       streetRef: this.streetRef,
       coordinates: {
         latitude: this.coordinates[0],
         longitude: this.coordinates[1],
       },
     }
+
+    if (this.streetNumber) {
+      firebaseObject.streetNumber = this.streetNumber
+    }
+
+    return firebaseObject
   }
 }
 

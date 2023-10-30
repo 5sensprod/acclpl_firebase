@@ -23,6 +23,12 @@ const initialState = {
     companyName: '',
     normalizedCompanyName: '',
     companyAddress: '',
+    formattedAddress: {
+      streetNumber: '',
+      streetName: '',
+      postalCode: '',
+      city: '',
+    },
     companyCoordinates: [],
     dateOfObservation: '',
     timeOfObservation: '',
@@ -35,6 +41,15 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'FORMAT_ADDRESS':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          formattedAddress: action.payload,
+        },
+      }
+
     case 'SAVE_PREVIOUS_CROP_ZOOM_AND_ROTATION':
       return {
         ...state,
@@ -143,13 +158,18 @@ const wizardReducer = (state, action) => {
       return formatCompanyAction(state, action)
 
     case 'UPDATE_FORM_DATA':
+      console.log('Action payload:', action.payload)
       const updatedFormData = {
         ...state.formData,
         ...action.payload,
       }
 
-      // Log ici
-      console.log('Updated formData:', updatedFormData)
+      if (action.payload.formattedAddress) {
+        console.log(
+          'formattedAddress mis à jour:',
+          updatedFormData.formattedAddress,
+        )
+      }
 
       return {
         ...state,
