@@ -10,7 +10,8 @@ import { isFormReadyToSubmit } from './wizardValidation'
 import PreviewModal from './PreviewModal'
 import { UserContext } from '../../../context/userContext'
 import { submitData } from '../wizard/wizardHandlers'
-import { uploadImage } from '../../../services/uploadImage'
+import { uploadImage } from '../../../services/uploadImageWizard'
+import { generateUniqueFileName } from '../../../utils/filenameUtils'
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
@@ -29,14 +30,15 @@ const WizardStepManager = () => {
   const handleUploadImage = async () => {
     setIsLoading(true)
     try {
-      // Récupérez le blob de l'image recadrée de l'état global
       const imageBlob = state.formData.photoBlob
 
       if (imageBlob) {
-        const downloadURL = await uploadImage(imageBlob)
+        const baseFileName = 'uploaded_image' // Vous pouvez choisir un autre nom si vous le souhaitez
+        const uniqueFileName = generateUniqueFileName(baseFileName)
+
+        const downloadURL = await uploadImage(imageBlob, uniqueFileName)
         alert(`Image uploaded successfully! URL: ${downloadURL}`)
 
-        // Si vous souhaitez également mettre à jour l'état avec l'URL téléchargée :
         dispatch({
           type: 'UPDATE_FORM_DATA',
           payload: {
@@ -67,7 +69,10 @@ const WizardStepManager = () => {
       photoURL,
     } = duplicateCheckResult.details
 
-    const fullAddress = `${streetNumber} ${streetName}, ${postalCode} ${city}`
+    // Vérifiez si streetNumber est défini et, dans l'affirmative, incluez-le dans l'adresse.
+    const fullAddress = streetNumber
+      ? `${streetNumber} ${streetName}, ${postalCode} ${city}`
+      : `${streetName}, ${postalCode} ${city}`
 
     const image = new Image()
     image.src = photoURL
@@ -180,7 +185,10 @@ const WizardStepManager = () => {
 
       // Si l'imageBlob existe, uploadez-la sur Firebase Storage
       if (imageBlob) {
-        downloadURL = await uploadImage(imageBlob)
+        const baseFileName = 'uploaded_image' // Vous pouvez choisir un autre nom si vous le souhaitez
+        const uniqueFileName = generateUniqueFileName(baseFileName) // Générez un nom de fichier unique
+
+        downloadURL = await uploadImage(imageBlob, uniqueFileName) // Passez le nom de fichier unique à la fonction uploadImage
       }
 
       // Création des données pour la soumission

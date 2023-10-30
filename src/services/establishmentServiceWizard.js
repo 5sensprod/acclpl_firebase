@@ -85,7 +85,11 @@ async function getEstablishmentRef(normalizedEstablishmentName) {
 
     const querySnapshot = await getDocs(establishmentQuery)
     if (!querySnapshot.empty) {
-      return querySnapshot.docs[0].data()
+      const doc = querySnapshot.docs[0]
+      return {
+        id: doc.id,
+        data: doc.data(),
+      } // Renvoie l'ID et les données de l'établissement
     } else {
       return null // Retournez null si aucun établissement correspondant n'est trouvé
     }
