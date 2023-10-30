@@ -27,34 +27,6 @@ const WizardStepManager = () => {
 
   const canFinish = isFormReadyToSubmit(state.formData)
 
-  const handleUploadImage = async () => {
-    setIsLoading(true)
-    try {
-      const imageBlob = state.formData.photoBlob
-
-      if (imageBlob) {
-        const baseFileName = 'uploaded_image' // Vous pouvez choisir un autre nom si vous le souhaitez
-        const uniqueFileName = generateUniqueFileName(baseFileName)
-
-        const downloadURL = await uploadImage(imageBlob, uniqueFileName)
-        alert(`Image uploaded successfully! URL: ${downloadURL}`)
-
-        dispatch({
-          type: 'UPDATE_FORM_DATA',
-          payload: {
-            photoURLs: [downloadURL],
-          },
-        })
-      } else {
-        alert('No image to upload.')
-      }
-    } catch (error) {
-      alert('Error uploading the image.')
-      console.error('Error uploading the image:', error)
-    }
-    setIsLoading(false)
-  }
-
   const moveToPrevStep = () => {
     dispatch({ type: 'PREV_STEP' })
   }
@@ -218,9 +190,6 @@ const WizardStepManager = () => {
 
   return (
     <div className="d-flex justify-content-between mb-2">
-      <Button variant="info" onClick={handleUploadImage} disabled={isLoading}>
-        {isLoading ? <Spinner animation="border" size="sm" /> : 'Upload Image'}
-      </Button>
       {currentStep > 1 && (
         <Button variant="outline-primary" onClick={moveToPrevStep}>
           Revenir
