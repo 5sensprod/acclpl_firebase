@@ -1,4 +1,4 @@
-const isFormComplete = (formData) => {
+const isFormReadyToSubmit = (formData) => {
   const {
     companyName,
     normalizedCompanyName,
@@ -6,6 +6,7 @@ const isFormComplete = (formData) => {
     companyCoordinates,
     dateOfObservation,
     timeOfObservation,
+    photoURLs,
   } = formData
 
   const isValid =
@@ -14,9 +15,11 @@ const isFormComplete = (formData) => {
     companyAddress &&
     companyCoordinates &&
     dateOfObservation &&
-    timeOfObservation
+    timeOfObservation &&
+    photoURLs &&
+    photoURLs.length > 0
 
   return isValid
 }
 
-export { isFormComplete }
+export { isFormReadyToSubmit }

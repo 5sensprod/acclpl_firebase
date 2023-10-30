@@ -43,6 +43,8 @@ function PhotoCapture() {
   }
 
   const handleCroppedImage = async (croppedImageUrl) => {
+    console.log('Cropped Image URL:', croppedImageUrl)
+
     const imageBlob = await fetch(croppedImageUrl).then((r) => r.blob())
 
     // 1. Mise à jour des états permanents
@@ -53,11 +55,25 @@ function PhotoCapture() {
         photoBlob: imageBlob,
       },
     })
+
+    // Affichage des valeurs
+    console.log(
+      'Date of Observation:',
+      formWizardState.formData.dateOfObservation,
+    )
+    console.log(
+      'Normalized Company Name:',
+      formWizardState.formData.normalizedCompanyName,
+    )
+    console.log('Photo Blob:', formWizardState.formData.photoBlob)
+    console.log('Photo URLs:', formWizardState.formData.photoURLs)
+
     // 2. Mise à jour du photoURL
     dispatch({
       type: 'UPDATE_PHOTO_URL',
       payload: croppedImageUrl,
     })
+
     // 3. Réinitialisation des états temporaires
     dispatch({
       type: 'RESET_TEMP_PHOTO',

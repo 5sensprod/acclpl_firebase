@@ -6,7 +6,8 @@ import DynamicModal from './DynamicModal'
 import formatCompanyName from '../../../utils/formatCompanyName'
 import normalizedCompanyName from '../../../utils/normalizedCompanyName'
 import { useModal } from './ModalContext'
-import { isFormComplete } from './wizardValidation'
+import { isFormReadyToSubmit } from './wizardValidation'
+import PreviewModal from './PreviewModal'
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
@@ -16,7 +17,9 @@ const WizardStepManager = () => {
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
 
-  const canFinish = isFormComplete(state.formData)
+  const [showPreview, setShowPreview] = useState(false)
+
+  const canFinish = isFormReadyToSubmit(state.formData)
 
   const moveToPrevStep = () => {
     dispatch({ type: 'PREV_STEP' })
@@ -107,16 +110,10 @@ const WizardStepManager = () => {
       const formattedName = formatCompanyName(state.formData.companyName)
       const normalized = normalizedCompanyName(formattedName)
 
-      // LOGGING HERE
-      console.log('Dispatching FORMAT_COMPANY with:', {
-        companyName: formattedName, // <-- Notez cette modification
-        normalizedCompanyName: normalized,
-      })
-
       dispatch({
         type: 'FORMAT_COMPANY',
         payload: {
-          companyName: formattedName, // <-- Notez cette modification
+          companyName: formattedName,
           normalizedCompanyName: normalized,
         },
       })
@@ -133,8 +130,12 @@ const WizardStepManager = () => {
     setIsLoading(false)
   }
   const handleFinishClick = () => {
-    // Traitement à effectuer lorsque l'utilisateur clique sur "Terminer"
-    alert('Formulaire terminé!') // Ceci est juste un exemple. Vous pouvez y ajouter votre propre logique.
+    console.log('Le bouton Terminer a été cliqué')
+    setShowPreview(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowPreview(false)
   }
 
   return (
@@ -161,6 +162,13 @@ const WizardStepManager = () => {
         </Button>
       )}
       <DynamicModal />
+      {showPreview && (
+        <PreviewModal
+          show={showPreview}
+          onHide={handleCloseModal}
+          formData={state.formData}
+        />
+      )}
     </div>
   )
 }
