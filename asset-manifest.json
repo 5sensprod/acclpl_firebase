@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/acclpl_firebase/static/css/main.ad966c8c.css",
-    "main.js": "/acclpl_firebase/static/js/main.9b202da1.js",
+    "main.js": "/acclpl_firebase/static/js/main.40a03f61.js",
     "static/media/defaultPhoto.jpg": "/acclpl_firebase/static/media/defaultPhoto.631aadb67dc31a3dcd1a.jpg",
     "index.html": "/acclpl_firebase/index.html",
     "main.ad966c8c.css.map": "/acclpl_firebase/static/css/main.ad966c8c.css.map",
-    "main.9b202da1.js.map": "/acclpl_firebase/static/js/main.9b202da1.js.map"
+    "main.40a03f61.js.map": "/acclpl_firebase/static/js/main.40a03f61.js.map"
   },
   "entrypoints": [
     "static/css/main.ad966c8c.css",
-    "static/js/main.9b202da1.js"
+    "static/js/main.40a03f61.js"
   ]
 }
