@@ -158,17 +158,9 @@ const wizardReducer = (state, action) => {
       return formatCompanyAction(state, action)
 
     case 'UPDATE_FORM_DATA':
-      console.log('Action payload:', action.payload)
       const updatedFormData = {
         ...state.formData,
         ...action.payload,
-      }
-
-      if (action.payload.formattedAddress) {
-        console.log(
-          'formattedAddress mis à jour:',
-          updatedFormData.formattedAddress,
-        )
       }
 
       return {

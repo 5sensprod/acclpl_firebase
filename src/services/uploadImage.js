@@ -6,7 +6,7 @@ import {
 } from 'firebase/storage'
 import { app } from '../firebaseConfig'
 
-const storage = getStorage(app) // Assurez-vous que 'app' est l'instance de Firebase que vous avez initialisée précédemment.
+const storage = getStorage(app)
 
 async function uploadImage(file) {
   // Créez une référence de stockage avec un nom de fichier unique
@@ -20,7 +20,7 @@ async function uploadImage(file) {
     uploadTask.on(
       'state_changed',
       (snapshot) => {
-        // Vous pouvez utiliser cette callback pour afficher la progression de l'upload
+        // Utiliser cette callback pour afficher la progression de l'upload
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         console.log('Upload is ' + progress + '% done')
       },
@@ -32,7 +32,6 @@ async function uploadImage(file) {
       async () => {
         // Récupérez l'URL de téléchargement lorsque l'upload est terminé
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
-        console.log('File available at', downloadURL)
         resolve(downloadURL) // Vous pouvez retourner l'URL pour l'utiliser ailleurs dans votre application
       },
     )

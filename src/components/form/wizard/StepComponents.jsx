@@ -60,7 +60,6 @@ export const Step2Component = (props) => {
     if (state.formData.companyAddress) {
       try {
         const addressComponents = formatAddress(state.formData.companyAddress)
-        console.log('Résultat du formatage:', addressComponents)
         dispatch({
           type: 'FORMAT_ADDRESS',
           payload: addressComponents,
