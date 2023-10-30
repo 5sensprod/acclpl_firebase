@@ -51,7 +51,10 @@ function useGeolocationAddress(initialAddress, onSelectAddress) {
   const handleSuggestionClick = (feature) => {
     dispatch({ type: ACTIONS.SET_ADDRESS, payload: feature.properties.label })
     if (onSelectAddress && feature.geometry) {
-      onSelectAddress(feature.geometry.coordinates, feature.properties.label)
+      onSelectAddress(
+        [feature.geometry.coordinates[1], feature.geometry.coordinates[0]],
+        feature.properties.label,
+      )
     }
     dispatch({ type: ACTIONS.SET_AUTOCOMPLETE_RESULTS, payload: [] })
   }
@@ -73,7 +76,7 @@ function useGeolocationAddress(initialAddress, onSelectAddress) {
           const address = await reverseGeocode(lat, lon)
           if (address) {
             dispatch({ type: ACTIONS.SET_ADDRESS, payload: address })
-            onSelectAddress([lon, lat], address)
+            onSelectAddress([lat, lon], address)
           } else {
             console.warn(
               'Géocodage inverse: aucune adresse trouvée pour ces coordonnées.',

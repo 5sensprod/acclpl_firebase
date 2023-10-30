@@ -77,6 +77,10 @@ async function checkDuplicateEstablishment(normalizedEstablishmentName) {
       postalCode: streetData.postalCode,
       streetNumber: establishmentData.streetNumber,
       photoURL: photoURL,
+      coordinates: [
+        establishmentData.coordinates.longitude,
+        establishmentData.coordinates.latitude,
+      ],
     },
   }
 }

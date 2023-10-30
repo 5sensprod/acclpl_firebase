@@ -46,8 +46,7 @@ function LeafletMap({
       markerRef.current.remove()
     }
 
-    const correctedCoords = [markerCoords[1], markerCoords[0]]
-    const marker = L.marker(correctedCoords).addTo(map)
+    const marker = L.marker(markerCoords).addTo(map)
 
     // Ajouter le popup avec le nom de l'entreprise si présent
     if (companyName) {
@@ -76,7 +75,7 @@ function LeafletMap({
     }
 
     markerRef.current = marker
-    map.setView(correctedCoords, 16)
+    map.setView(markerCoords, 16)
   }, [markerCoords, zoom, companyName, imageURL])
 
   return <div ref={mapRef} style={{ width: '100%', height: '400px' }}></div>

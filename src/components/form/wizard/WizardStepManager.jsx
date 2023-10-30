@@ -67,7 +67,9 @@ const WizardStepManager = () => {
       postalCode,
       streetNumber,
       photoURL,
+      coordinates,
     } = duplicateCheckResult.details
+    // console.log('Coordinates:', coordinates) // Cela affiche les coordonnées dans la console
 
     // Vérifiez si streetNumber est défini et, dans l'affirmative, incluez-le dans l'adresse.
     const fullAddress = streetNumber
@@ -108,6 +110,7 @@ const WizardStepManager = () => {
                 type: 'UPDATE_FORM_DATA',
                 payload: {
                   companyAddress: fullAddress,
+                  companyCoordinates: coordinates,
                 },
               })
               dispatch({ type: 'NEXT_STEP' })

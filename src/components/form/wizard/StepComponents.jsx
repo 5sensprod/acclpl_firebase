@@ -71,12 +71,14 @@ export const Step2Component = (props) => {
   }, [state.formData.companyAddress, dispatch])
 
   const handleSelectAddress = (coords) => {
-    dispatch({
-      type: 'UPDATE_FORM_DATA',
-      payload: {
-        companyCoordinates: coords,
-      },
-    })
+    if (!state.hasCoordinatesFromDuplicateModal) {
+      dispatch({
+        type: 'UPDATE_FORM_DATA',
+        payload: {
+          companyCoordinates: coords,
+        },
+      })
+    }
   }
 
   return (

@@ -163,6 +163,11 @@ const wizardReducer = (state, action) => {
         ...action.payload,
       }
 
+      console.log(
+        'Updated companyCoordinates:',
+        updatedFormData.companyCoordinates,
+      ) // Ajout du log
+
       return {
         ...state,
         formData: updatedFormData,
