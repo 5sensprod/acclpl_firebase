@@ -6,7 +6,7 @@ import EstablishmentModal from '../modals/EstablishmentModal'
 import formatCompanyName from '../../../utils/formatCompanyName'
 import normalizedCompanyName from '../../../utils/normalizedCompanyName'
 import { isFormReadyToSubmit } from './wizardValidation'
-import PreviewModal from './PreviewModal'
+import PreviewModal from '../modals/PreviewModal'
 import useHandleSubmitClick from './useHandleSubmitClick'
 import useShowEstablishmentModal from './useShowEstablishmentModal'
 
