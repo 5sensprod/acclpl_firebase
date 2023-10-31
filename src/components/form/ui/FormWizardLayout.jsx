@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, Container } from 'react-bootstrap'
 import { useFormWizardState } from '../context/FormWizardContext'
-import StepProgressIndicator from '../wizard/StepProgressIndicator'
+import StepProgressIndicator from './StepProgressIndicator'
 import WizardStepManager from '../wizard/WizardStepManager'
 
 const FormWizardLayout = ({ children }) => {
