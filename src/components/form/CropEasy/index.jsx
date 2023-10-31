@@ -13,7 +13,6 @@ export default function CropEasy({ setOpenCrop, onCroppedImage }) {
   const { state, dispatch } = useFormWizardState()
   const { tempPhotoURL } = state
   const [crop, setCrop] = useState(state.crop)
-  // console.log('CropEasy - current value of crop:', crop)
   const [zoom, setZoom] = useState(state.zoom)
   const [rotation, setRotation] = useState(state.rotation)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
