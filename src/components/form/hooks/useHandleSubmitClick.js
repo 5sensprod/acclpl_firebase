@@ -4,6 +4,7 @@ import { UserContext } from '../../../context/userContext'
 import { uploadImage } from '../../../services/uploadImageWizard'
 import { generateUniqueFileName } from '../../../utils/filenameUtils'
 import { submitData } from '../wizard/wizardHandlers'
+import { compressImage } from '../../../utils/imageCompression'
 
 const useHandleSubmitClick = (setIsLoading) => {
   const { state } = useFormWizardState()
@@ -15,11 +16,12 @@ const useHandleSubmitClick = (setIsLoading) => {
 
     try {
       if (state.formData.photoBlob) {
+        // First, compress the image
+        const compressedImage = await compressImage(state.formData.photoBlob)
+
+        // Then, upload the compressed image
         const uniqueFileName = generateUniqueFileName('uploaded_image')
-        downloadURL = await uploadImage(
-          state.formData.photoBlob,
-          uniqueFileName,
-        )
+        downloadURL = await uploadImage(compressedImage, uniqueFileName)
       }
 
       const observationData = {
