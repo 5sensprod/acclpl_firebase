@@ -93,12 +93,6 @@ const wizardReducer = (state, action) => {
         tempOriginalPhotoURL: action.payload,
       }
 
-    case 'RESET_TEMP_ORIGINAL_PHOTO':
-      return {
-        ...state,
-        tempOriginalPhotoURL: null,
-      }
-
     case 'SET_TEMP_PHOTO':
       return {
         ...state,
@@ -115,16 +109,6 @@ const wizardReducer = (state, action) => {
         tempCroppedImageUrl: null,
       }
 
-    case 'CONFIRM_CROP':
-      return {
-        ...state,
-        photoURL: state.tempPhotoURL,
-        selectedFile: state.tempSelectedFile,
-        croppedImageUrl: state.tempCroppedImageUrl,
-        tempPhotoURL: null,
-        tempSelectedFile: null,
-        tempCroppedImageUrl: null,
-      }
     case 'UPDATE_PHOTO_URL':
       return {
         ...state,
@@ -141,12 +125,6 @@ const wizardReducer = (state, action) => {
       return { ...state, openCrop: true }
     case 'CLOSE_CROP':
       return { ...state, openCrop: false }
-    case 'SET_PHOTO':
-      return { ...state, photoURL: action.payload, photoModified: true }
-    case 'RESET_PHOTO':
-      return { ...state, photoURL: defaultPhoto, photoModified: false }
-    case 'SET_STEP':
-      return { ...state, currentStep: action.payload }
 
     case 'NEXT_STEP':
       return { ...state, currentStep: state.currentStep + 1 }
@@ -182,41 +160,6 @@ const wizardReducer = (state, action) => {
       return {
         ...state,
         hasClosedModal: false,
-      }
-
-    case 'SET_SELECTED_FILE':
-      return {
-        ...state,
-        formData: {
-          ...state.formData,
-          selectedFile: action.payload,
-        },
-      }
-    case 'SET_CROPPED_IMAGE_URL':
-      return {
-        ...state,
-        formData: {
-          ...state.formData,
-          croppedImageUrl: action.payload,
-        },
-      }
-
-    case 'SET_ZOOM':
-      return {
-        ...state,
-        formData: {
-          ...state.formData,
-          zoom: action.payload,
-        },
-      }
-
-    case 'SET_ROTATION':
-      return {
-        ...state,
-        formData: {
-          ...state.formData,
-          rotation: action.payload,
-        },
       }
 
     default:
