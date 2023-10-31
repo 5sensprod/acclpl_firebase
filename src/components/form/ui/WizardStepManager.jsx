@@ -7,8 +7,8 @@ import formatCompanyName from '../../../utils/formatCompanyName'
 import normalizedCompanyName from '../../../utils/normalizedCompanyName'
 import { isFormReadyToSubmit } from '../wizard/wizardValidation'
 import PreviewModal from '../modals/PreviewModal'
-import useHandleSubmitClick from '../wizard/useHandleSubmitClick'
-import useShowEstablishmentModal from '../wizard/useShowEstablishmentModal'
+import useHandleSubmitClick from '../hooks/useHandleSubmitClick'
+import useShowEstablishmentModal from '../hooks/useShowEstablishmentModal'
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
