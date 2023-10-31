@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
-import { useModal } from './ModalContext'
+import { useModal } from '../context/ModalContext'
 
 const DynamicModal = () => {
   const { modalConfig, setModalConfig } = useModal()

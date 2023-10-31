@@ -1,4 +1,4 @@
-import { useModal } from './ModalContext'
+import { useModal } from '../context/ModalContext'
 
 const useShowEstablishmentModal = (setIsLoading, dispatch) => {
   const { setModalConfig } = useModal()
