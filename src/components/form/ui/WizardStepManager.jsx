@@ -5,10 +5,10 @@ import { checkDuplicateEstablishment } from '../../../services/establishmentChec
 import EstablishmentModal from '../modals/EstablishmentModal'
 import formatCompanyName from '../../../utils/formatCompanyName'
 import normalizedCompanyName from '../../../utils/normalizedCompanyName'
-import { isFormReadyToSubmit } from './wizardValidation'
+import { isFormReadyToSubmit } from '../wizard/wizardValidation'
 import PreviewModal from '../modals/PreviewModal'
-import useHandleSubmitClick from './useHandleSubmitClick'
-import useShowEstablishmentModal from './useShowEstablishmentModal'
+import useHandleSubmitClick from '../wizard/useHandleSubmitClick'
+import useShowEstablishmentModal from '../wizard/useShowEstablishmentModal'
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
