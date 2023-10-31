@@ -10,7 +10,10 @@ import {
   orderBy,
 } from 'firebase/firestore'
 
-async function checkDuplicateEstablishment(normalizedEstablishmentName) {
+async function checkDuplicateEstablishment(
+  normalizedEstablishmentName,
+  dispatch,
+) {
   if (!normalizedEstablishmentName) {
     throw new Error('normalizedEstablishmentName is required.')
   }
@@ -23,12 +26,19 @@ async function checkDuplicateEstablishment(normalizedEstablishmentName) {
   const querySnapshot = await getDocs(establishmentQuery)
 
   if (querySnapshot.empty) {
+    dispatch({ type: 'SET_ESTABLISHMENT_EXISTS', payload: false })
+    dispatch({ type: 'SET_CURRENT_ESTABLISHMENT_ID', payload: null })
     return false
   }
 
   const establishmentDoc = querySnapshot.docs[0]
   const establishmentId = establishmentDoc.id
   const establishmentData = establishmentDoc.data()
+
+  dispatch({ type: 'SET_ESTABLISHMENT_EXISTS', payload: true })
+  dispatch({ type: 'SET_CURRENT_ESTABLISHMENT_ID', payload: establishmentId })
+
+  console.log('Establishment ID:', establishmentId)
 
   if (!establishmentData.streetRef) {
     throw new Error('Street reference in establishment is missing or invalid.')
@@ -71,6 +81,7 @@ async function checkDuplicateEstablishment(normalizedEstablishmentName) {
   return {
     found: true,
     details: {
+      establishmentId: establishmentId,
       establishmentName: establishmentData.establishmentName,
       streetName: streetData.streetName,
       city: streetData.city,

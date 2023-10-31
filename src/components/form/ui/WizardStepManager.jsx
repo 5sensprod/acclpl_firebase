@@ -49,7 +49,10 @@ const WizardStepManager = () => {
         },
       })
 
-      const duplicateCheckResult = await checkDuplicateEstablishment(normalized)
+      const duplicateCheckResult = await checkDuplicateEstablishment(
+        normalized,
+        dispatch,
+      )
 
       if (duplicateCheckResult.found) {
         showEstablishmentModal(duplicateCheckResult)

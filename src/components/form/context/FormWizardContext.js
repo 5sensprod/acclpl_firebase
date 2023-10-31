@@ -19,6 +19,7 @@ const initialState = {
   openCrop: false,
   currentStep: 1,
   steps: [],
+  establishmentExists: false,
   formData: {
     companyName: '',
     normalizedCompanyName: '',
@@ -36,11 +37,27 @@ const initialState = {
     photoURLs: [],
     selectedFile: null,
     croppedImageUrl: null,
+    currentEstablishmentId: null,
   },
 }
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_ESTABLISHMENT_EXISTS':
+      return {
+        ...state,
+        establishmentExists: action.payload,
+      }
+
+    case 'SET_CURRENT_ESTABLISHMENT_ID':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          currentEstablishmentId: action.payload,
+        },
+      }
+
     case 'FORMAT_ADDRESS':
       return {
         ...state,

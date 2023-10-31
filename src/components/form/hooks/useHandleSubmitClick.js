@@ -5,6 +5,7 @@ import { uploadImage } from '../../../services/uploadImageWizard'
 import { generateUniqueFileName } from '../../../utils/filenameUtils'
 import { submitData } from '../wizard/wizardHandlers'
 import { compressImage } from '../../../utils/imageCompression'
+import { addObservation } from '../../../services/observationService'
 
 const useHandleSubmitClick = (setIsLoading) => {
   const { state } = useFormWizardState()
@@ -32,7 +33,16 @@ const useHandleSubmitClick = (setIsLoading) => {
         time: state.formData.timeOfObservation,
       }
 
-      await submitData(observationData, currentUser)
+      if (state.establishmentExists) {
+        // If the establishment already exists, submit the observation data only.
+        await addObservation(observationData, {
+          id: state.formData.currentEstablishmentId,
+        })
+      } else {
+        // If the establishment doesn't exist, submit both the establishment and observation data.
+        await submitData(observationData, currentUser)
+      }
+
       alert('Soumission réussie!')
     } catch (error) {
       alert("Une erreur s'est produite lors de la soumission des données.")
