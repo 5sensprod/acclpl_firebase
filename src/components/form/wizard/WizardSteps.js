@@ -3,7 +3,7 @@ import {
   Step2Component,
   Step3Component,
   Step4Component,
-} from './StepComponents'
+} from '../ui/StepComponents'
 
 const wizardSteps = [
   {

@@ -6,7 +6,6 @@ import DateTimeInput from '../inputs/DateTimeInput'
 import PhotoCapture from '../PhotoCapture'
 import { motion } from 'framer-motion'
 import { formatAddress } from '../../../utils/addressUtils'
-// import { Button } from 'react-bootstrap'
 
 const slideVariants = {
   initial: { opacity: 0, x: '-100vw' },
