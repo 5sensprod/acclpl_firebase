@@ -1,5 +1,5 @@
 import React from 'react'
-import FormWizardLayout from './FormWizardLayout'
+import FormWizardLayout from '../ui/FormWizardLayout'
 import {
   FormWizardProvider,
   useFormWizardState,
