@@ -2,7 +2,6 @@
 
 import React, { useContext } from 'react'
 import { UserContext } from '../context/userContext'
-// import WizardStepsContainer from '../components/Wizard/WizardStepsContainer'
 import FormWizard from '../components/form/wizard'
 
 export default function Home() {
@@ -15,8 +14,6 @@ export default function Home() {
           ? 'Bienvenue, Gros !'
           : "Bonjour, S'inscrire ou se connecter"}
       </h1>
-
-      {/* <WizardStepsContainer /> */}
       <FormWizard />
     </div>
   )

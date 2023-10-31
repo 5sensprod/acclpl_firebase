@@ -5,10 +5,39 @@ import styles from './PhotoCapture.module.css'
 import { useFormWizardState } from '../wizard/FormWizardContext'
 
 const PhotoPreview = () => {
-  const { state: formWizardState, dispatch } = useFormWizardState()
-  const { photoURL, originalPhotoURL, isDefaultPhoto } = formWizardState
+  const {
+    state: { photoURL, originalPhotoURL, isDefaultPhoto },
+    dispatch,
+  } = useFormWizardState()
 
   if (!photoURL) return null
+
+  const handleEditClick = (e) => {
+    e.stopPropagation()
+    dispatch({
+      type: 'SET_TEMP_PHOTO',
+      payload: {
+        photoURL: originalPhotoURL || photoURL,
+        selectedFile: null,
+        croppedImageUrl: null,
+      },
+    })
+    dispatch({ type: 'OPEN_CROP' })
+  }
+
+  const handleTrashClick = (e) => {
+    e.stopPropagation()
+    dispatch({ type: 'RESET_TO_DEFAULT_PHOTO' })
+  }
+
+  const icons = isDefaultPhoto ? (
+    <Camera className={styles.icon} />
+  ) : (
+    <>
+      <Pencil className={styles.icon} onClick={handleEditClick} />
+      <Trash className={styles.icon} onClick={handleTrashClick} />
+    </>
+  )
 
   return (
     <Figure
@@ -28,40 +57,7 @@ const PhotoPreview = () => {
           />
         </span>
       </OverlayTrigger>
-      <Figure.Caption className={styles.captionStyle}>
-        {isDefaultPhoto ? (
-          <Camera className={styles.icon} />
-        ) : (
-          <>
-            <Pencil
-              className={styles.icon}
-              onClick={(e) => {
-                e.stopPropagation()
-                dispatch({
-                  type: 'SET_TEMP_PHOTO',
-                  payload: {
-                    photoURL: originalPhotoURL || photoURL,
-                    selectedFile: null,
-                    croppedImageUrl: null,
-                  },
-                })
-                dispatch({
-                  type: 'OPEN_CROP',
-                })
-              }}
-            />
-            <Trash
-              className={styles.icon}
-              onClick={(e) => {
-                e.stopPropagation()
-                dispatch({
-                  type: 'RESET_TO_DEFAULT_PHOTO',
-                })
-              }}
-            />
-          </>
-        )}
-      </Figure.Caption>
+      <Figure.Caption className={styles.captionStyle}>{icons}</Figure.Caption>
     </Figure>
   )
 }
