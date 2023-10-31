@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react'
 import { Modal } from 'react-bootstrap'
-import { cropImage } from './imageUtils'
+import { cropImage } from './utils/CropImage'
 import CropHeader from './CropHeader'
 import CropBody from './CropBody'
 import CropFooter from './CropFooter'

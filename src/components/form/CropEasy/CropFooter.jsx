@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
-import { zoomPercent } from './imageUtils'
+import { zoomPercent } from './utils/CropImage'
 import {
   ZOOM_MIN,
   ZOOM_MAX,
