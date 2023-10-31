@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { useModal } from '../context/ModalContext'
 
-const DynamicModal = () => {
+const EstablishmentModal = () => {
   const { modalConfig, setModalConfig } = useModal()
 
   const handleClose = () => {
@@ -30,4 +30,4 @@ const DynamicModal = () => {
   )
 }
 
-export default DynamicModal
+export default EstablishmentModal

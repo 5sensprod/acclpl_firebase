@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Spinner } from 'react-bootstrap'
 import { useFormWizardState } from './FormWizardContext'
 import { checkDuplicateEstablishment } from '../../../services/establishmentCheckerService'
-import DynamicModal from './DynamicModal'
+import EstablishmentModal from '../modals/EstablishmentModal'
 import formatCompanyName from '../../../utils/formatCompanyName'
 import normalizedCompanyName from '../../../utils/normalizedCompanyName'
 import { isFormReadyToSubmit } from './wizardValidation'
@@ -102,7 +102,7 @@ const WizardStepManager = () => {
           </Button>
         </>
       )}
-      <DynamicModal />
+      <EstablishmentModal />
       {showPreview && (
         <PreviewModal
           show={showPreview}
