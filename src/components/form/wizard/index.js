@@ -1,6 +1,9 @@
 import React from 'react'
 import FormWizardLayout from './FormWizardLayout'
-import { FormWizardProvider, useFormWizardState } from './FormWizardContext'
+import {
+  FormWizardProvider,
+  useFormWizardState,
+} from '../context/FormWizardContext'
 import { ModalProvider } from '../context/ModalContext'
 
 const FormWizard = ({ steps }) => {

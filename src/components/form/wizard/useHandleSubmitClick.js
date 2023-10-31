@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { useFormWizardState } from './FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 import { UserContext } from '../../../context/userContext'
 import { uploadImage } from '../../../services/uploadImageWizard'
 import { generateUniqueFileName } from '../../../utils/filenameUtils'

@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext } from 'react'
-import { formatCompanyAction } from './wizardTransformations'
-import wizardSteps from './WizardSteps'
+import { formatCompanyAction } from '../wizard/wizardTransformations'
+import wizardSteps from '../wizard/WizardSteps'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 
 const FormWizardContext = createContext()

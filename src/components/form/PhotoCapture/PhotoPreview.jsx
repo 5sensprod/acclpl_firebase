@@ -2,7 +2,7 @@ import React from 'react'
 import { Figure, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Trash, Camera, Pencil } from 'react-bootstrap-icons'
 import styles from './PhotoCapture.module.css'
-import { useFormWizardState } from '../wizard/FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 
 const PhotoPreview = () => {
   const {

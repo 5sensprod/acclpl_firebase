@@ -1,7 +1,7 @@
 import React from 'react'
 import CropEasy from '../CropEasy'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
-import { useFormWizardState } from '../wizard/FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 import { InputGroup } from 'react-bootstrap'
 import PhotoPreview from './PhotoPreview'
 

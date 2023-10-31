@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useFormWizardState } from './FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 import NameCompany from '../inputs/NameCompany'
 import GeolocateAddress from '../inputs/GeolocateAddress'
 import DateTimeInput from '../inputs/DateTimeInput'

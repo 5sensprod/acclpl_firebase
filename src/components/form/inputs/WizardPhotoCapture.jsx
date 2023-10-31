@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import CropEasy from '../CropEasy'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
-import { useFormWizardState } from '../wizard/FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 import { Figure, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Trash, Camera, Pencil } from 'react-bootstrap-icons'
 import styles from '../../PhotoCapture/PhotoCapture.module.css'

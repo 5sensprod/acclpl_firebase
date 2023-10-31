@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from 'react-bootstrap'
 import { InputWrapper, StyledInput } from './InputWrapper'
 import useGeolocationAddress from './useGeolocationAddress'
-import { useFormWizardState } from '../wizard/FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 
 const GeolocateAddress = (props) => {
   const { dispatch, state } = useFormWizardState()

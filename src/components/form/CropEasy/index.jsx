@@ -7,7 +7,7 @@ import CropHeader from './CropHeader'
 import CropBody from './CropBody'
 import CropFooter from './CropFooter'
 import { ZOOM_MIN, ROTATION_MIN, ROTATION_MAX } from './utils/constants'
-import { useFormWizardState } from '../wizard/FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 
 export default function CropEasy({ setOpenCrop, onCroppedImage }) {
   const { state, dispatch } = useFormWizardState()

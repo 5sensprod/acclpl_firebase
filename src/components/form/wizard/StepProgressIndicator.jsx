@@ -1,6 +1,6 @@
 import React from 'react'
 import { Container, Row, Col, ProgressBar } from 'react-bootstrap'
-import { useFormWizardState } from './FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 
 const StepProgressIndicator = () => {
   const { state } = useFormWizardState()

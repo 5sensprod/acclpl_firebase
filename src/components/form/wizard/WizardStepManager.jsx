@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Spinner } from 'react-bootstrap'
-import { useFormWizardState } from './FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 import { checkDuplicateEstablishment } from '../../../services/establishmentCheckerService'
 import EstablishmentModal from '../modals/EstablishmentModal'
 import formatCompanyName from '../../../utils/formatCompanyName'

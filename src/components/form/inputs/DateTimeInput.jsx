@@ -1,7 +1,7 @@
 import React from 'react'
 import { InputWrapper } from './InputWrapper'
 import { Button } from 'react-bootstrap'
-import { useFormWizardState } from '../wizard/FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 
 const DateTimeInput = () => {
   const { dispatch, state } = useFormWizardState()

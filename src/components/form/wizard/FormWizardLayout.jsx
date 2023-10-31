@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, Container } from 'react-bootstrap'
-import { useFormWizardState } from './FormWizardContext'
+import { useFormWizardState } from '../context/FormWizardContext'
 import StepProgressIndicator from './StepProgressIndicator'
 import WizardStepManager from './WizardStepManager'
 
