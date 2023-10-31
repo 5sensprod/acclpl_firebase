@@ -41,7 +41,6 @@ const WizardStepManager = () => {
       photoURL,
       coordinates,
     } = duplicateCheckResult.details
-    // console.log('Coordinates:', coordinates) // Cela affiche les coordonnées dans la console
 
     // Vérifiez si streetNumber est défini et, dans l'affirmative, incluez-le dans l'adresse.
     const fullAddress = streetNumber
