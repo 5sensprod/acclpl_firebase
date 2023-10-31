@@ -1,4 +1,11 @@
+import EstablishmentList from './EstablishmentList'
+
 function createModalBody(duplicateCheckResult) {
+  if (duplicateCheckResult.multiple) {
+    const { establishmentIds } = duplicateCheckResult
+    return <EstablishmentList establishmentIds={establishmentIds} />
+  }
+
   const {
     details: {
       establishmentName,

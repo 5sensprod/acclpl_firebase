@@ -16,15 +16,16 @@ const EstablishmentModal = () => {
       </Modal.Header>
       <Modal.Body>{modalConfig.body}</Modal.Body>
       <Modal.Footer>
-        {modalConfig.buttons.map((button, index) => (
-          <Button
-            key={index}
-            variant={button.variant || 'secondary'}
-            onClick={button.onClick || handleClose}
-          >
-            {button.text}
-          </Button>
-        ))}
+        {modalConfig.buttons &&
+          modalConfig.buttons.map((button, index) => (
+            <Button
+              key={index}
+              variant={button.variant || 'secondary'}
+              onClick={button.onClick || handleClose}
+            >
+              {button.text}
+            </Button>
+          ))}
       </Modal.Footer>
     </Modal>
   )

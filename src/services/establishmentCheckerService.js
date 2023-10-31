@@ -25,12 +25,26 @@ async function checkDuplicateEstablishment(
 
   const querySnapshot = await getDocs(establishmentQuery)
 
+  // Aucun établissement trouvé
   if (querySnapshot.empty) {
     dispatch({ type: 'SET_ESTABLISHMENT_EXISTS', payload: false })
     dispatch({ type: 'SET_CURRENT_ESTABLISHMENT_ID', payload: null })
     return false
   }
 
+  // Plusieurs établissements trouvés
+  if (querySnapshot.docs.length > 1) {
+    const establishmentIds = querySnapshot.docs.map((doc) => doc.id)
+    dispatch({ type: 'SET_ESTABLISHMENT_EXISTS', payload: true })
+    dispatch({
+      type: 'SET_CURRENT_ESTABLISHMENT_IDS',
+      payload: establishmentIds,
+    })
+    console.log('Establishment IDs:', establishmentIds)
+    return { found: true, multiple: true, establishmentIds }
+  }
+
+  // Un seul établissement trouvé
   const establishmentDoc = querySnapshot.docs[0]
   const establishmentId = establishmentDoc.id
   const establishmentData = establishmentDoc.data()
@@ -39,10 +53,6 @@ async function checkDuplicateEstablishment(
   dispatch({ type: 'SET_CURRENT_ESTABLISHMENT_ID', payload: establishmentId })
 
   console.log('Establishment ID:', establishmentId)
-
-  if (!establishmentData.streetRef) {
-    throw new Error('Street reference in establishment is missing or invalid.')
-  }
 
   const observationsQuery = query(
     collection(firestore, 'establishments', establishmentId, 'observations'),
