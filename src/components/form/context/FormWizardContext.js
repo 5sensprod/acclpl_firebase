@@ -6,6 +6,7 @@ import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 const FormWizardContext = createContext()
 
 const initialState = {
+  currentEstablishmentIds: [],
   zoom: 1,
   rotation: 0,
   crop: { x: 0, y: 0 },
@@ -43,6 +44,12 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_CURRENT_ESTABLISHMENT_IDS':
+      return {
+        ...state,
+        currentEstablishmentIds: action.payload,
+      }
+
     case 'SET_ESTABLISHMENT_EXISTS':
       return {
         ...state,
