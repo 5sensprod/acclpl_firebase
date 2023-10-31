@@ -1,8 +1,5 @@
 import { addStreet } from '../../../services/streetService'
-import {
-  addEstablishment,
-  getEstablishmentRef,
-} from '../../../services/establishmentService'
+import { addEstablishment } from '../../../services/establishmentService'
 import { addObservation } from '../../../services/observationService'
 
 async function handleStreet(formData) {
@@ -14,18 +11,13 @@ async function handleStreet(formData) {
 }
 
 async function handleEstablishment(formData, streetRef) {
-  let establishmentRef = await getEstablishmentRef(
-    formData.normalizedCompanyName,
-  )
-
-  if (!establishmentRef) {
-    establishmentRef = await addEstablishment({
-      establishmentName: formData.companyName,
-      normalizedEstablishmentName: formData.normalizedCompanyName,
-      streetRef: streetRef,
-      coordinates: formData.companyCoordinates,
-    })
-  }
+  // Nous allons directement ajouter un nouvel établissement sans vérifier s'il existe déjà.
+  const establishmentRef = await addEstablishment({
+    establishmentName: formData.companyName,
+    normalizedEstablishmentName: formData.normalizedCompanyName,
+    streetRef: streetRef,
+    coordinates: formData.companyCoordinates,
+  })
 
   return establishmentRef
 }
