@@ -1,7 +1,12 @@
 import React from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { zoomPercent } from './imageUtils'
-import { ZOOM_MIN, ZOOM_MAX, ROTATION_MIN, ROTATION_MAX } from './constants'
+import {
+  ZOOM_MIN,
+  ZOOM_MAX,
+  ROTATION_MIN,
+  ROTATION_MAX,
+} from './utils/constants'
 
 function CropFooter({
   zoom,
