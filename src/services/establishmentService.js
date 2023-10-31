@@ -85,10 +85,13 @@ async function getEstablishmentRef(normalizedEstablishmentName) {
 
     const querySnapshot = await getDocs(establishmentQuery)
     if (!querySnapshot.empty) {
-      // Retournez l'établissement entier
-      return querySnapshot.docs[0].data()
+      const doc = querySnapshot.docs[0]
+      return {
+        id: doc.id,
+        data: doc.data(),
+      } // Renvoie l'ID et les données de l'établissement
     } else {
-      throw new Error('No matching establishment found')
+      return null // Retournez null si aucun établissement correspondant n'est trouvé
     }
   } catch (error) {
     console.error('Error fetching establishment reference: ', error)

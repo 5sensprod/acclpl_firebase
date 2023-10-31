@@ -2,7 +2,7 @@ import { addStreet } from '../../../services/streetService'
 import {
   addEstablishment,
   getEstablishmentRef,
-} from '../../../services/establishmentServiceWizard'
+} from '../../../services/establishmentService'
 import { addObservation } from '../../../services/observationService'
 
 async function handleStreet(formData) {
