@@ -1,12 +1,14 @@
 import { useModal } from '../../context/ModalContext'
-import EstablishmentDisplay from './EstablishmentDisplay' // Remplacez les imports de createModalBody et EstablishmentList
+import EstablishmentDisplay from './EstablishmentDisplay'
 import getModalButtonsConfig from './getModalButtonsConfig'
 
 const useShowEstablishmentModal = (setIsLoading, dispatch) => {
   const { setModalConfig } = useModal()
 
   const showEstablishmentModal = (duplicateCheckResult) => {
-    const isMultipleOccurrences = duplicateCheckResult.multiple
+    const { multiple: isMultipleOccurrences, isApproximateMatch } =
+      duplicateCheckResult
+
     const modalBody = (
       <EstablishmentDisplay
         duplicateCheckResult={duplicateCheckResult}
@@ -32,13 +34,17 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
       setModalConfig,
     )
 
+    const title = isMultipleOccurrences
+      ? 'Plusieurs établissements trouvés'
+      : isApproximateMatch
+      ? 'Etablissement probablement similaire trouvé'
+      : 'Etablissement existant'
+
     setModalConfig({
       isVisible: true,
-      title: isMultipleOccurrences
-        ? 'Plusieurs établissements trouvés'
-        : 'Etablissement existant',
+      title: title,
       body: modalBody,
-      buttons: !isMultipleOccurrences && buttonsConfig, // Les boutons ne sont nécessaires que pour le cas d'un seul établissement
+      buttons: !isMultipleOccurrences && buttonsConfig,
     })
 
     setIsLoading(false)
