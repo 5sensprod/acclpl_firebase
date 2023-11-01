@@ -1,3 +1,24 @@
+export const handleYesClick = (
+  dispatch,
+  coordinates,
+  fullAddress,
+  setModalConfig,
+) => {
+  dispatch({
+    type: 'UPDATE_FORM_DATA',
+    payload: {
+      companyAddress: fullAddress,
+      companyCoordinates: coordinates,
+    },
+  })
+  dispatch({ type: 'NEXT_STEP' })
+  dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
+  setModalConfig((prevConfig) => ({
+    ...prevConfig,
+    isVisible: false,
+  }))
+}
+
 function getModalButtonsConfig(
   dispatch,
   coordinates,
@@ -7,21 +28,8 @@ function getModalButtonsConfig(
   return [
     {
       text: 'Oui',
-      onClick: () => {
-        dispatch({
-          type: 'UPDATE_FORM_DATA',
-          payload: {
-            companyAddress: fullAddress,
-            companyCoordinates: coordinates,
-          },
-        })
-        dispatch({ type: 'NEXT_STEP' })
-        dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
-        setModalConfig((prevConfig) => ({
-          ...prevConfig,
-          isVisible: false,
-        }))
-      },
+      onClick: () =>
+        handleYesClick(dispatch, coordinates, fullAddress, setModalConfig),
     },
     {
       text: 'Non',

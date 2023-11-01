@@ -9,43 +9,38 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
   const showEstablishmentModal = (duplicateCheckResult) => {
     const isMultipleOccurrences = duplicateCheckResult.multiple
     if (isMultipleOccurrences) {
-      // Plusieurs établissements trouvés
       setModalConfig({
         isVisible: true,
         title: 'Plusieurs établissements trouvés',
         body: (
           <EstablishmentList
-            establishmentIds={duplicateCheckResult.establishmentIds}
+            establishmentsDetails={duplicateCheckResult.details}
             onSelect={(selectedEstablishmentId) => {
               dispatch({
                 type: 'SET_CURRENT_ESTABLISHMENT_ID',
                 payload: selectedEstablishmentId,
               })
-              // Vous pouvez ajouter d'autres actions après avoir sélectionné un établissement si nécessaire.
             }}
+            dispatch={dispatch} // Assurez-vous d'ajouter ceci
+            setModalConfig={setModalConfig} // et ceci
           />
         ),
-        // Vous pouvez ajouter des boutons si nécessaire, par exemple pour fermer la modale
       })
     } else {
-      const {
-        details: { coordinates },
-      } = duplicateCheckResult
-
-      const fullAddress = `${duplicateCheckResult.details.streetNumber || ''} ${
-        duplicateCheckResult.details.streetName
-      }, ${duplicateCheckResult.details.postalCode} ${
-        duplicateCheckResult.details.city
-      }`
-
       const modalBody = createModalBody(
         duplicateCheckResult,
         isMultipleOccurrences,
+        dispatch, // Ajoutez ceci
+        setModalConfig, // Ajoutez ceci
       )
       const buttonsConfig = getModalButtonsConfig(
         dispatch,
-        coordinates,
-        fullAddress,
+        duplicateCheckResult.details.coordinates,
+        `${duplicateCheckResult.details.streetNumber || ''} ${
+          duplicateCheckResult.details.streetName
+        }, ${duplicateCheckResult.details.postalCode} ${
+          duplicateCheckResult.details.city
+        }`,
         setModalConfig,
       )
 

@@ -1,9 +1,20 @@
 import EstablishmentList from './EstablishmentList'
 
-function createModalBody(duplicateCheckResult, isMultipleOccurrences) {
+function createModalBody(
+  duplicateCheckResult,
+  isMultipleOccurrences,
+  dispatch, // Ajoutez ceci
+  setModalConfig, // Ajoutez ceci
+) {
   if (isMultipleOccurrences) {
     const { establishmentIds } = duplicateCheckResult
-    return <EstablishmentList establishmentIds={establishmentIds} />
+    return (
+      <EstablishmentList
+        establishmentIds={establishmentIds}
+        dispatch={dispatch} // Ajoutez ceci
+        setModalConfig={setModalConfig} // Ajoutez ceci
+      />
+    )
   }
 
   const {

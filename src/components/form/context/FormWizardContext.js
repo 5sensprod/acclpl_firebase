@@ -21,6 +21,7 @@ const initialState = {
   currentStep: 1,
   steps: [],
   establishmentExists: false,
+  currentEstablishmentsData: [],
   formData: {
     companyName: '',
     normalizedCompanyName: '',
@@ -44,6 +45,12 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_CURRENT_ESTABLISHMENTS_DATA':
+      return {
+        ...state,
+        currentEstablishmentsData: action.payload,
+      }
+
     case 'SET_CURRENT_ESTABLISHMENT_IDS':
       return {
         ...state,
