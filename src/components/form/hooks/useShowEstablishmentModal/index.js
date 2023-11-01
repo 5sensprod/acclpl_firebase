@@ -7,7 +7,8 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
   const { setModalConfig } = useModal()
 
   const showEstablishmentModal = (duplicateCheckResult) => {
-    if (duplicateCheckResult.multiple) {
+    const isMultipleOccurrences = duplicateCheckResult.multiple
+    if (isMultipleOccurrences) {
       // Plusieurs établissements trouvés
       setModalConfig({
         isVisible: true,
@@ -37,7 +38,10 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
         duplicateCheckResult.details.city
       }`
 
-      const modalBody = createModalBody(duplicateCheckResult)
+      const modalBody = createModalBody(
+        duplicateCheckResult,
+        isMultipleOccurrences,
+      )
       const buttonsConfig = getModalButtonsConfig(
         dispatch,
         coordinates,

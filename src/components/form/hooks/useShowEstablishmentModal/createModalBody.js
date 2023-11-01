@@ -1,7 +1,7 @@
 import EstablishmentList from './EstablishmentList'
 
-function createModalBody(duplicateCheckResult) {
-  if (duplicateCheckResult.multiple) {
+function createModalBody(duplicateCheckResult, isMultipleOccurrences) {
+  if (isMultipleOccurrences) {
     const { establishmentIds } = duplicateCheckResult
     return <EstablishmentList establishmentIds={establishmentIds} />
   }
