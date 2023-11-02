@@ -2,7 +2,16 @@ import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import LeafletMap from '../../LeafletMap'
 
-const PreviewModal = ({ show, onHide, formData }) => {
+const PreviewModal = ({
+  show,
+  onHide,
+  formData,
+  previewPhotoURL,
+  isDefaultPhoto,
+  photoURL,
+}) => {
+  const imageURL = isDefaultPhoto ? previewPhotoURL : photoURL
+
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
@@ -12,7 +21,7 @@ const PreviewModal = ({ show, onHide, formData }) => {
         <LeafletMap
           markerCoords={formData.companyCoordinates}
           companyName={formData.companyName}
-          imageURL={formData.photoURLs[0]}
+          imageURL={imageURL} // Utilisez imageURL ici
         />
       </Modal.Body>
       <Modal.Footer>

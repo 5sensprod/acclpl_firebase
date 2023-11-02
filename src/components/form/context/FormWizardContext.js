@@ -15,6 +15,7 @@ const initialState = {
   tempSelectedFile: null,
   tempCroppedImageUrl: null,
   originalPhotoURL: null,
+  previewPhotoURL: defaultPhoto,
   photoURL: defaultPhoto,
   isDefaultPhoto: true,
   openCrop: false,
@@ -45,6 +46,15 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_DEFAULT_IMAGE':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          photoURLs: [action.payload],
+        },
+      }
+
     case 'RESET_TO_FIRST_STEP':
       return { ...state, currentStep: 1 }
     case 'RESET_FORM_DATA':

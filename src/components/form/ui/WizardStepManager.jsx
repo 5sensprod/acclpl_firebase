@@ -93,7 +93,7 @@ const WizardStepManager = () => {
           <Button
             variant="secondary"
             onClick={handleVisualizeClick}
-            disabled={!canFinish || isLoading}
+            // disabled={!canFinish || isLoading}
           >
             Voir sur la carte
           </Button>
@@ -112,6 +112,9 @@ const WizardStepManager = () => {
           show={showPreview}
           onHide={handleClosePreview}
           formData={state.formData}
+          previewPhotoURL={state.previewPhotoURL}
+          isDefaultPhoto={state.isDefaultPhoto}
+          photoURL={state.photoURL}
         />
       )}
       <SuccessModal show={showModal} handleClose={handleCloseModal} />
