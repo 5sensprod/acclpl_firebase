@@ -21,10 +21,6 @@ async function findClosestEstablishmentMatches(normalizedEstablishmentName) {
     const nameInDb = doc.data().normalizedEstablishmentName
     const similarity = ratio(normalizedEstablishmentName, nameInDb)
 
-    // console.log(
-    //   `Matching ${normalizedEstablishmentName} with ${nameInDb} got score: ${similarity}`,
-    // )
-
     if (similarity > 85) {
       // utilisez le seuil de votre choix
       matches.push({ doc, similarity })
@@ -62,11 +58,6 @@ async function buildEstablishmentDetails(establishmentDoc) {
   const establishmentData = establishmentDoc.data()
   const photoURL = await getObservationDetails(establishmentId)
   const streetData = await getStreetDetails(establishmentData.streetRef)
-  const coordinates = [
-    establishmentData.coordinates.longitude,
-    establishmentData.coordinates.latitude,
-  ]
-  console.log('Coordinates:', coordinates)
 
   return {
     establishmentId,
