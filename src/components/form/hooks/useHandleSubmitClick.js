@@ -7,9 +7,6 @@ import { submitData } from '../wizard/wizardHandlers'
 import { compressImage } from '../../../utils/imageCompression'
 import { addObservation } from '../../../services/observationService'
 
-const DEFAULT_IMAGE_URL =
-  'https://firebasestorage.googleapis.com/v0/b/acclpl.appspot.com/o/images%2Fdefault%2FdefaultPhoto.jpg?alt=media&token=045cbd1a-4377-4dec-bb68-2dbc0754121f'
-
 const useHandleSubmitClick = (setIsLoading) => {
   const { state } = useFormWizardState()
   const { currentUser } = useContext(UserContext)
@@ -22,23 +19,19 @@ const useHandleSubmitClick = (setIsLoading) => {
     let downloadURL = null
 
     try {
-      let photoURLs = state.formData.photoURLs || DEFAULT_IMAGE_URL
-
-      if (!state.formData.photoURLs && state.formData.photoBlob) {
+      if (state.formData.photoBlob) {
         // First, compress the image
         const compressedImage = await compressImage(state.formData.photoBlob)
 
         // Then, upload the compressed image
         const uniqueFileName = generateUniqueFileName('uploaded_image')
         downloadURL = await uploadImage(compressedImage, uniqueFileName)
-
-        photoURLs = [downloadURL]
       }
 
       const observationData = {
         ...state.formData,
         userID: currentUser?.uid || null,
-        photoURLs: photoURLs, // use the photoURLs variable directly here
+        photoURLs: downloadURL ? [downloadURL] : state.formData.photoURLs,
         date: state.formData.dateOfObservation,
         time: state.formData.timeOfObservation,
       }

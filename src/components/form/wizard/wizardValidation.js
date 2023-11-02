@@ -6,7 +6,7 @@ const isFormReadyToSubmit = (formData) => {
     companyCoordinates,
     dateOfObservation,
     timeOfObservation,
-    photoURLs,
+    // photoURLs,
   } = formData
 
   const isValid =
@@ -15,9 +15,9 @@ const isFormReadyToSubmit = (formData) => {
     companyAddress &&
     companyCoordinates &&
     dateOfObservation &&
-    timeOfObservation &&
-    photoURLs &&
-    photoURLs.length > 0
+    timeOfObservation
+  // photoURLs &&
+  // photoURLs.length > 0
 
   return isValid
 }
