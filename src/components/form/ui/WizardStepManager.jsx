@@ -93,7 +93,7 @@ const WizardStepManager = () => {
           <Button
             variant="secondary"
             onClick={handleVisualizeClick}
-            // disabled={!canFinish || isLoading}
+            disabled={!canFinish || isLoading}
           >
             Voir sur la carte
           </Button>
