@@ -45,6 +45,8 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'RESET_TO_FIRST_STEP':
+      return { ...state, currentStep: 1 }
     case 'RESET_FORM_DATA':
       return {
         ...state,

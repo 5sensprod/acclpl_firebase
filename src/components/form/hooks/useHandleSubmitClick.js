@@ -49,6 +49,7 @@ const useHandleSubmitClick = (setIsLoading) => {
       setShowModal(true)
       dispatch({ type: 'RESET_FORM_DATA' })
       dispatch({ type: 'RESET_TO_DEFAULT_PHOTO' })
+      dispatch({ type: 'RESET_TO_FIRST_STEP' })
     } catch (error) {
       alert("Une erreur s'est produite lors de la soumission des données.")
       console.error('Erreur lors de la soumission des données:', error)
