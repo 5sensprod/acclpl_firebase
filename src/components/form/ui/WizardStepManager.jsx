@@ -24,6 +24,10 @@ const WizardStepManager = () => {
 
   const canFinish = isFormReadyToSubmit(state.formData)
 
+  const handleClosePreview = () => {
+    setShowPreview(false)
+  }
+
   const moveToPrevStep = () => {
     dispatch({ type: 'PREV_STEP' })
   }
@@ -106,7 +110,7 @@ const WizardStepManager = () => {
       {showPreview && (
         <PreviewModal
           show={showPreview}
-          onHide={handleCloseModal}
+          onHide={handleClosePreview}
           formData={state.formData}
         />
       )}
