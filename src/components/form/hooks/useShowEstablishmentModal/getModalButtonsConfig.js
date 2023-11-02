@@ -4,11 +4,20 @@ export const handleYesClick = (
   fullAddress,
   setModalConfig,
 ) => {
+  const invertedCoordinates = [coordinates[1], coordinates[0]]
+  console.log('Coordonnées originales:', coordinates)
+  console.log('Coordonnées inversées:', invertedCoordinates)
+
+  // Mettre à jour les coordonnées de l'entreprise dans le reducer
+  // dispatch({
+  //   type: 'SET_COMPANY_COORDINATES',
+  //   payload: invertedCoordinates,
+  // })
   dispatch({
     type: 'UPDATE_FORM_DATA',
     payload: {
       companyAddress: fullAddress,
-      companyCoordinates: coordinates,
+      companyCoordinates: invertedCoordinates,
     },
   })
   dispatch({ type: 'NEXT_STEP' })

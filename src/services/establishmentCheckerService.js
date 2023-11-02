@@ -62,6 +62,11 @@ async function buildEstablishmentDetails(establishmentDoc) {
   const establishmentData = establishmentDoc.data()
   const photoURL = await getObservationDetails(establishmentId)
   const streetData = await getStreetDetails(establishmentData.streetRef)
+  const coordinates = [
+    establishmentData.coordinates.longitude,
+    establishmentData.coordinates.latitude,
+  ]
+  console.log('Coordinates:', coordinates)
 
   return {
     establishmentId,

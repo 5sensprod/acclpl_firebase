@@ -46,6 +46,15 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_COMPANY_COORDINATES':
+      console.log('Setting company coordinates in reducer:', action.payload)
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          companyCoordinates: [action.payload],
+        },
+      }
     case 'SET_DEFAULT_IMAGE':
       return {
         ...state,
