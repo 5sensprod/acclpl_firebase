@@ -21,9 +21,9 @@ async function findClosestEstablishmentMatches(normalizedEstablishmentName) {
     const nameInDb = doc.data().normalizedEstablishmentName
     const similarity = ratio(normalizedEstablishmentName, nameInDb)
 
-    console.log(
-      `Matching ${normalizedEstablishmentName} with ${nameInDb} got score: ${similarity}`,
-    )
+    // console.log(
+    //   `Matching ${normalizedEstablishmentName} with ${nameInDb} got score: ${similarity}`,
+    // )
 
     if (similarity > 85) {
       // utilisez le seuil de votre choix

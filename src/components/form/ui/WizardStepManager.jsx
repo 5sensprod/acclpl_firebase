@@ -9,10 +9,13 @@ import { isFormReadyToSubmit } from '../wizard/wizardValidation'
 import PreviewModal from '../modals/PreviewModal'
 import useHandleSubmitClick from '../hooks/useHandleSubmitClick'
 import useShowEstablishmentModal from '../hooks/useShowEstablishmentModal'
+import SuccessModal from '../modals/SuccessModal'
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
   const [isLoading, setIsLoading] = useState(false)
+  const { handleSubmitClick, showModal, handleCloseModal } =
+    useHandleSubmitClick(setIsLoading)
 
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
@@ -67,12 +70,6 @@ const WizardStepManager = () => {
     setShowPreview(true)
   }
 
-  const handleCloseModal = () => {
-    setShowPreview(false)
-  }
-
-  const handleSubmitClick = useHandleSubmitClick(setIsLoading)
-
   return (
     <div className="d-flex justify-content-between mb-2">
       {currentStep > 1 && (
@@ -113,6 +110,7 @@ const WizardStepManager = () => {
           formData={state.formData}
         />
       )}
+      <SuccessModal show={showModal} handleClose={handleCloseModal} />
     </div>
   )
 }

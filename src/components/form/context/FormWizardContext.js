@@ -45,6 +45,12 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'RESET_FORM_DATA':
+      return {
+        ...state,
+        formData: { ...initialState.formData },
+      }
+
     case 'SET_CURRENT_ESTABLISHMENTS_DATA':
       return {
         ...state,

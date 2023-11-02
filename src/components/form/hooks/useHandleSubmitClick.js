@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useFormWizardState } from '../context/FormWizardContext'
 import { UserContext } from '../../../context/userContext'
 import { uploadImage } from '../../../services/uploadImageWizard'
@@ -10,6 +10,9 @@ import { addObservation } from '../../../services/observationService'
 const useHandleSubmitClick = (setIsLoading) => {
   const { state } = useFormWizardState()
   const { currentUser } = useContext(UserContext)
+  const { dispatch } = useFormWizardState()
+  const [showModal, setShowModal] = useState(false)
+  const handleCloseModal = () => setShowModal(false)
 
   const handleSubmitClick = async () => {
     setIsLoading(true)
@@ -43,7 +46,9 @@ const useHandleSubmitClick = (setIsLoading) => {
         await submitData(observationData, currentUser)
       }
 
-      alert('Soumission réussie!')
+      setShowModal(true)
+      dispatch({ type: 'RESET_FORM_DATA' })
+      dispatch({ type: 'RESET_TO_DEFAULT_PHOTO' })
     } catch (error) {
       alert("Une erreur s'est produite lors de la soumission des données.")
       console.error('Erreur lors de la soumission des données:', error)
@@ -52,7 +57,7 @@ const useHandleSubmitClick = (setIsLoading) => {
     setIsLoading(false)
   }
 
-  return handleSubmitClick
+  return { handleSubmitClick, showModal, handleCloseModal }
 }
 
 export default useHandleSubmitClick
