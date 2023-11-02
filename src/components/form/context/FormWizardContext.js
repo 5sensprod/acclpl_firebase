@@ -46,6 +46,15 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'UPDATE_COMPANY_NAME':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          companyName: action.payload,
+        },
+      }
+
     case 'SET_COMPANY_COORDINATES':
       return {
         ...state,

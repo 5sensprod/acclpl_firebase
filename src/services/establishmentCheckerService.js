@@ -107,12 +107,30 @@ async function checkDuplicateEstablishment(
         matches.map((match) => buildEstablishmentDetails(match.doc)),
       )
       isApproximateMatch = true
+
+      // Log the establishment names for debugging
+      establishmentsDetails.forEach((detail) => {
+        console.log(
+          'Approximate match for establishment:',
+          detail.establishmentName,
+        )
+      })
       break
     }
     default: {
       establishmentsDetails = await Promise.all(
         querySnapshot.docs.map(buildEstablishmentDetails),
       )
+      console.log(
+        'Establishments Details for Direct Matches:',
+        establishmentsDetails,
+      )
+      establishmentsDetails.forEach((detail) => {
+        console.log(
+          'Direct DB match for establishment:',
+          detail.establishmentName,
+        )
+      })
     }
   }
 
