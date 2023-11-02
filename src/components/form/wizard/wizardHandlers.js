@@ -16,6 +16,7 @@ async function handleEstablishment(formData, streetRef) {
     establishmentName: formData.companyName,
     normalizedEstablishmentName: formData.normalizedCompanyName,
     streetRef: streetRef,
+    streetNumber: formData.formattedAddress.streetNumber, // Assurez-vous que cette propriété existe dans formData
     coordinates: formData.companyCoordinates,
   })
 
