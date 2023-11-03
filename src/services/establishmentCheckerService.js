@@ -131,6 +131,11 @@ async function checkDuplicateEstablishment(
           detail.establishmentName,
         )
       })
+      // Dispatch SET_CURRENT_ESTABLISHMENTS_DATA here as well
+      dispatch({
+        type: 'SET_CURRENT_ESTABLISHMENTS_DATA',
+        payload: establishmentsDetails,
+      })
     }
   }
 

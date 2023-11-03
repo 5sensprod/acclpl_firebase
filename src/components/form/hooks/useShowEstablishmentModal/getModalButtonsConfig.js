@@ -3,6 +3,7 @@ export const handleYesClick = (
   coordinates,
   fullAddress,
   setModalConfig,
+  companyName,
 ) => {
   const invertedCoordinates = [coordinates[1], coordinates[0]]
   dispatch({
@@ -10,7 +11,12 @@ export const handleYesClick = (
     payload: {
       companyAddress: fullAddress,
       companyCoordinates: invertedCoordinates,
+      companyName: companyName,
     },
+  })
+  dispatch({
+    type: 'UPDATE_COMPANY_NAME',
+    payload: companyName,
   })
   dispatch({ type: 'NEXT_STEP' })
   dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
@@ -25,13 +31,9 @@ function getModalButtonsConfig(
   coordinates,
   fullAddress,
   setModalConfig,
+  companyName,
 ) {
   return [
-    {
-      text: 'Oui',
-      onClick: () =>
-        handleYesClick(dispatch, coordinates, fullAddress, setModalConfig),
-    },
     {
       text: 'Non',
       onClick: () => {

@@ -13,9 +13,16 @@ const handleItemClick = (
   onSelect,
   coordinates,
   fullAddress,
+  companyName,
 ) => {
   onSelect(establishmentId)
-  handleYesClick(dispatch, coordinates, fullAddress, setModalConfig)
+  handleYesClick(
+    dispatch,
+    coordinates,
+    fullAddress,
+    setModalConfig,
+    companyName,
+  )
 }
 
 const EstablishmentItem = ({
@@ -24,7 +31,7 @@ const EstablishmentItem = ({
   dispatch,
   setModalConfig,
 }) => {
-  const { establishmentId, coordinates } = establishment
+  const { establishmentId, coordinates, establishmentName } = establishment
   const fullAddress = getFullAddress(establishment)
 
   return (
@@ -38,6 +45,7 @@ const EstablishmentItem = ({
           onSelect,
           coordinates,
           fullAddress,
+          establishmentName,
         )
       }
     />
@@ -52,6 +60,7 @@ const EstablishmentDisplay = ({
 }) => {
   const isMultipleOccurrences = duplicateCheckResult.multiple
 
+  // Gestion des multiples occurrences
   if (isMultipleOccurrences) {
     return (
       <div>
@@ -68,7 +77,30 @@ const EstablishmentDisplay = ({
     )
   }
 
-  return <EstablishmentDetails {...duplicateCheckResult.details} />
+  // Gestion d'une seule occurrence
+  if (!isMultipleOccurrences && duplicateCheckResult.details) {
+    const singleEstablishment = duplicateCheckResult.details
+    const fullAddress = getFullAddress(singleEstablishment)
+    return (
+      <EstablishmentDetails
+        {...singleEstablishment}
+        onClick={() =>
+          handleItemClick(
+            singleEstablishment.establishmentId,
+            dispatch,
+            setModalConfig,
+            onSelect,
+            singleEstablishment.coordinates,
+            fullAddress,
+            singleEstablishment.establishmentName,
+          )
+        }
+      />
+    )
+  }
+
+  // Si aucune information n'est fournie, retourner un message d'erreur
+  return <div>Aucun détail disponible.</div>
 }
 
 export default EstablishmentDisplay
