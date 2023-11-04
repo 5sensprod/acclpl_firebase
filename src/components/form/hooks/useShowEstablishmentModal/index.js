@@ -14,19 +14,35 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
     const companyName = details.establishmentName
     const photoURLs = details.photoURL
 
-    const modalBody = (
-      <EstablishmentDisplay
-        duplicateCheckResult={duplicateCheckResult}
-        onSelect={(selectedEstablishmentId) => {
-          dispatch({
-            type: 'SET_CURRENT_ESTABLISHMENT_ID',
-            payload: selectedEstablishmentId,
-          })
-        }}
-        dispatch={dispatch}
-        setModalConfig={setModalConfig}
-      />
+    // Créer le message en fonction de isApproximateMatch
+    const messageBody = isApproximateMatch
+      ? 'Les informations semblent correspondre à un établissement existant, mais il y a des incertitudes. Voulez-vous continuer avec ces informations ?'
+      : "Un établissement avec des informations identiques ou similaires a été trouvé. Est-ce celui que vous essayez d'ajouter ?"
+
+    // Inclure messageBody dans modalBodyContent
+    const modalBodyContent = (
+      <>
+        <p>{messageBody}</p>
+        <EstablishmentDisplay
+          duplicateCheckResult={duplicateCheckResult}
+          onSelect={(selectedEstablishmentId) => {
+            dispatch({
+              type: 'SET_CURRENT_ESTABLISHMENT_ID',
+              payload: selectedEstablishmentId,
+            })
+          }}
+          dispatch={dispatch}
+          setModalConfig={setModalConfig}
+        />
+      </>
     )
+
+    let title = 'Etablissement existant'
+    if (isMultipleOccurrences) {
+      title = 'Plusieurs établissements trouvés'
+    } else if (isApproximateMatch) {
+      title = 'Etablissement probablement similaire trouvé'
+    }
 
     const buttonsConfig = getModalButtonsConfig(
       dispatch,
@@ -39,16 +55,10 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
       photoURLs,
     )
 
-    const title = isMultipleOccurrences
-      ? 'Plusieurs établissements trouvés'
-      : isApproximateMatch
-      ? 'Etablissement probablement similaire trouvé'
-      : 'Etablissement existant'
-
     setModalConfig({
       isVisible: true,
       title: title,
-      body: modalBody,
+      body: modalBodyContent, // Utiliser modalBodyContent ici
       buttons: buttonsConfig,
     })
 

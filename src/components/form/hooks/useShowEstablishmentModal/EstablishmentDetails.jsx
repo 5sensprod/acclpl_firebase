@@ -1,21 +1,20 @@
+import React from 'react'
 
-import React from 'react';
-
-const EstablishmentDetails = ({ 
-  establishmentName, 
-  streetName, 
-  city, 
-  postalCode, 
-  streetNumber, 
+const EstablishmentDetails = ({
+  establishmentName,
+  streetName,
+  city,
+  postalCode,
+  streetNumber,
   photoURL,
-  onClick
+  onClick,
 }) => {
   const fullAddress = streetNumber
     ? `${streetNumber} ${streetName}, ${postalCode} ${city}`
-    : `${streetName}, ${postalCode} ${city}`;
+    : `${streetName}, ${postalCode} ${city}`
 
   return (
-    <div onClick={onClick}>
+    <div onClick={onClick} style={{ cursor: 'pointer' }}>
       <div className="bg-dark text-light d-flex justify-content-around align-items-center p-3 mb-3 rounded">
         <div>
           <h3 className="mb-2">{establishmentName}</h3>
@@ -33,7 +32,7 @@ const EstablishmentDetails = ({
       </div>
       <h5 className="mb-2">Est-ce en lien avec votre signalement ?</h5>
     </div>
-  );
+  )
 }
 
-export default EstablishmentDetails;
+export default EstablishmentDetails
