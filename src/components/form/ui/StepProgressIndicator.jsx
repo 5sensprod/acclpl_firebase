@@ -11,7 +11,7 @@ const StepProgressIndicator = () => {
   const progressPercentage = (currentStep / totalSteps) * 100
 
   return (
-    <Container className="my-4 p-0">
+    <Container className="my-2 p-0">
       <Row>
         <Col>
           <ProgressBar

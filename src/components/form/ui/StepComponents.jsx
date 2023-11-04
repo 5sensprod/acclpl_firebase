@@ -101,8 +101,10 @@ export const Step3Component = () => (
 export const Step4Component = () => {
   return (
     <AnimatedWrapper>
-      <PhotoCapture />
-      <Notes />
+      <div className="d-flex flex-column gap-1">
+        <PhotoCapture />
+        <Notes />
+      </div>
     </AnimatedWrapper>
   )
 }
