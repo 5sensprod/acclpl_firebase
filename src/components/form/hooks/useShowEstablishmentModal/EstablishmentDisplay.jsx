@@ -64,28 +64,8 @@ const EstablishmentDisplay = ({
   // Handle single occurrence case
   if (!isMultipleOccurrences && duplicateCheckResult.details) {
     const singleEstablishment = duplicateCheckResult.details
-    // const fullAddress = getFullAddress(singleEstablishment)
 
-    return (
-      <>
-        <EstablishmentDetails {...singleEstablishment} />
-        {/* <button
-          onClick={() =>
-            handleItemClick(
-              singleEstablishment.establishmentId,
-              dispatch,
-              setModalConfig,
-              onSelect,
-              singleEstablishment.coordinates,
-              fullAddress,
-              singleEstablishment.establishmentName,
-            )
-          }
-        >
-          Oui
-        </button> */}
-      </>
-    )
+    return <EstablishmentDetails {...singleEstablishment} />
   }
 
   // Handle no details case
