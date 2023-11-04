@@ -11,7 +11,7 @@ export default function Home() {
     <div className="container p-3">
       <div className="row">
         <div className="col-12 col-lg-6 mx-auto">
-          <h1 className="display-3 text-light">
+          <h1 className="display-3 text-light mb-5">
             {currentUser
               ? 'Éco-veille: Signalement'
               : "Bonjour, S'inscrire ou se connecter"}

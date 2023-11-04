@@ -10,7 +10,7 @@ const EstablishmentModal = () => {
   }
 
   return (
-    <Modal show={modalConfig.isVisible} onHide={handleClose}>
+    <Modal show={modalConfig.isVisible} onHide={handleClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>{modalConfig.title}</Modal.Title>
       </Modal.Header>
