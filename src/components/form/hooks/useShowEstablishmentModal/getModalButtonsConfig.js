@@ -14,10 +14,6 @@ export const handleYesClick = (
       companyName: companyName,
     },
   })
-  dispatch({
-    type: 'UPDATE_COMPANY_NAME',
-    payload: companyName,
-  })
   dispatch({ type: 'NEXT_STEP' })
   dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
   setModalConfig((prevConfig) => ({
