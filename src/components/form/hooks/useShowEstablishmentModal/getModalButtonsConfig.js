@@ -4,6 +4,7 @@ export const handleYesClick = (
   fullAddress,
   setModalConfig,
   companyName,
+  photoURL,
 ) => {
   const invertedCoordinates = [coordinates[1], coordinates[0]]
   dispatch({
@@ -12,6 +13,8 @@ export const handleYesClick = (
       companyAddress: fullAddress,
       companyCoordinates: invertedCoordinates,
       companyName: companyName,
+      photoURLs: [photoURL],
+      isDefaultPhoto: false, // Assurez-vous de mettre à jour cette valeur
     },
   })
   dispatch({ type: 'NEXT_STEP' })
@@ -28,6 +31,7 @@ function getModalButtonsConfig(
   fullAddress,
   setModalConfig,
   companyName,
+  photoURLs,
 ) {
   // Here, if there's only one occurrence, add a "Yes" button to the config
   return [
@@ -53,6 +57,7 @@ function getModalButtonsConfig(
           fullAddress,
           setModalConfig,
           companyName,
+          photoURLs,
         ),
     },
   ]

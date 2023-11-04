@@ -17,7 +17,9 @@ const handleItemClick = (
   coordinates,
   fullAddress,
   companyName,
+  photoURL,
 ) => {
+  console.log('URL de la photo récupérée:', photoURL)
   onSelect(establishmentId)
   handleYesClick(
     dispatch,
@@ -25,6 +27,7 @@ const handleItemClick = (
     fullAddress,
     setModalConfig,
     companyName,
+    photoURL,
   )
 }
 
@@ -53,6 +56,7 @@ const EstablishmentDisplay = ({
                 establishment.coordinates,
                 getFullAddress(establishment),
                 establishment.establishmentName,
+                establishment.photoURL,
               )
             }
           />

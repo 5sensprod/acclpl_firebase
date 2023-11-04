@@ -12,6 +12,7 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
       isApproximateMatch,
     } = duplicateCheckResult
     const companyName = details.establishmentName
+    const photoURLs = details.photoURL
 
     const modalBody = (
       <EstablishmentDisplay
@@ -35,6 +36,7 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
       } ${details.city}`,
       setModalConfig,
       companyName,
+      photoURLs,
     )
 
     const title = isMultipleOccurrences

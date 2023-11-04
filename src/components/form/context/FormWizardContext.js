@@ -202,13 +202,20 @@ const wizardReducer = (state, action) => {
       return formatCompanyAction(state, action)
 
     case 'UPDATE_FORM_DATA':
+      // Mise à jour de formData
       const updatedFormData = {
         ...state.formData,
         ...action.payload,
       }
+      // Vérifier si isDefaultPhoto est inclus dans le payload pour la mise à jour
+      const isDefaultPhoto = action.payload.hasOwnProperty('isDefaultPhoto')
+        ? action.payload.isDefaultPhoto
+        : state.isDefaultPhoto
+
       return {
         ...state,
         formData: updatedFormData,
+        isDefaultPhoto: isDefaultPhoto, // Assurez-vous de mettre à jour isDefaultPhoto ici
       }
     case 'UPDATE_HAS_CLOSED_MODAL':
       return {

@@ -114,7 +114,7 @@ const WizardStepManager = () => {
           formData={state.formData}
           previewPhotoURL={state.previewPhotoURL}
           isDefaultPhoto={state.isDefaultPhoto}
-          photoURL={state.photoURL}
+          photoURLs={state.formData.photoURLs}
         />
       )}
       <SuccessModal show={showModal} handleClose={handleCloseModal} />

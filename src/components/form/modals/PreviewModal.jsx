@@ -8,10 +8,9 @@ const PreviewModal = ({
   formData,
   previewPhotoURL,
   isDefaultPhoto,
-  photoURL,
+  photoURLs,
 }) => {
-  const imageURL = isDefaultPhoto ? previewPhotoURL : photoURL
-
+  const imageURL = isDefaultPhoto ? previewPhotoURL : photoURLs[0]
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
@@ -21,7 +20,7 @@ const PreviewModal = ({
         <LeafletMap
           markerCoords={formData.companyCoordinates}
           companyName={formData.companyName}
-          imageURL={imageURL} // Utilisez imageURL ici
+          imageURL={imageURL}
         />
       </Modal.Body>
       <Modal.Footer>
