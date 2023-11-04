@@ -31,7 +31,10 @@ const PhotoPreview = () => {
   }
 
   const icons = isDefaultPhoto ? (
-    <Camera className={styles.icon} />
+    <Camera
+      className={styles.icon}
+      onClick={() => document.getElementById('photo-input').click()}
+    />
   ) : (
     <>
       <Pencil className={styles.icon} onClick={handleEditClick} />
@@ -42,7 +45,7 @@ const PhotoPreview = () => {
   return (
     <Figure
       className={styles.figureStyle}
-      onClick={() => document.getElementById('photo-input').click()}
+      // onClick={() => document.getElementById('photo-input').click()}
     >
       <OverlayTrigger
         placement="top"
@@ -54,6 +57,7 @@ const PhotoPreview = () => {
             alt=""
             thumbnail
             className={styles.figureImage}
+            onClick={() => document.getElementById('photo-input').click()}
           />
         </span>
       </OverlayTrigger>
