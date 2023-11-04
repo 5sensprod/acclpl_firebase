@@ -46,6 +46,9 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_STEP':
+      return { ...state, currentStep: action.payload }
+
     case 'UPDATE_COMPANY_NAME':
       return {
         ...state,

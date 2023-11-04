@@ -14,10 +14,10 @@ export const handleYesClick = (
       companyCoordinates: invertedCoordinates,
       companyName: companyName,
       photoURLs: [photoURL],
-      isDefaultPhoto: false, // Assurez-vous de mettre à jour cette valeur
+      isDefaultPhoto: false,
     },
   })
-  dispatch({ type: 'NEXT_STEP' })
+  dispatch({ type: 'SET_STEP', payload: 3 })
   dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
   setModalConfig((prevConfig) => ({
     ...prevConfig,
@@ -67,7 +67,7 @@ function getModalButtonsConfig(
           fullAddress,
           setModalConfig,
           companyName,
-          photoURLs[0],
+          photoURLs,
         ),
     })
   }
