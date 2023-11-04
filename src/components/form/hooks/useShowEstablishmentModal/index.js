@@ -11,7 +11,7 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
       details,
       isApproximateMatch,
     } = duplicateCheckResult
-    const companyName = details.name
+    const companyName = details.establishmentName
 
     const modalBody = (
       <EstablishmentDisplay
