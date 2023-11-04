@@ -9,12 +9,16 @@ export default function Home() {
 
   return (
     <div className="container p-3">
-      <h1 className="display-3 text-light">
-        {currentUser
-          ? 'Bienvenue, Gros !'
-          : "Bonjour, S'inscrire ou se connecter"}
-      </h1>
-      <FormWizard />
+      <div className="row">
+        <div className="col-12 col-lg-6 mx-auto">
+          <h1 className="display-3 text-light">
+            {currentUser
+              ? 'Éco-veille: Signalement'
+              : "Bonjour, S'inscrire ou se connecter"}
+          </h1>
+          {currentUser && <FormWizard />}
+        </div>
+      </div>
     </div>
   )
 }

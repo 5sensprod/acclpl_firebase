@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Spinner } from 'react-bootstrap'
+import { Map } from 'react-bootstrap-icons'
 import { useFormWizardState } from '../context/FormWizardContext'
 import { checkDuplicateEstablishment } from '../../../services/establishmentCheckerService'
 import EstablishmentModal from '../modals/EstablishmentModal'
@@ -89,13 +90,13 @@ const WizardStepManager = () => {
       )}
 
       {currentStep === totalSteps && (
-        <>
+        <div className="btn-group" role="group">
           <Button
-            variant="secondary"
+            variant="primary"
             onClick={handleVisualizeClick}
             disabled={!canFinish || isLoading}
           >
-            Voir sur la carte
+            <Map />
           </Button>
           <Button
             variant="success"
@@ -104,7 +105,7 @@ const WizardStepManager = () => {
           >
             {isLoading ? <Spinner animation="border" size="sm" /> : 'Terminer'}
           </Button>
-        </>
+        </div>
       )}
       <EstablishmentModal />
       {showPreview && (
