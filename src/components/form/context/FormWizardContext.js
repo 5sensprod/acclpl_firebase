@@ -41,11 +41,21 @@ const initialState = {
     selectedFile: null,
     croppedImageUrl: null,
     currentEstablishmentId: null,
+    additionalNotes: '',
   },
 }
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'UPDATE_ADDITIONAL_NOTES':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          additionalNotes: action.payload,
+        },
+      }
+
     case 'SET_STEP':
       return { ...state, currentStep: action.payload }
 
