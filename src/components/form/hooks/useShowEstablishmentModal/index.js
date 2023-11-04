@@ -6,10 +6,12 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
   const { setModalConfig } = useModal()
 
   const showEstablishmentModal = (duplicateCheckResult) => {
-    const { multiple: isMultipleOccurrences, isApproximateMatch } =
-      duplicateCheckResult
-
-    const companyName = duplicateCheckResult.details.name
+    const {
+      multiple: isMultipleOccurrences,
+      details,
+      isApproximateMatch,
+    } = duplicateCheckResult
+    const companyName = details.name
 
     const modalBody = (
       <EstablishmentDisplay
@@ -27,12 +29,10 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
 
     const buttonsConfig = getModalButtonsConfig(
       dispatch,
-      duplicateCheckResult.details.coordinates,
-      `${duplicateCheckResult.details.streetNumber || ''} ${
-        duplicateCheckResult.details.streetName
-      }, ${duplicateCheckResult.details.postalCode} ${
-        duplicateCheckResult.details.city
-      }`,
+      details.coordinates,
+      `${details.streetNumber || ''} ${details.streetName}, ${
+        details.postalCode
+      } ${details.city}`,
       setModalConfig,
       companyName,
     )
@@ -47,7 +47,7 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
       isVisible: true,
       title: title,
       body: modalBody,
-      buttons: !isMultipleOccurrences && buttonsConfig,
+      buttons: buttonsConfig,
     })
 
     setIsLoading(false)
