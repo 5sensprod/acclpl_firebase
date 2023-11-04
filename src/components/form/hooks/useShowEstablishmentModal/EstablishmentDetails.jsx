@@ -8,13 +8,16 @@ const EstablishmentDetails = ({
   streetNumber,
   photoURL,
   onClick,
+  isMultipleOccurrences,
 }) => {
   const fullAddress = streetNumber
     ? `${streetNumber} ${streetName}, ${postalCode} ${city}`
     : `${streetName}, ${postalCode} ${city}`
 
+  const cursorStyle = isMultipleOccurrences ? { cursor: 'pointer' } : {}
+
   return (
-    <div onClick={onClick} style={{ cursor: 'pointer' }}>
+    <div onClick={onClick} style={cursorStyle}>
       <div className="bg-dark text-light d-flex justify-content-around align-items-center p-3 mb-3 rounded">
         <div>
           <h3 className="mb-2">{establishmentName}</h3>
@@ -30,7 +33,9 @@ const EstablishmentDetails = ({
           />
         </div>
       </div>
-      <h5 className="mb-2">Est-ce en lien avec votre signalement ?</h5>
+      {!isMultipleOccurrences && (
+        <h5 className="mb-2">Est-ce en lien avec votre signalement ?</h5>
+      )}
     </div>
   )
 }

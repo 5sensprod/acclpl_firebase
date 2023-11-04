@@ -46,6 +46,7 @@ const EstablishmentDisplay = ({
         {duplicateCheckResult.details.map((establishment, index) => (
           <EstablishmentDetails
             key={index}
+            isMultipleOccurrences={isMultipleOccurrences}
             {...establishment}
             onClick={() =>
               handleItemClick(
@@ -69,7 +70,12 @@ const EstablishmentDisplay = ({
   if (!isMultipleOccurrences && duplicateCheckResult.details) {
     const singleEstablishment = duplicateCheckResult.details
 
-    return <EstablishmentDetails {...singleEstablishment} />
+    return (
+      <EstablishmentDetails
+        isMultipleOccurrences={isMultipleOccurrences}
+        {...singleEstablishment}
+      />
+    )
   }
 
   // Handle no details case

@@ -16,8 +16,8 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
 
     // Créer le message en fonction de isApproximateMatch
     const messageBody = isApproximateMatch
-      ? 'Les informations semblent correspondre à un établissement existant, mais il y a des incertitudes. Voulez-vous continuer avec ces informations ?'
-      : "Un établissement avec des informations identiques ou similaires a été trouvé. Est-ce celui que vous essayez d'ajouter ?"
+      ? 'Les informations semblent correspondre à un établissement existant, sélectionnez celui en rapport avec votre signalement.'
+      : "Sélectionnez l'établissement en rapport avec votre signalement."
 
     // Inclure messageBody dans modalBodyContent
     const modalBodyContent = (
@@ -53,12 +53,13 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
       setModalConfig,
       companyName,
       photoURLs,
+      duplicateCheckResult.multiple,
     )
 
     setModalConfig({
       isVisible: true,
       title: title,
-      body: modalBodyContent, // Utiliser modalBodyContent ici
+      body: modalBodyContent,
       buttons: buttonsConfig,
     })
 

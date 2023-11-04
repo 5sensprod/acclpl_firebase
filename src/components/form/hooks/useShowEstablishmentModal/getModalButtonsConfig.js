@@ -32,11 +32,17 @@ function getModalButtonsConfig(
   setModalConfig,
   companyName,
   photoURLs,
+  isMultipleOccurrences, // Ajoutez ce paramètre
 ) {
-  // Here, if there's only one occurrence, add a "Yes" button to the config
-  return [
+  // Définir le texte du bouton "Non" en fonction du nombre d'occurrences
+  const noButtonText = isMultipleOccurrences
+    ? "Il s'agit d'un autre établissement"
+    : 'Non'
+
+  // Commencer par le bouton "Non" qui est toujours présent
+  const buttons = [
     {
-      text: 'Non',
+      text: noButtonText,
       onClick: () => {
         dispatch({ type: 'SET_ESTABLISHMENT_EXISTS', payload: false })
         dispatch({ type: 'SET_CURRENT_ESTABLISHMENT_ID', payload: null })
@@ -48,7 +54,11 @@ function getModalButtonsConfig(
         }))
       },
     },
-    {
+  ]
+
+  // Ajoute le bouton "Oui" seulement s'il y a une seule occurrence
+  if (!isMultipleOccurrences) {
+    buttons.push({
       text: 'Oui',
       onClick: () =>
         handleYesClick(
@@ -57,10 +67,12 @@ function getModalButtonsConfig(
           fullAddress,
           setModalConfig,
           companyName,
-          photoURLs,
+          photoURLs[0],
         ),
-    },
-  ]
+    })
+  }
+
+  return buttons
 }
 
 export default getModalButtonsConfig
