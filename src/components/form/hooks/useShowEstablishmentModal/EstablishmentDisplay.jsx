@@ -18,7 +18,17 @@ const handleItemClick = (
   fullAddress,
   companyName,
 ) => {
+  console.log(`Bouton "Oui" cliqué pour l'établissement ID: ${establishmentId}`)
+  console.log('Appel de onSelect avec establishmentId:', establishmentId)
   onSelect(establishmentId)
+  console.log('onSelect appelé avec succès.')
+  console.log('Appel de handleYesClick avec les paramètres suivants:', {
+    dispatch,
+    coordinates,
+    fullAddress,
+    setModalConfig,
+    companyName,
+  })
   handleYesClick(
     dispatch,
     coordinates,
@@ -26,6 +36,7 @@ const handleItemClick = (
     setModalConfig,
     companyName,
   )
+  console.log('handleYesClick appelé avec succès.')
 }
 
 const EstablishmentDisplay = ({
