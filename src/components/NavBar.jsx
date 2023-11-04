@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { auth } from '../firebaseConfig'
 
 export default function Navbar() {
-  const { toggleModals } = useContext(UserContext)
+  const { currentUser, toggleModals } = useContext(UserContext) // Assurez-vous que currentUser est fourni par UserContext
 
   const navigate = useNavigate()
 
@@ -28,21 +28,27 @@ export default function Navbar() {
       </Link>
 
       <div>
-        <button
-          onClick={() => toggleModals('signUp')}
-          className="btn btn-secondary btn-sm"
-        >
-          S'inscrire
-        </button>
-        <button
-          onClick={() => toggleModals('signIn')}
-          className="btn btn-secondary btn-sm ms-2"
-        >
-          Connexion
-        </button>
-        <button onClick={logOut} className="btn btn-danger btn-sm ms-2">
-          Déconnexion
-        </button>
+        {!currentUser && (
+          <>
+            <button
+              onClick={() => toggleModals('signUp')}
+              className="btn btn-secondary btn-sm"
+            >
+              S'inscrire
+            </button>
+            <button
+              onClick={() => toggleModals('signIn')}
+              className="btn btn-secondary btn-sm ms-2"
+            >
+              Connexion
+            </button>
+          </>
+        )}
+        {currentUser && (
+          <button onClick={logOut} className="btn btn-danger btn-sm ms-2">
+            Déconnexion
+          </button>
+        )}
       </div>
     </nav>
   )
