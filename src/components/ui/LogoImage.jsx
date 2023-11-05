@@ -8,7 +8,7 @@ const LogoImage = () => (
       src={logo}
       alt="Logo"
       style={{
-        marginTop: '80px',
+        marginTop: '20px',
         width: '25%',
         boxShadow: '0 0 25px 5px rgba(255, 255, 255, 0.7)',
         borderRadius: '50%',
