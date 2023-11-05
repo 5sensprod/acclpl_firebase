@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useState } from 'react'
-import { Modal, Button, Form } from 'react-bootstrap'
+import { Modal, Button, Form, InputGroup } from 'react-bootstrap'
 import { UserContext } from '../context/userContext'
+import { Envelope, LockFill } from 'react-bootstrap-icons'
 import { useNavigate } from 'react-router-dom'
 
 export default function SignUpModal() {
@@ -58,33 +59,45 @@ export default function SignUpModal() {
       <Modal.Body>
         <Form onSubmit={handleForm}>
           <Form.Group className="mb-3">
-            <Form.Label>Adresse email</Form.Label>
-            <Form.Control
-              ref={emailRef}
-              type="email"
-              required
-              placeholder="Entrer email"
-            />
+            <InputGroup>
+              <InputGroup.Text>
+                <Envelope />
+              </InputGroup.Text>
+              <Form.Control
+                ref={emailRef}
+                type="email"
+                required
+                placeholder="Entrer email"
+              />
+            </InputGroup>
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Mot de passe</Form.Label>
-            <Form.Control
-              ref={passwordRef}
-              type="password"
-              required
-              placeholder="Mot de passe"
-            />
+            <InputGroup>
+              <InputGroup.Text>
+                <LockFill />
+              </InputGroup.Text>
+              <Form.Control
+                ref={passwordRef}
+                type="password"
+                required
+                placeholder="Mot de passe"
+              />
+            </InputGroup>
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Répeter le mot de passe</Form.Label>
-            <Form.Control
-              ref={repeatPwdRef}
-              type="password"
-              required
-              placeholder="Répeter le mot de passe"
-            />
+            <InputGroup>
+              <InputGroup.Text>
+                <LockFill />
+              </InputGroup.Text>
+              <Form.Control
+                ref={repeatPwdRef}
+                type="password"
+                required
+                placeholder="Répéter le mot de passe"
+              />
+            </InputGroup>
             <Form.Text className="text-danger">{validation}</Form.Text>
           </Form.Group>
 

@@ -6,10 +6,17 @@
     width: 100%;
     /* height: 50px; */
   }
-  
-  .hoverEffect:hover {
-    color: #6c757d; /* Gris Bootstrap par défaut pour les hover */
+.link, .tradeMark  {
+  opacity: .5;
+  transition: opacity 0.3s ease, color 0.3s ease;
+
+}
+
+
+  .link:hover {
+    color: #ffffff !important;; /* Gris Bootstrap par défaut pour les hover */
     text-decoration: none; /* Aucun soulignement sur le lien */
+    opacity: 1;
   }
   
   /* Utilisez `!important` avec précaution, uniquement si nécessaire pour écraser les styles globaux */

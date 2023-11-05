@@ -14,13 +14,13 @@ const Footer = () => {
           href="https://www.facebook.com/profile.php?id=61552019534082"
           target="_blank"
           rel="noopener noreferrer"
-          className={`text-light ${styles.hoverEffect} ${styles.noUnderline}`}
+          className={`text-light ${styles.link} ${styles.noUnderline}`}
         >
           <Facebook className="me-2" /> {/* Icône Facebook */}
           Acclpl™
         </a>
       </small>{' '}
-      <small className="text-light">
+      <small className={`text-light ${styles.tradeMark}`}>
         &copy; {currentYear} Tous droits réservés.
       </small>
     </footer>

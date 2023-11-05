@@ -12,9 +12,9 @@ function App() {
   return (
     <ErrorBoundary>
       <>
+        <NavBar />
         <SignUpModal />
         <SignInModal />
-        <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/private" element={<Private />}>

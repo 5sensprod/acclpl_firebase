@@ -13,7 +13,7 @@ export default function Navbar() {
   const logOut = async () => {
     try {
       await signOut(auth)
-      navigate('/')
+      navigate('/private/private-home')
     } catch {
       alert(
         'Pour certaines raisons, nous ne pouvons pas nous déconnecter, veuillez vérifier votre connexion internet et réessayer.',
@@ -24,7 +24,7 @@ export default function Navbar() {
   return (
     <nav
       className="navbar navbar-light bg-light px-4 p-0"
-      style={{ zIndex: 6 }}
+      style={{ zIndex: 10000 }}
     >
       <Link to="/" className="navbar-brand">
         <img src={logo} alt="Logo" height="30" />{' '}

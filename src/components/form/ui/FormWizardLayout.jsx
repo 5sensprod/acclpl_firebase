@@ -8,7 +8,7 @@ const FormWizardLayout = ({ children }) => {
   const { state } = useFormWizardState()
 
   return (
-    <Card className="p-4 shadow-lg bg-dark text-light">
+    <Card className="p-4 shadow-lg bg-dark text-light w-100">
       <Card.Body>
         <Container>
           <StepProgressIndicator />
