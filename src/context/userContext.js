@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  FacebookAuthProvider,
 } from 'firebase/auth'
 import { auth } from '../firebaseConfig'
 
@@ -18,6 +19,11 @@ export function UserContextProvider(props) {
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider()
+    return signInWithPopup(auth, provider)
+  }
+
+  const facebookSignIn = () => {
+    const provider = new FacebookAuthProvider()
     return signInWithPopup(auth, provider)
   }
 
@@ -58,6 +64,7 @@ export function UserContextProvider(props) {
         currentUser,
         signIn,
         googleSignIn,
+        facebookSignIn,
       }}
     >
       {!loadingData && props.children}

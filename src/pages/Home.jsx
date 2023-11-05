@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { UserContext } from '../context/userContext'
 import FormWizard from '../components/form/wizard'
 import GoogleSignInButton from '../components/GoogleSignInButton'
+import FacebookSignInButton from '../components/FacebookSignInButton'
 
 export default function Home() {
   const { currentUser } = useContext(UserContext)
@@ -17,7 +18,12 @@ export default function Home() {
           </h1>
 
           {/* Affiche le bouton de connexion Google uniquement si aucun utilisateur n'est actuellement connecté */}
-          {!currentUser && <GoogleSignInButton />}
+          {!currentUser && (
+            <>
+              <GoogleSignInButton />
+              <FacebookSignInButton />
+            </>
+          )}
 
           {/* Affiche le formulaire si un utilisateur est connecté */}
           {currentUser && <FormWizard />}
