@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { UserContext } from '../context/userContext'
+import { UserContext } from '../../context/userContext'
 import { Button } from 'react-bootstrap'
 import { Facebook } from 'react-bootstrap-icons'
 

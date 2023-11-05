@@ -6,7 +6,7 @@ import SignInModal from './components/SignInModal'
 import Private from './pages/Private/Private'
 import PrivateHome from './pages/Private/PrivateHome/PrivateHome'
 import 'leaflet/dist/leaflet.css'
-import ErrorBoundary from './components/ErrorBoundary'
+import ErrorBoundary from './components/ui/ErrorBoundary'
 
 function App() {
   return (

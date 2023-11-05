@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
-import { UserContext } from '../context/userContext'
+import { UserContext } from '../../context/userContext'
 import { Button } from 'react-bootstrap'
 import { Envelope } from 'react-bootstrap-icons' // Importation des icônes nécessaires
 
-const EmailSignInDropdown = () => {
+const EmailSignInButton = () => {
   const { toggleModals } = useContext(UserContext)
 
   return (
@@ -20,4 +20,4 @@ const EmailSignInDropdown = () => {
   )
 }
 
-export default EmailSignInDropdown
+export default EmailSignInButton
