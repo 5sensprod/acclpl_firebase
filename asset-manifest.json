@@ -1,14 +1,16 @@
 {
   "files": {
-    "main.css": "/acclpl_firebase/static/css/main.9578a934.css",
-    "main.js": "/acclpl_firebase/static/js/main.fc468112.js",
+    "main.css": "/acclpl_firebase/static/css/main.9f0ca845.css",
+    "main.js": "/acclpl_firebase/static/js/main.ea3fa86f.js",
+    "static/media/logo.png": "/acclpl_firebase/static/media/logo.6c47625e48c92708a5f4.png",
     "static/media/defaultPhoto.jpg": "/acclpl_firebase/static/media/defaultPhoto.631aadb67dc31a3dcd1a.jpg",
+    "static/media/logo.jpg": "/acclpl_firebase/static/media/logo.45e5e75202cb30ed4133.jpg",
     "index.html": "/acclpl_firebase/index.html",
-    "main.9578a934.css.map": "/acclpl_firebase/static/css/main.9578a934.css.map",
-    "main.fc468112.js.map": "/acclpl_firebase/static/js/main.fc468112.js.map"
+    "main.9f0ca845.css.map": "/acclpl_firebase/static/css/main.9f0ca845.css.map",
+    "main.ea3fa86f.js.map": "/acclpl_firebase/static/js/main.ea3fa86f.js.map"
   },
   "entrypoints": [
-    "static/css/main.9578a934.css",
-    "static/js/main.fc468112.js"
+    "static/css/main.9f0ca845.css",
+    "static/js/main.ea3fa86f.js"
   ]
 }
