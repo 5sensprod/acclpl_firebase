@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { auth } from '../firebaseConfig'
 
 export default function Navbar() {
-  const { currentUser, toggleModals } = useContext(UserContext) // Assurez-vous que currentUser est fourni par UserContext
+  const { currentUser, toggleModals } = useContext(UserContext)
 
   const navigate = useNavigate()
 
