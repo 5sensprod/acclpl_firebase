@@ -4,6 +4,8 @@ import FormWizard from '../components/form/wizard'
 import GoogleSignInButton from '../components/GoogleSignInButton'
 import FacebookSignInButton from '../components/FacebookSignInButton'
 import EmailSignInDropdown from '../components/EmailSignInDropdown'
+import logo from '../assets/images/logo.png'
+import styles from './Home.module.css'
 
 export default function Home() {
   const { currentUser } = useContext(UserContext)
@@ -11,20 +13,38 @@ export default function Home() {
   return (
     <div className="container p-3">
       <div className="row ">
-        <div className="col-12 col-lg-6 mx-auto ">
+        <div className="col-12 col-lg-6 mt-5 text-center w-75 mx-auto">
           <h1 className="display-3 text-light mb-5">
             {currentUser
               ? 'Éco-veille: Signalement'
-              : "Bonjour, S'inscrire ou se connecter"}
+              : 'Ensemble contre la pollution lumineuse'}
           </h1>
 
           {/* Si aucun utilisateur n'est connecté, afficher les boutons de connexion */}
           {!currentUser && (
             <>
-              <div className="d-flex flex-column mt-3 gap-3 w-75 mx-auto">
+              <div className="d-flex flex-column gap-3 mx-auto">
                 <GoogleSignInButton />
                 <FacebookSignInButton />
                 <EmailSignInDropdown />
+              </div>{' '}
+              <div
+                className="mt-5 w-lg-25 text-center"
+                style={{
+                  marginTop: '25px',
+                }}
+              >
+                <img
+                  src={logo}
+                  alt="Logo"
+                  style={{
+                    marginTop: '80px',
+                    width: '25%',
+                    boxShadow: '0 0 25px 5px rgba(255, 255, 255, 0.7)', // Lueur blanche avec une grande diffusion
+                    borderRadius: '50%', // Assurez-vous que l'image est ronde
+                  }}
+                  className={`${styles.glowEffect} w-25`}
+                />
               </div>
             </>
           )}

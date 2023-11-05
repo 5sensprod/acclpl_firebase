@@ -1,7 +1,8 @@
 import React, { useContext, useRef, useState } from 'react'
 import { UserContext } from '../context/userContext'
 import { useNavigate } from 'react-router-dom'
-import { Modal, Button, Form } from 'react-bootstrap'
+import { Modal, Button, Form, InputGroup } from 'react-bootstrap'
+import { Envelope, LockFill } from 'react-bootstrap-icons' // Importez les icônes nécessaires
 
 export default function SignInModal() {
   const { modalState, toggleModals, signIn } = useContext(UserContext)
@@ -22,7 +23,7 @@ export default function SignInModal() {
       toggleModals('close')
       navigate('/')
     } catch {
-      setValidation("Oups, L'adresse email ou le mot de passe est invalide")
+      setValidation("Oups, l'adresse email ou le mot de passe est invalide.")
     }
   }
 
@@ -39,28 +40,38 @@ export default function SignInModal() {
       <Modal.Body>
         <Form onSubmit={handleForm}>
           <Form.Group className="mb-3">
-            <Form.Label>Adresse email</Form.Label>
-            <Form.Control
-              ref={emailRef}
-              type="email"
-              placeholder="Entrer email"
-              required
-            />
+            <InputGroup>
+              <InputGroup.Text>
+                <Envelope />{' '}
+                {/* Icône d'enveloppe à l'intérieur du champ de texte */}
+              </InputGroup.Text>
+              <Form.Control
+                ref={emailRef}
+                type="email"
+                placeholder="Adresse e-mail"
+                required
+              />
+            </InputGroup>
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Mot de passe</Form.Label>
-            <Form.Control
-              ref={passwordRef}
-              type="password"
-              placeholder="Mot de passe"
-              required
-            />
+            <InputGroup>
+              <InputGroup.Text>
+                <LockFill />{' '}
+                {/* Icône de verrouillage à l'intérieur du champ de texte */}
+              </InputGroup.Text>
+              <Form.Control
+                ref={passwordRef}
+                type="password"
+                placeholder="Mot de passe"
+                required
+              />
+            </InputGroup>
             <Form.Text className="text-danger">{validation}</Form.Text>
           </Form.Group>
 
           <Button variant="primary" type="submit">
-            Se connecter
+            Connexion
           </Button>
         </Form>
       </Modal.Body>

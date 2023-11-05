@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../firebaseConfig'
-
+import logo from '../assets/images/logo.jpg'
 export default function Navbar() {
   const { currentUser, toggleModals } = useContext(UserContext)
 
@@ -22,9 +22,13 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="navbar navbar-light bg-light px-4" style={{ zIndex: 6 }}>
+    <nav
+      className="navbar navbar-light bg-light px-4 p-0"
+      style={{ zIndex: 6 }}
+    >
       <Link to="/" className="navbar-brand">
-        Ensemble contre la pollution lumineuse
+        <img src={logo} alt="Logo" height="30" />{' '}
+        {/* Mettre à jour l'attribut 'height' selon la taille souhaitée */}
       </Link>
 
       <div>
@@ -36,12 +40,7 @@ export default function Navbar() {
             >
               S'inscrire
             </button>
-            <button
-              onClick={() => toggleModals('signIn')}
-              className="btn btn-secondary btn-sm ms-2"
-            >
-              Connexion
-            </button>
+            {/* Button pour la connexion remplacé par le modal */}
           </>
         )}
         {currentUser && (
