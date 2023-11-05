@@ -1,14 +1,31 @@
-/* Home.module.css */
-@keyframes glow {
-    0%, 100% {
-      box-shadow: 0 0 25px 5px rgba(255, 255, 255, 0.7);
-    }
-    50% {
-      box-shadow: 0 0 25px 5px rgba(255, 174, 0, 0.7);
-    }
-  }
-  
-  .glowEffect {
+.logoImage {
+    max-width: 25%;
+    /* Par défaut, pour les écrans plus petits que 600px */
+    border-radius: 50%;
+    box-shadow: 0 0 25px 5px rgba(255, 255, 255, 0.7);
     animation: glow 3s ease-in-out infinite;
-  }
-  
+}
+
+/* Breakpoint à 600px */
+@media (min-width: 600px) {
+    .logoImage {
+        max-width: 50px;
+        /* Pour les écrans de 600px et plus */
+    }
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 25px 5px rgba(255, 255, 255, 0.7);
+    }
+
+    50% {
+        box-shadow: 0 0 25px 5px rgba(255, 174, 0, 0.5);
+    }
+}
+
+.glowEffect {
+    animation: glow 3s ease-in-out infinite;
+}

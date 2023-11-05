@@ -29,7 +29,7 @@ export default function Home() {
                 <EmailSignInDropdown />
               </div>{' '}
               <div
-                className="mt-5 w-lg-25 text-center"
+                className="mt-5 text-center"
                 style={{
                   marginTop: '25px',
                 }}
@@ -40,10 +40,10 @@ export default function Home() {
                   style={{
                     marginTop: '80px',
                     width: '25%',
-                    boxShadow: '0 0 25px 5px rgba(255, 255, 255, 0.7)', // Lueur blanche avec une grande diffusion
-                    borderRadius: '50%', // Assurez-vous que l'image est ronde
+                    boxShadow: '0 0 25px 5px rgba(255, 255, 255, 0.7)',
+                    borderRadius: '50%',
                   }}
-                  className={`${styles.glowEffect} w-25`}
+                  className={`${styles.glowEffect} ${styles.logoImage}`}
                 />
               </div>
             </>
