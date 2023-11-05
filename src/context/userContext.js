@@ -34,6 +34,7 @@ export function UserContextProvider(props) {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setCurrentUser(currentUser)
       setLoadingData(false)
+      // console.log(currentUser ? 'Connecté' : 'Déconnecté')
     })
     return unsubscribe
   }, [])

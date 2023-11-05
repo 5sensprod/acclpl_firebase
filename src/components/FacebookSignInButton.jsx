@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { UserContext } from '../context/userContext'
 import { Button } from 'react-bootstrap'
-import { Facebook } from 'react-bootstrap-icons' // Assurez-vous d'avoir installé react-bootstrap-icons
+import { Facebook } from 'react-bootstrap-icons'
 
 const FacebookSignInButton = () => {
   const { facebookSignIn } = useContext(UserContext)
@@ -17,8 +17,12 @@ const FacebookSignInButton = () => {
   }
 
   return (
-    <Button onClick={handleFacebookSignIn} variant="primary">
-      <Facebook className="me-2" /> Connectez-vous avec Facebook
+    <Button
+      onClick={handleFacebookSignIn}
+      variant="primary"
+      className="text-start"
+    >
+      <Facebook size={24} className="me-2" /> Se connecter avec Facebook
     </Button>
   )
 }
