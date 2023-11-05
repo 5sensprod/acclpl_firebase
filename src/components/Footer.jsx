@@ -17,11 +17,11 @@ const Footer = () => {
           className={`text-light ${styles.hoverEffect} ${styles.noUnderline}`}
         >
           <Facebook className="me-2" /> {/* Icône Facebook */}
-          Acclpl
+          Acclpl™
         </a>
       </small>{' '}
       <small className="text-light">
-        &copy; {currentYear} All Rights Reserved.
+        &copy; {currentYear} Tous droits réservés.
       </small>
     </footer>
   )
