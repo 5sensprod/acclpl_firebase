@@ -15,7 +15,7 @@ const Home = () => {
         style={{ maxWidth: '800px' }}
       >
         <div className="row">
-          <div className="col-12 col-lg-6 mt-5 pb-5 text-center w-75 mx-auto">
+          <div className="col-12 col-lg-6 mt-2 pb-5 text-center w-75 mx-auto">
             <HeaderTitle isUserLoggedIn={isUserLoggedIn} />
             {!isUserLoggedIn && (
               <>

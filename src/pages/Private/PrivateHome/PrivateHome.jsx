@@ -1,10 +1,12 @@
 import React from 'react'
 import { Megaphone } from 'react-bootstrap-icons'
 import FormWizard from '../../../components/form/wizard'
+import SidebarMenu from '../../../components/ui/SidebarMenu'
 
 export default function PrivateHome() {
   return (
     <>
+      <SidebarMenu />
       <style>
         {`
           .inset-shadow {
