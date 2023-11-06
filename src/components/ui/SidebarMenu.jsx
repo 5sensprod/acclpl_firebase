@@ -7,12 +7,12 @@ import {
   BoxArrowRight,
   List,
 } from 'react-bootstrap-icons'
-import { UserContext } from '../../context/userContext' // Assurez-vous que le chemin est correct
-import { useNavigate } from 'react-router-dom' // Si vous avez besoin de naviguer après la déconnexion
+import { UserContext } from '../../context/userContext'
+import { useNavigate } from 'react-router-dom'
 
 export default function SidebarMenu() {
   const [show, setShow] = useState(false)
-  const { currentUser, signOut } = useContext(UserContext)
+  const { currentUser, signOut, setActiveView } = useContext(UserContext)
   const navigate = useNavigate()
 
   const handleClose = () => setShow(false)
@@ -21,11 +21,16 @@ export default function SidebarMenu() {
   const logOut = async () => {
     try {
       await signOut()
-      handleClose() // Ferme le menu Offcanvas après la déconnexion
-      navigate('/') // Navigue vers la page d'accueil après la déconnexion
+      handleClose()
+      navigate('/')
     } catch (error) {
       console.error('Erreur lors de la déconnexion', error)
     }
+  }
+
+  const changeView = (viewName) => {
+    setActiveView(viewName) // Mettez à jour la vue active
+    handleClose() // Fermez le menu Offcanvas
   }
 
   return (
@@ -38,10 +43,9 @@ export default function SidebarMenu() {
       <div
         onClick={handleShow}
         className="d-inline-flex align-items-center btn-dark clickable ms-2 mt-1"
-        style={{ cursor: 'pointer' }} // Ajoute un style pour changer le curseur en pointeur
+        style={{ cursor: 'pointer' }}
       >
         <List size={32} color="white" />{' '}
-        {/* Vous pouvez ajuster la taille si nécessaire */}
       </div>
 
       <Offcanvas
@@ -57,15 +61,15 @@ export default function SidebarMenu() {
         ></Offcanvas.Header>
         <Offcanvas.Body className="bg-dark text-light">
           <Nav className="flex-column text-center gap-3">
-            <Nav.Link href="#action1" onClick={handleClose}>
+            <Nav.Link onClick={() => changeView('announcements')}>
               <Megaphone size={24} style={{ color: 'white' }} />
               {/* Annonces */}
             </Nav.Link>
-            <Nav.Link href="#action2" onClick={handleClose}>
+            <Nav.Link onClick={() => changeView('profile')}>
               <Person size={24} style={{ color: 'white' }} />
               {/* Profil */}
             </Nav.Link>
-            <Nav.Link href="#action3" onClick={handleClose}>
+            <Nav.Link onClick={() => changeView('map')}>
               <Map size={24} style={{ color: 'white' }} />
               {/* Carte */}
             </Nav.Link>

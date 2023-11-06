@@ -1,28 +1,48 @@
-import React from 'react'
-import { Megaphone } from 'react-bootstrap-icons'
+import React, { useContext } from 'react'
+import { Megaphone, Person, Map } from 'react-bootstrap-icons'
 import FormWizard from '../../../components/form/wizard'
 import SidebarMenu from '../../../components/ui/SidebarMenu'
+import ViewHeader from '../../../components/views/ViewHeader'
+import ProfileView from '../../../components/views/ProfileView'
+import MapView from '../../../components/views/MapView'
+import { UserContext } from '../../../context/userContext'
 
 export default function PrivateHome() {
+  const { activeView } = useContext(UserContext)
+
+  // Déclaration de l'objet 'headers'
+  const headers = {
+    profile: { title: 'Profil', Icon: Person },
+    map: { title: 'Carte', Icon: Map },
+    announcements: { title: 'Éco-veille', Icon: Megaphone },
+  }
+
+  let contentView
+  switch (activeView) {
+    case 'profile':
+      contentView = <ProfileView />
+      break
+    case 'map':
+      contentView = <MapView />
+      break
+    case 'announcements':
+    default:
+      contentView = <FormWizard />
+      break
+  }
+
+  // Extrayez l'icône et le titre de 'headers' basé sur 'activeView'
+  const { Icon, title } = headers[activeView] || headers['profile']
+
   return (
     <>
       <SidebarMenu />
-      <style>
-        {`
-          .inset-shadow {
-            box-shadow: inset 0 0 15px 1px rgba(0, 0, 0, 0.2);
-          }
-        `}
-      </style>
       <div
         className="container shadow-sm pt-5 pb-5 rounded-bottom"
         style={{ maxWidth: '800px' }}
       >
-        <h1 className="display-5 text-light mb-4 text-center inset-shadow rounded-top py-2">
-          <Megaphone size={32} className="me-5 bg-dark shadow" />
-          Éco-veille
-        </h1>
-        <FormWizard />
+        <ViewHeader icon={Icon} title={title} />
+        {contentView}
       </div>
     </>
   )

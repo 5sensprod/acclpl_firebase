@@ -15,6 +15,7 @@ export const UserContext = createContext()
 export function UserContextProvider(props) {
   const [currentUser, setCurrentUser] = useState()
   const [loadingData, setLoadingData] = useState(true)
+  const [activeView, setActiveView] = useState('profile')
 
   // Inscrivez un utilisateur avec email et mot de passe
   const signUp = (email, pwd) =>
@@ -77,7 +78,9 @@ export function UserContextProvider(props) {
         signIn,
         googleSignIn,
         facebookSignIn,
-        signOut, // Incluez signOut ici pour l'utiliser dans vos composants
+        signOut,
+        activeView, // Ajoutez activeView dans la valeur du contexte
+        setActiveView, // Ajoutez setActiveView dans la valeur du contexte pour permettre aux composants de le mettre à jour
       }}
     >
       {!loadingData && props.children}
