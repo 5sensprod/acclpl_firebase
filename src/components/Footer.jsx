@@ -6,9 +6,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear() // Obtient l'année en cours
 
   return (
-    <footer
-      className={`bg-dark text-light shadow-lg p-0 ${styles.absoluteBottom} p-3 text-center`}
-    >
+    <footer className="bg-dark text-light fixed-bottom shadow p-0 p-3 text-center">
       <small>
         <a
           href="https://www.facebook.com/profile.php?id=61552019534082"

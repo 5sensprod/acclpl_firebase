@@ -23,8 +23,8 @@ export default function Navbar() {
 
   return (
     <nav
-      className="navbar navbar-light bg-light px-4 p-0"
-      style={{ zIndex: 10000 }}
+      className="navbar navbar-light fixed-top bg-light px-4 p-1 mx-auto rounded-top"
+      style={{ zIndex: 10000, maxWidth: '800px' }}
     >
       <Link to="/" className="navbar-brand">
         <img src={logo} alt="Logo" height="30" />{' '}

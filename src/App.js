@@ -7,6 +7,7 @@ import Private from './pages/Private/Private'
 import PrivateHome from './pages/Private/PrivateHome/PrivateHome'
 import 'leaflet/dist/leaflet.css'
 import ErrorBoundary from './components/ui/ErrorBoundary'
+import Footer from './components/Footer'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/private/private-home" element={<PrivateHome />} />
           </Route>
         </Routes>
+        <Footer />
       </>
     </ErrorBoundary>
   )
