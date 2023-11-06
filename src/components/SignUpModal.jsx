@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from 'react'
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap'
 import { UserContext } from '../context/userContext'
-import { Envelope, LockFill } from 'react-bootstrap-icons'
+import { Envelope, LockFill, PersonBadge } from 'react-bootstrap-icons'
 import { useNavigate } from 'react-router-dom'
 
 export default function SignUpModal() {
@@ -13,6 +13,7 @@ export default function SignUpModal() {
   const emailRef = useRef()
   const passwordRef = useRef()
   const repeatPwdRef = useRef()
+  const displayNameRef = useRef()
 
   const handleForm = async (e) => {
     e.preventDefault()
@@ -20,6 +21,7 @@ export default function SignUpModal() {
     const email = emailRef.current.value
     const password = passwordRef.current.value
     const repeatPassword = repeatPwdRef.current.value
+    const displayName = displayNameRef.current.value
 
     if (password.length < 6 || repeatPassword.length < 6) {
       setValidation('6 caractères min')
@@ -31,8 +33,13 @@ export default function SignUpModal() {
       return
     }
 
+    if (!displayName.trim()) {
+      setValidation("Le nom d'affichage est requis")
+      return
+    }
+
     try {
-      await signUp(email, password)
+      await signUp(email, password, displayName)
       setValidation('')
       toggleModals('close')
       navigate('/private/private-home')
@@ -58,6 +65,19 @@ export default function SignUpModal() {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleForm}>
+          <Form.Group className="mb-3">
+            <InputGroup>
+              <InputGroup.Text>
+                <PersonBadge /> {/* Icone pour le displayName */}
+              </InputGroup.Text>
+              <Form.Control
+                ref={displayNameRef}
+                type="text"
+                required
+                placeholder="Nom d'affichage"
+              />
+            </InputGroup>
+          </Form.Group>
           <Form.Group className="mb-3">
             <InputGroup>
               <InputGroup.Text>

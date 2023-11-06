@@ -9,6 +9,7 @@ import {
   signOut as firebaseSignOut,
 } from 'firebase/auth'
 import { auth } from '../firebaseConfig'
+import { addUser } from '../services/userService'
 
 export const UserContext = createContext()
 
@@ -17,8 +18,20 @@ export function UserContextProvider(props) {
   const [loadingData, setLoadingData] = useState(true)
   const [activeView, setActiveView] = useState('profile')
 
-  const signUp = (email, pwd) =>
-    createUserWithEmailAndPassword(auth, email, pwd)
+  const signUp = async (email, pwd, displayName) => {
+    const response = await createUserWithEmailAndPassword(auth, email, pwd)
+    const user = response.user
+    // Créez l'objet utilisateur pour Firestore en utilisant les informations de l'utilisateur Firebase Auth
+    const newUser = {
+      userID: user.uid, // L'UID fourni par Firebase Auth
+      displayName, // Le displayName fourni dans le formulaire d'inscription
+      email: user.email, // L'email de l'utilisateur
+      joinedDate: new Date().toISOString(), // La date actuelle formatée en ISO
+    }
+    // Utilisez addUser pour créer le document utilisateur dans Firestore
+    await addUser(newUser)
+    return user
+  }
 
   const signIn = (email, pwd) => signInWithEmailAndPassword(auth, email, pwd)
 
