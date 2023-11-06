@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { UserContext } from '../../context/userContext'
 import { Button } from 'react-bootstrap'
-import { Envelope } from 'react-bootstrap-icons' // Importation des icônes nécessaires
+import { Envelope } from 'react-bootstrap-icons'
 
 const EmailSignInButton = () => {
   const { toggleModals } = useContext(UserContext)

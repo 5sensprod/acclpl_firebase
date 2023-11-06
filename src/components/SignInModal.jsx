@@ -21,7 +21,7 @@ export default function SignInModal() {
 
       setValidation('')
       toggleModals('close')
-      navigate('/')
+      navigate('/private/private-home')
     } catch {
       setValidation("Oups, l'adresse email ou le mot de passe est invalide.")
     }

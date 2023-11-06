@@ -23,7 +23,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="navbar navbar-light fixed-top bg-light px-4 p-1 mx-auto rounded-top"
+      className="navbar navbar-light bg-light px-4 p-1 mx-auto rounded-top"
       style={{ zIndex: 10000, maxWidth: '800px' }}
     >
       <Link to="/" className="navbar-brand">
