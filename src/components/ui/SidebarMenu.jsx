@@ -66,7 +66,7 @@ export default function SidebarMenu() {
     <>
       <motion.div
         onClick={handleShow}
-        className="d-inline-flex align-items-center btn-dark clickable"
+        className="d-inline-flex align-items-center btn-dark clickable mt-2"
         style={{ cursor: 'pointer' }}
         initial="visible"
         animate={show ? 'visible' : 'hidden'}
