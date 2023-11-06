@@ -61,13 +61,13 @@ export default function SidebarMenu() {
         ></Offcanvas.Header>
         <Offcanvas.Body className="bg-dark text-light">
           <Nav className="flex-column text-center gap-3">
-            <Nav.Link onClick={() => changeView('announcements')}>
-              <Megaphone size={24} style={{ color: 'white' }} />
-              {/* Annonces */}
-            </Nav.Link>
             <Nav.Link onClick={() => changeView('profile')}>
               <Person size={24} style={{ color: 'white' }} />
               {/* Profil */}
+            </Nav.Link>
+            <Nav.Link onClick={() => changeView('announcements')}>
+              <Megaphone size={24} style={{ color: 'white' }} />
+              {/* Annonces */}
             </Nav.Link>
             <Nav.Link onClick={() => changeView('map')}>
               <Map size={24} style={{ color: 'white' }} />
