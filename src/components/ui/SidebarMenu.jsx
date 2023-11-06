@@ -9,11 +9,20 @@ import {
 } from 'react-bootstrap-icons'
 import { UserContext } from '../../context/userContext'
 import { useNavigate } from 'react-router-dom'
+import '../styles/sidebarStyles.css'
+import { motion } from 'framer-motion'
 
 export default function SidebarMenu() {
   const [show, setShow] = useState(false)
-  const { currentUser, signOut, setActiveView } = useContext(UserContext)
+  const { currentUser, signOut, setActiveView, activeView } =
+    useContext(UserContext)
   const navigate = useNavigate()
+
+  const menuItems = [
+    { name: 'profile', icon: <Person size={24} />, label: 'Profil' },
+    { name: 'announcements', icon: <Megaphone size={24} />, label: 'Annonces' },
+    { name: 'map', icon: <Map size={24} />, label: 'Carte' },
+  ]
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -29,24 +38,42 @@ export default function SidebarMenu() {
   }
 
   const changeView = (viewName) => {
-    setActiveView(viewName) // Mettez à jour la vue active
-    handleClose() // Fermez le menu Offcanvas
+    setActiveView(viewName)
+    handleClose()
+  }
+
+  const listVariants = {
+    visible: { x: -20 },
+    hidden: {
+      x: 8,
+      transition: {
+        delay: 0.15,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { x: -50 },
+    visible: (index) => ({
+      x: 0,
+      transition: {
+        delay: 0.1 + index * 0.04,
+      },
+    }),
   }
 
   return (
     <>
-      <style>
-        {`.btn-close {
-          filter: invert(1) grayscale(1) brightness(.7);
-        }`}
-      </style>
-      <div
+      <motion.div
         onClick={handleShow}
-        className="d-inline-flex align-items-center btn-dark clickable ms-2 mt-1"
+        className="d-inline-flex align-items-center btn-dark clickable"
         style={{ cursor: 'pointer' }}
+        initial="visible"
+        animate={show ? 'visible' : 'hidden'}
+        variants={listVariants}
       >
-        <List size={32} color="white" />{' '}
-      </div>
+        <List size={32} color="white" />
+      </motion.div>
 
       <Offcanvas
         show={show}
@@ -57,27 +84,44 @@ export default function SidebarMenu() {
       >
         <Offcanvas.Header
           closeButton
-          className="bg-dark text-light mx-auto"
-        ></Offcanvas.Header>
-        <Offcanvas.Body className="bg-dark text-light">
-          <Nav className="flex-column text-center gap-3">
-            <Nav.Link onClick={() => changeView('profile')}>
-              <Person size={24} style={{ color: 'white' }} />
-              {/* Profil */}
-            </Nav.Link>
-            <Nav.Link onClick={() => changeView('announcements')}>
-              <Megaphone size={24} style={{ color: 'white' }} />
-              {/* Annonces */}
-            </Nav.Link>
-            <Nav.Link onClick={() => changeView('map')}>
-              <Map size={24} style={{ color: 'white' }} />
-              {/* Carte */}
-            </Nav.Link>
+          className="bg-dark text-secondary mx-auto"
+        />
+        <Offcanvas.Body className="bg-dark text-light d-flex flex-column align-items-center justify-content-center p-0">
+          <Nav className="flex-column gap-4 p-0 shadow rounded py-3">
+            {menuItems.map((item, index) => (
+              <motion.div
+                key={item.name}
+                custom={index}
+                variants={itemVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <Nav.Link onClick={() => changeView(item.name)}>
+                  {React.cloneElement(item.icon, {
+                    className:
+                      activeView === item.name
+                        ? 'active-link'
+                        : 'text-secondary',
+                  })}
+                </Nav.Link>
+              </motion.div>
+            ))}
             {currentUser && (
-              <Nav.Link onClick={logOut} className="mt-5">
-                <BoxArrowRight size={24} style={{ color: 'white' }} />
-                {/* Déconnexion */}
-              </Nav.Link>
+              <motion.div
+                variants={itemVariants}
+                custom={menuItems.length}
+                initial="hidden"
+                animate="visible"
+              >
+                <Nav.Link onClick={logOut} className="mt-5">
+                  <BoxArrowRight
+                    size={24}
+                    className={
+                      activeView === 'logout' ? 'active-link' : 'text-secondary'
+                    }
+                  />
+                </Nav.Link>
+              </motion.div>
             )}
           </Nav>
         </Offcanvas.Body>

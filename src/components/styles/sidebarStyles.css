@@ -1,0 +1,13 @@
+/* src/components/styles/sidebarStyles.css */
+.active-link {
+    /* background-color: rgba(255, 255, 255, 0.2); */
+    color: white !important;
+  }
+
+  .btn-close {
+    filter: invert(0.6) grayscale(1) brightness(2); /* Ajustez ces valeurs pour obtenir la teinte de gris souhaitée */
+  }
+
+
+
+  
