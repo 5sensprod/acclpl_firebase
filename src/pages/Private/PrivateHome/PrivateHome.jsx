@@ -6,6 +6,28 @@ import ViewHeader from '../../../components/views/ViewHeader'
 import ProfileView from '../../../components/views/ProfileView'
 import MapView from '../../../components/views/MapView'
 import { UserContext } from '../../../context/userContext'
+import { AnimatePresence, motion } from 'framer-motion'
+
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    y: -50, // déplacez le composant vers le haut initialement
+  },
+  in: {
+    opacity: 1,
+    y: 0, // animez le composant pour revenir à sa position d'origine
+  },
+  out: {
+    opacity: 0,
+    y: 50, // faites glisser le composant vers le bas lorsqu'il sort
+  },
+}
+
+const pageTransition = {
+  type: 'tween',
+  ease: 'anticipate',
+  duration: 0.2,
+}
 
 export default function PrivateHome() {
   const { activeView } = useContext(UserContext)
@@ -32,7 +54,7 @@ export default function PrivateHome() {
   }
 
   // Extrayez l'icône et le titre de 'headers' basé sur 'activeView'
-  const { Icon, title } = headers[activeView] || headers['profile']
+  const { Icon, title } = headers[activeView] || headers['announcements']
 
   return (
     <>
@@ -41,8 +63,19 @@ export default function PrivateHome() {
         className="container shadow-sm pt-5 pb-5 rounded-bottom"
         style={{ maxWidth: '800px' }}
       >
-        <ViewHeader icon={Icon} title={title} />
-        {contentView}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeView}
+            variants={pageVariants}
+            initial="initial"
+            animate="in"
+            exit="out"
+            transition={pageTransition}
+          >
+            <ViewHeader icon={Icon} title={title} />
+            {contentView}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </>
   )

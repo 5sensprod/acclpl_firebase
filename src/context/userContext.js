@@ -6,7 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   FacebookAuthProvider,
-  signOut as firebaseSignOut, // Importez la méthode signOut
+  signOut as firebaseSignOut,
 } from 'firebase/auth'
 import { auth } from '../firebaseConfig'
 
@@ -17,26 +17,21 @@ export function UserContextProvider(props) {
   const [loadingData, setLoadingData] = useState(true)
   const [activeView, setActiveView] = useState('profile')
 
-  // Inscrivez un utilisateur avec email et mot de passe
   const signUp = (email, pwd) =>
     createUserWithEmailAndPassword(auth, email, pwd)
 
-  // Connectez un utilisateur avec email et mot de passe
   const signIn = (email, pwd) => signInWithEmailAndPassword(auth, email, pwd)
 
-  // Connectez un utilisateur avec Google
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider()
     return signInWithPopup(auth, provider)
   }
 
-  // Connectez un utilisateur avec Facebook
   const facebookSignIn = () => {
     const provider = new FacebookAuthProvider()
     return signInWithPopup(auth, provider)
   }
 
-  // Déconnectez l'utilisateur
   const signOut = () => firebaseSignOut(auth)
 
   // Suivez l'état d'authentification de l'utilisateur
@@ -45,7 +40,7 @@ export function UserContextProvider(props) {
       setCurrentUser(user)
       setLoadingData(false)
     })
-    return unsubscribe // Assurez-vous de désabonner lors du démontage
+    return unsubscribe
   }, [])
 
   // Gestion des modals
@@ -66,7 +61,6 @@ export function UserContextProvider(props) {
     )
   }
 
-  // La valeur passée au Provider
   return (
     <UserContext.Provider
       value={{
@@ -79,8 +73,8 @@ export function UserContextProvider(props) {
         googleSignIn,
         facebookSignIn,
         signOut,
-        activeView, // Ajoutez activeView dans la valeur du contexte
-        setActiveView, // Ajoutez setActiveView dans la valeur du contexte pour permettre aux composants de le mettre à jour
+        activeView,
+        setActiveView,
       }}
     >
       {!loadingData && props.children}
