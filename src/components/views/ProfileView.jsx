@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Button, Card, Form, InputGroup } from 'react-bootstrap'
+import { Button, Card, Form, InputGroup, Alert } from 'react-bootstrap'
 import {
   PersonCircle,
   Envelope,
   Calendar3,
   Pencil,
+  Lock,
 } from 'react-bootstrap-icons'
 import { UserContext } from '../../context/userContext'
 import { updateUserDisplayName } from '../../services/userService'
@@ -16,6 +17,29 @@ const ProfileView = () => {
   const [newDisplayName, setNewDisplayName] = useState(
     userProfile?.displayName || '',
   )
+
+  const [newPassword, setNewPassword] = useState('')
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const { changePassword } = useContext(UserContext)
+  const [showPasswordForm, setShowPasswordForm] = useState(false)
+
+  const togglePasswordForm = () => setShowPasswordForm(!showPasswordForm)
+
+  const handlePasswordChange = async () => {
+    if (newPassword.length < 6) {
+      setError('Votre mot de passe doit contenir au moins 6 caractères.')
+      return
+    }
+    try {
+      await changePassword(newPassword)
+      setSuccess('Votre mot de passe a été changé avec succès !')
+      setError('')
+    } catch (error) {
+      setError("Une erreur s'est produite lors du changement de mot de passe.")
+      setSuccess('')
+    }
+  }
 
   const handleEdit = () => {
     setNewDisplayName(userProfile.displayName)
@@ -52,22 +76,13 @@ const ProfileView = () => {
       )
     }
   }
-  const headerVariants = {
-    hidden: { x: -20 },
-    visible: {
-      x: 0,
-      transition: {
-        delay: 0.05,
-      },
-    },
-  }
 
   const itemVariants = {
-    hidden: { x: -20 },
+    hidden: { x: -40 },
     visible: (index) => ({
       x: 0,
       transition: {
-        delay: 0.1 + index * 0.1,
+        delay: 0 + index * 0.02,
       },
     }),
   }
@@ -121,7 +136,12 @@ const ProfileView = () => {
       className="bg-dark text-light shadow mt-5"
       style={{ maxWidth: '30rem', margin: 'auto' }}
     >
-      <motion.div initial="hidden" animate="visible" variants={headerVariants}>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={itemVariants}
+        custom={0}
+      >
         <Card.Header
           as="h5"
           className="d-flex justify-content-between align-items-center mb-5"
@@ -142,7 +162,7 @@ const ProfileView = () => {
           initial="hidden"
           animate="visible"
           variants={itemVariants}
-          custom={0}
+          custom={1}
         >
           <UserInfo icon={Envelope} label="Email" value={userProfile.email} />
         </motion.div>
@@ -150,7 +170,7 @@ const ProfileView = () => {
           initial="hidden"
           animate="visible"
           variants={itemVariants}
-          custom={1}
+          custom={2}
         >
           <UserInfo
             icon={Calendar3}
@@ -158,6 +178,36 @@ const ProfileView = () => {
             value={new Date(userProfile.joinedDate).toLocaleDateString('fr-FR')}
           />
         </motion.div>
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={itemVariants}
+          custom={3}
+        >
+          <div
+            className="d-flex align-items-center py-2"
+            onClick={togglePasswordForm}
+            style={{ cursor: 'pointer' }}
+          >
+            <Lock size={24} className="me-2" />
+            Changer mon mot de passe
+          </div>
+        </motion.div>
+        {showPasswordForm && (
+          <Form onSubmit={handlePasswordChange}>
+            {error && <Alert variant="danger">{error}</Alert>}
+            {success && <Alert variant="success">{success}</Alert>}
+            <Form.Group>
+              <Form.Control
+                type="password"
+                placeholder="Nouveau mot de passe"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </Form.Group>
+            <Button type="submit">Confirmer le changement</Button>
+          </Form>
+        )}
       </Card.Body>
     </Card>
   )

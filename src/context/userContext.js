@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   FacebookAuthProvider,
   signOut as firebaseSignOut,
+  updatePassword,
 } from 'firebase/auth'
 import { auth } from '../firebaseConfig'
 import { addUser, getUser } from '../services/userService'
@@ -47,6 +48,16 @@ export function UserContextProvider(props) {
   }
 
   const signOut = () => firebaseSignOut(auth)
+
+  const changePassword = async (newPassword) => {
+    if (!currentUser) {
+      throw new Error(
+        'Aucun utilisateur connecté pour changer le mot de passe.',
+      )
+    }
+    // currentUser est l'objet utilisateur renvoyé par Firebase Authentication
+    return updatePassword(currentUser, newPassword)
+  }
 
   // Suivez l'état d'authentification de l'utilisateur
   useEffect(() => {
@@ -107,6 +118,7 @@ export function UserContextProvider(props) {
         signOut,
         activeView,
         setActiveView,
+        changePassword,
       }}
     >
       {!loadingData && props.children}
