@@ -44,22 +44,21 @@ const ProfileView = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    if (userProfile?.docId && newDisplayName !== userProfile.displayName) {
-      try {
-        await updateUserDisplayName(userProfile.docId, newDisplayName)
-        setUserProfile({ ...userProfile, displayName: newDisplayName })
-        setEditMode(false)
-      } catch (error) {
-        console.error(
-          "Erreur lors de la mise à jour du nom d'affichage :",
-          error,
-        )
-      }
-    } else {
-      console.error(
-        "Erreur : l'ID du document Firestore est manquant ou le nom d'affichage n'a pas changé.",
-      )
+    // Fermez le formulaire de modification si le nouveau nom est identique à l'ancien ou si l'ID est manquant
+    if (!userProfile?.docId || newDisplayName === userProfile.displayName) {
+      setEditMode(false) // Sortir du mode édition et fermer le formulaire sans autre action
+      return
     }
+
+    // Si le code continue ici, cela signifie que le nom a changé et l'ID du document est présent
+    try {
+      await updateUserDisplayName(userProfile.docId, newDisplayName)
+      setUserProfile({ ...userProfile, displayName: newDisplayName })
+    } catch (error) {
+      // Vous pouvez choisir de gérer l'erreur d'une manière qui ne soit pas visible par l'utilisateur,
+      // par exemple, en envoyant l'erreur à un service de suivi des erreurs ou en la loguant silencieusement.
+    }
+    setEditMode(false) // Fermez le formulaire de modification après avoir tenté la mise à jour
   }
 
   const itemVariants = {
@@ -111,23 +110,16 @@ const ProfileView = () => {
 
     const handleLocalSubmit = async (event) => {
       event.preventDefault()
-      // Utilisez `localDisplayName` pour vérifier le changement et pour la mise à jour
+      // Si le nom local est différent du nom dans le profil utilisateur et que l'ID du document existe
       if (userProfile?.docId && localDisplayName !== userProfile.displayName) {
         try {
           await updateUserDisplayName(userProfile.docId, localDisplayName)
           setUserProfile({ ...userProfile, displayName: localDisplayName }) // Mettez à jour l'état global après confirmation
-          setEditMode(false) // Sortir du mode édition
         } catch (error) {
-          console.error(
-            "Erreur lors de la mise à jour du nom d'affichage :",
-            error,
-          )
+          // Gérer l'erreur d'une manière non intrusive pour l'utilisateur
         }
-      } else {
-        console.error(
-          "Erreur : l'ID du document Firestore est manquant ou le nom d'affichage n'a pas changé.",
-        )
       }
+      setEditMode(false) // Sortir du mode d'édition quelle que soit l'issue
     }
 
     return (
