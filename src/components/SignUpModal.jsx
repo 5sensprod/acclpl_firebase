@@ -60,7 +60,7 @@ export default function SignUpModal() {
 
   return (
     <Modal show={modalState.signUpModal} onHide={closeModal} centered>
-      <Modal.Header closeButton>
+      <Modal.Header closeButton className="bg-dark text-light">
         <Modal.Title>S'inscrire</Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -121,8 +121,8 @@ export default function SignUpModal() {
             <Form.Text className="text-danger">{validation}</Form.Text>
           </Form.Group>
 
-          <Button variant="primary" type="submit">
-            S'inscrire
+          <Button variant="secondary" type="submit">
+            Valider
           </Button>
         </Form>
       </Modal.Body>

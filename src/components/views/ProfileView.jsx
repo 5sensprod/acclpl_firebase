@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Button, Card, Form, InputGroup, Alert } from 'react-bootstrap'
+import { Button, Card, Form, InputGroup } from 'react-bootstrap'
 import {
   PersonCircle,
   Envelope,
@@ -9,37 +9,21 @@ import {
 } from 'react-bootstrap-icons'
 import { UserContext } from '../../context/userContext'
 import { updateUserDisplayName } from '../../services/userService'
+import PasswordChangeModal from './PasswordChangeModal'
 import { motion } from 'framer-motion'
 
 const ProfileView = () => {
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
   const { userProfile, setUserProfile } = useContext(UserContext)
   const [editMode, setEditMode] = useState(false)
   const [newDisplayName, setNewDisplayName] = useState(
     userProfile?.displayName || '',
   )
 
-  const [newPassword, setNewPassword] = useState('')
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  const { changePassword } = useContext(UserContext)
-  const [showPasswordForm, setShowPasswordForm] = useState(false)
+  const handleShowPasswordModal = () => setShowPasswordModal(true)
+  const handleClosePasswordModal = () => setShowPasswordModal(false)
 
-  const togglePasswordForm = () => setShowPasswordForm(!showPasswordForm)
-
-  const handlePasswordChange = async () => {
-    if (newPassword.length < 6) {
-      setError('Votre mot de passe doit contenir au moins 6 caractères.')
-      return
-    }
-    try {
-      await changePassword(newPassword)
-      setSuccess('Votre mot de passe a été changé avec succès !')
-      setError('')
-    } catch (error) {
-      setError("Une erreur s'est produite lors du changement de mot de passe.")
-      setSuccess('')
-    }
-  }
+  useContext(UserContext)
 
   const handleEdit = () => {
     setNewDisplayName(userProfile.displayName)
@@ -186,18 +170,32 @@ const ProfileView = () => {
         >
           <div
             className="d-flex align-items-center py-2"
-            onClick={togglePasswordForm}
+            onClick={handleShowPasswordModal}
             style={{ cursor: 'pointer' }}
           >
             <Lock size={24} className="me-2" />
             Changer mon mot de passe
           </div>
+          <PasswordChangeModal
+            showModal={showPasswordModal}
+            handleClose={handleClosePasswordModal}
+          />
         </motion.div>
-        {showPasswordForm && (
+        {/* {showPasswordForm && (
           <Form onSubmit={handlePasswordChange}>
             {error && <Alert variant="danger">{error}</Alert>}
             {success && <Alert variant="success">{success}</Alert>}
             <Form.Group>
+              <Form.Label>Mot de passe actuel</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Mot de passe actuel"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Nouveau mot de passe</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Nouveau mot de passe"
@@ -205,9 +203,18 @@ const ProfileView = () => {
                 onChange={(e) => setNewPassword(e.target.value)}
               />
             </Form.Group>
+            <Form.Group>
+              <Form.Label>Confirmer le nouveau mot de passe</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Confirmer le nouveau mot de passe"
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+              />
+            </Form.Group>
             <Button type="submit">Confirmer le changement</Button>
           </Form>
-        )}
+        )} */}
       </Card.Body>
     </Card>
   )

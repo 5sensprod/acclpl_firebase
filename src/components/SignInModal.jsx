@@ -33,7 +33,7 @@ export default function SignInModal() {
       onHide={() => toggleModals('close')}
       centered
     >
-      <Modal.Header closeButton>
+      <Modal.Header closeButton className="bg-dark text-light">
         <Modal.Title>Connexion</Modal.Title>
       </Modal.Header>
 
@@ -70,7 +70,7 @@ export default function SignInModal() {
             <Form.Text className="text-danger">{validation}</Form.Text>
           </Form.Group>
 
-          <Button variant="primary" type="submit">
+          <Button variant="secondary" type="submit">
             Connexion
           </Button>
         </Form>

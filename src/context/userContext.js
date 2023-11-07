@@ -8,6 +8,8 @@ import {
   FacebookAuthProvider,
   signOut as firebaseSignOut,
   updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential as firebaseReauthenticateWithCredential,
 } from 'firebase/auth'
 import { auth } from '../firebaseConfig'
 import { addUser, getUser } from '../services/userService'
@@ -57,6 +59,17 @@ export function UserContextProvider(props) {
     }
     // currentUser est l'objet utilisateur renvoyé par Firebase Authentication
     return updatePassword(currentUser, newPassword)
+  }
+
+  const reauthenticateWithCredential = async (currentPassword) => {
+    if (!currentUser) {
+      throw new Error('Aucun utilisateur connecté pour la réauthentification.')
+    }
+    const credential = EmailAuthProvider.credential(
+      currentUser.email,
+      currentPassword,
+    )
+    return firebaseReauthenticateWithCredential(currentUser, credential)
   }
 
   // Suivez l'état d'authentification de l'utilisateur
@@ -119,6 +132,7 @@ export function UserContextProvider(props) {
         activeView,
         setActiveView,
         changePassword,
+        reauthenticateWithCredential,
       }}
     >
       {!loadingData && props.children}
