@@ -6,7 +6,7 @@ import ViewHeader from '../../../components/views/ViewHeader'
 import ProfileView from '../../../components/views/ProfileView'
 import MapView from '../../../components/views/MapView'
 import { UserContext } from '../../../context/userContext'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 const pageVariants = {
   initial: {
@@ -26,7 +26,7 @@ const pageVariants = {
 const pageTransition = {
   type: 'tween',
   ease: 'anticipate',
-  duration: 0.2,
+  duration: 0.3,
 }
 
 export default function PrivateHome() {
@@ -63,19 +63,17 @@ export default function PrivateHome() {
         className="container shadow-sm pt-5 pb-5 rounded-bottom"
         style={{ maxWidth: '800px' }}
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeView}
-            variants={pageVariants}
-            initial="initial"
-            animate="in"
-            exit="out"
-            transition={pageTransition}
-          >
-            <ViewHeader icon={Icon} title={title} />
-            {contentView}
-          </motion.div>
-        </AnimatePresence>
+        <motion.div
+          key={activeView}
+          variants={pageVariants}
+          initial="initial"
+          animate="in"
+          exit="out"
+          transition={pageTransition}
+        >
+          <ViewHeader icon={Icon} title={title} />
+          {contentView}
+        </motion.div>
       </div>
     </>
   )

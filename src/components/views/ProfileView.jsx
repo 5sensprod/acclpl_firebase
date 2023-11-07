@@ -10,7 +10,7 @@ import {
 import { UserContext } from '../../context/userContext'
 import { updateUserDisplayName } from '../../services/userService'
 import PasswordChangeModal from './PasswordChangeModal'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const ProfileView = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false)
@@ -71,39 +71,96 @@ const ProfileView = () => {
     }),
   }
 
+  const variants = {
+    hidden: { opacity: 0, x: -40 },
+    visible: { opacity: 1, x: 40 },
+  }
+  const variantsTitle = {
+    hidden: { opacity: 0, x: -40 },
+    visible: { opacity: 1, x: 0 },
+  }
+
   const EditableHeader = ({
     editMode,
-    newDisplayName,
+    userProfile,
     setNewDisplayName,
     handleSubmit,
     handleCancel,
-    userProfile,
     handleEdit,
   }) => {
-    return editMode ? (
-      <InputGroup>
-        <Form.Control
-          autoFocus
-          className="me-0"
-          value={newDisplayName}
-          onChange={(e) => setNewDisplayName(e.target.value)}
-        />
-        <Button variant="success" onClick={handleSubmit}>
-          Ok
-        </Button>
-        <Button variant="outline-secondary" onClick={handleCancel}>
-          Annuler
-        </Button>
-      </InputGroup>
-    ) : (
+    const [localDisplayName, setLocalDisplayName] = useState(
+      userProfile.displayName,
+    )
+
+    const handleLocalSubmit = async (event) => {
+      event.preventDefault()
+      // Utilisez `localDisplayName` pour vérifier le changement et pour la mise à jour
+      if (userProfile?.docId && localDisplayName !== userProfile.displayName) {
+        try {
+          await updateUserDisplayName(userProfile.docId, localDisplayName)
+          setUserProfile({ ...userProfile, displayName: localDisplayName }) // Mettez à jour l'état global après confirmation
+          setEditMode(false) // Sortir du mode édition
+        } catch (error) {
+          console.error(
+            "Erreur lors de la mise à jour du nom d'affichage :",
+            error,
+          )
+        }
+      } else {
+        console.error(
+          "Erreur : l'ID du document Firestore est manquant ou le nom d'affichage n'a pas changé.",
+        )
+      }
+    }
+
+    return (
       <>
-        <PersonCircle size={24} />
-        <span className="ms-0">{userProfile.displayName}</span>
-        <Pencil
-          size={20}
-          onClick={handleEdit}
-          style={{ cursor: 'pointer', marginLeft: '10px' }}
-        />
+        <AnimatePresence>
+          {editMode ? (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={variants}
+              transition={{ duration: 0.15 }}
+              key="editMode"
+            >
+              <InputGroup>
+                <Form.Control
+                  autoFocus
+                  className="me-0"
+                  value={localDisplayName} // La valeur de l'input est contrôlée par l'état local
+                  onChange={(e) => setLocalDisplayName(e.target.value)} // Mettez à jour l'état local lorsque l'input change
+                />
+                <Button variant="success" onClick={handleLocalSubmit}>
+                  Ok
+                </Button>
+                <Button variant="outline-secondary" onClick={handleCancel}>
+                  Annuler
+                </Button>
+              </InputGroup>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={variantsTitle}
+              transition={{ duration: 0.15 }}
+              key="normalMode"
+              className="d-flex justify-content-between w-100 align-items-center py-1"
+            >
+              <PersonCircle size={24} />
+              <span className="ms-0">{userProfile.displayName}</span>
+              <Pencil
+                className="me-0"
+                size={20}
+                onClick={handleEdit}
+                style={{ cursor: 'pointer', marginLeft: '10px' }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </>
     )
   }
@@ -181,40 +238,6 @@ const ProfileView = () => {
             handleClose={handleClosePasswordModal}
           />
         </motion.div>
-        {/* {showPasswordForm && (
-          <Form onSubmit={handlePasswordChange}>
-            {error && <Alert variant="danger">{error}</Alert>}
-            {success && <Alert variant="success">{success}</Alert>}
-            <Form.Group>
-              <Form.Label>Mot de passe actuel</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Mot de passe actuel"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Nouveau mot de passe</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Nouveau mot de passe"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Confirmer le nouveau mot de passe</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirmer le nouveau mot de passe"
-                value={confirmNewPassword}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Button type="submit">Confirmer le changement</Button>
-          </Form>
-        )} */}
       </Card.Body>
     </Card>
   )
