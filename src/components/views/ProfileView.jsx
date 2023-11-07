@@ -73,18 +73,34 @@ const ProfileView = () => {
 
   const variants = {
     hidden: { opacity: 0, x: -40 },
-    visible: { opacity: 1, x: 40 },
+    visible: { opacity: 1, x: 70 },
   }
-  const variantsTitle = {
+  const parentVariants = {
     hidden: { opacity: 0, x: -40 },
-    visible: { opacity: 1, x: 0 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        staggerChildren: 0.05, // Chaque enfant commencera son animation avec un délai de 0.1 seconde
+      },
+    },
+  }
+
+  const childVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: (custom) => ({
+      opacity: 1,
+      x: 0,
+      transition: {
+        delay: custom * 0.1, // Custom est l'index et détermine le délai
+        duration: 0.15,
+      },
+    }),
   }
 
   const EditableHeader = ({
     editMode,
     userProfile,
-    setNewDisplayName,
-    handleSubmit,
     handleCancel,
     handleEdit,
   }) => {
@@ -122,20 +138,21 @@ const ProfileView = () => {
               animate="visible"
               exit="hidden"
               variants={variants}
-              transition={{ duration: 0.15 }}
+              transition={{ duration: 0.2 }}
               key="editMode"
             >
               <InputGroup>
                 <Form.Control
+                  style={{ height: '40px' }}
                   autoFocus
                   className="me-0"
                   value={localDisplayName} // La valeur de l'input est contrôlée par l'état local
                   onChange={(e) => setLocalDisplayName(e.target.value)} // Mettez à jour l'état local lorsque l'input change
                 />
-                <Button variant="success" onClick={handleLocalSubmit}>
+                <Button variant="secondary" onClick={handleLocalSubmit}>
                   Ok
                 </Button>
-                <Button variant="outline-secondary" onClick={handleCancel}>
+                <Button variant="dark" onClick={handleCancel}>
                   Annuler
                 </Button>
               </InputGroup>
@@ -144,20 +161,39 @@ const ProfileView = () => {
             <motion.div
               initial="hidden"
               animate="visible"
-              exit="hidden"
-              variants={variantsTitle}
-              transition={{ duration: 0.15 }}
-              key="normalMode"
+              variants={parentVariants}
               className="d-flex justify-content-between w-100 align-items-center py-1"
+              style={{ height: '40px' }}
             >
-              <PersonCircle size={24} />
-              <span className="ms-0">{userProfile.displayName}</span>
-              <Pencil
-                className="me-0"
-                size={20}
-                onClick={handleEdit}
-                style={{ cursor: 'pointer', marginLeft: '10px' }}
-              />
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={childVariants}
+                custom={0} // Index personnalisé pour le délai
+              >
+                <PersonCircle size={24} />
+              </motion.div>
+              <motion.span
+                initial="hidden"
+                animate="visible"
+                variants={childVariants}
+                custom={1} // Index personnalisé pour le délai
+              >
+                {userProfile.displayName}
+              </motion.span>
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={childVariants}
+                custom={2} // Index personnalisé pour le délai
+              >
+                <Pencil
+                  className="me-0"
+                  size={20}
+                  onClick={handleEdit}
+                  style={{ cursor: 'pointer', marginLeft: '10px' }}
+                />
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
