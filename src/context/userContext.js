@@ -9,12 +9,13 @@ import {
   signOut as firebaseSignOut,
 } from 'firebase/auth'
 import { auth } from '../firebaseConfig'
-import { addUser } from '../services/userService'
+import { addUser, getUser } from '../services/userService'
 
 export const UserContext = createContext()
 
 export function UserContextProvider(props) {
   const [currentUser, setCurrentUser] = useState()
+  const [userProfile, setUserProfile] = useState(null)
   const [loadingData, setLoadingData] = useState(true)
   const [activeView, setActiveView] = useState('profile')
 
@@ -49,9 +50,25 @@ export function UserContextProvider(props) {
 
   // Suivez l'état d'authentification de l'utilisateur
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user)
-      setLoadingData(false)
+      setLoadingData(true) // Commence le chargement jusqu'à ce que le profil soit récupéré
+      if (user) {
+        try {
+          // Tente de récupérer les données de profil de l'utilisateur
+          const profileData = await getUser(user.uid)
+          setUserProfile(profileData)
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération du profil de l'utilisateur :",
+            error,
+          )
+          setUserProfile(null) // Réinitialiser les données de profil en cas d'erreur
+        }
+      } else {
+        setUserProfile(null) // Réinitialiser les données de profil lors de la déconnexion
+      }
+      setLoadingData(false) // Arrête le chargement une fois que tout est traité
     })
     return unsubscribe
   }, [])
@@ -78,6 +95,8 @@ export function UserContextProvider(props) {
     <UserContext.Provider
       value={{
         currentUser,
+        userProfile,
+        setUserProfile,
         loadingData,
         modalState,
         toggleModals,

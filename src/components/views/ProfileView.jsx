@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Button, Card, Form, InputGroup } from 'react-bootstrap'
 import {
   PersonCircle,
@@ -7,59 +7,38 @@ import {
   Pencil,
 } from 'react-bootstrap-icons'
 import { UserContext } from '../../context/userContext'
-import { getUser, updateUserDisplayName } from '../../services/userService'
+import { updateUserDisplayName } from '../../services/userService'
 import { motion } from 'framer-motion'
 
 const ProfileView = () => {
-  const { currentUser } = useContext(UserContext)
-  const [profileData, setProfileData] = useState({
-    displayName: 'Profil',
-    email: '',
-    joinedDate: '',
-  })
+  const { userProfile, setUserProfile } = useContext(UserContext)
   const [editMode, setEditMode] = useState(false)
-  const [newDisplayName, setNewDisplayName] = useState('')
-
-  useEffect(() => {
-    if (currentUser?.uid) {
-      getUser(currentUser.uid)
-        .then((userData) => {
-          setProfileData({
-            displayName: userData.displayName || 'Non spécifié',
-            email: userData.email || 'Non spécifié',
-            joinedDate: userData.joinedDate
-              ? new Date(userData.joinedDate).toLocaleDateString('fr-FR')
-              : 'Date inconnue',
-            docId: userData.docId,
-          })
-        })
-        .catch((error) => {
-          console.error(
-            "Erreur lors de la récupération des données de l'utilisateur:",
-            error,
-          )
-        })
-    }
-  }, [currentUser])
+  const [newDisplayName, setNewDisplayName] = useState(
+    userProfile?.displayName || '',
+  )
 
   const handleEdit = () => {
-    setNewDisplayName(profileData.displayName)
+    setNewDisplayName(userProfile.displayName)
     setEditMode(true)
   }
 
+  useEffect(() => {
+    if (userProfile) {
+      setNewDisplayName(userProfile.displayName)
+    }
+  }, [userProfile])
+
   const handleCancel = () => {
+    setNewDisplayName(userProfile.displayName) // Réinitialisez le nom à la valeur actuelle en cas d'annulation
     setEditMode(false)
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    if (profileData.docId) {
+    if (userProfile?.docId && newDisplayName !== userProfile.displayName) {
       try {
-        await updateUserDisplayName(profileData.docId, newDisplayName)
-        setProfileData((prevData) => ({
-          ...prevData,
-          displayName: newDisplayName,
-        }))
+        await updateUserDisplayName(userProfile.docId, newDisplayName)
+        setUserProfile({ ...userProfile, displayName: newDisplayName })
         setEditMode(false)
       } catch (error) {
         console.error(
@@ -68,16 +47,17 @@ const ProfileView = () => {
         )
       }
     } else {
-      console.error("Erreur : l'ID du document Firestore est manquant.")
+      console.error(
+        "Erreur : l'ID du document Firestore est manquant ou le nom d'affichage n'a pas changé.",
+      )
     }
   }
-
   const headerVariants = {
     hidden: { x: -20 },
     visible: {
       x: 0,
       transition: {
-        delay: 0.1,
+        delay: 0.05,
       },
     },
   }
@@ -87,10 +67,54 @@ const ProfileView = () => {
     visible: (index) => ({
       x: 0,
       transition: {
-        delay: 0.2 + index * 0.1,
+        delay: 0.1 + index * 0.1,
       },
     }),
   }
+
+  const EditableHeader = ({
+    editMode,
+    newDisplayName,
+    setNewDisplayName,
+    handleSubmit,
+    handleCancel,
+    userProfile,
+    handleEdit,
+  }) => {
+    return editMode ? (
+      <InputGroup>
+        <Form.Control
+          autoFocus
+          className="me-0"
+          value={newDisplayName}
+          onChange={(e) => setNewDisplayName(e.target.value)}
+        />
+        <Button variant="success" onClick={handleSubmit}>
+          Ok
+        </Button>
+        <Button variant="outline-secondary" onClick={handleCancel}>
+          Annuler
+        </Button>
+      </InputGroup>
+    ) : (
+      <>
+        <PersonCircle size={24} />
+        <span className="ms-0">{userProfile.displayName}</span>
+        <Pencil
+          size={20}
+          onClick={handleEdit}
+          style={{ cursor: 'pointer', marginLeft: '10px' }}
+        />
+      </>
+    )
+  }
+
+  const UserInfo = ({ icon: Icon, label, value }) => (
+    <div className="d-flex align-items-center py-2">
+      <Icon size={24} className="me-2" />
+      {label}: {value}
+    </div>
+  )
 
   return (
     <Card
@@ -102,32 +126,15 @@ const ProfileView = () => {
           as="h5"
           className="d-flex justify-content-between align-items-center mb-5"
         >
-          {editMode ? (
-            <InputGroup>
-              <Form.Control
-                autoFocus
-                className="me-0"
-                value={newDisplayName}
-                onChange={(e) => setNewDisplayName(e.target.value)}
-              />
-              <Button variant="success" onClick={handleSubmit}>
-                Ok
-              </Button>
-              <Button variant="outline-secondary" onClick={handleCancel}>
-                Annuler
-              </Button>
-            </InputGroup>
-          ) : (
-            <>
-              <PersonCircle size={24} />
-              <span className="ms-0">{profileData.displayName}</span>
-              <Pencil
-                size={20}
-                onClick={handleEdit}
-                style={{ cursor: 'pointer', marginLeft: '10px' }}
-              />
-            </>
-          )}
+          <EditableHeader
+            editMode={editMode}
+            newDisplayName={newDisplayName}
+            setNewDisplayName={setNewDisplayName}
+            handleSubmit={handleSubmit}
+            handleCancel={handleCancel}
+            userProfile={userProfile}
+            handleEdit={handleEdit}
+          />
         </Card.Header>
       </motion.div>
       <Card.Body>
@@ -137,10 +144,7 @@ const ProfileView = () => {
           variants={itemVariants}
           custom={0}
         >
-          <div className="d-flex align-items-center  py-2">
-            <Envelope size={24} className="me-2" />
-            Email: {profileData.email}
-          </div>
+          <UserInfo icon={Envelope} label="Email" value={userProfile.email} />
         </motion.div>
         <motion.div
           initial="hidden"
@@ -148,10 +152,11 @@ const ProfileView = () => {
           variants={itemVariants}
           custom={1}
         >
-          <div className="d-flex align-items-center py-2">
-            <Calendar3 size={24} className="me-2" />
-            Date d'inscription: {profileData.joinedDate}
-          </div>
+          <UserInfo
+            icon={Calendar3}
+            label="Date d'inscription"
+            value={new Date(userProfile.joinedDate).toLocaleDateString('fr-FR')}
+          />
         </motion.div>
       </Card.Body>
     </Card>
