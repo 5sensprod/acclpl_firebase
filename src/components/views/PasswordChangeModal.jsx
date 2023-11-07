@@ -47,7 +47,7 @@ const PasswordChangeModal = ({ showModal, handleClose }) => {
 
   return (
     <>
-      <Modal show={showModal} onHide={handleModalClose} centered>
+      <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton className="bg-dark text-light">
           <Modal.Title>Changer de mot de passe</Modal.Title>
         </Modal.Header>

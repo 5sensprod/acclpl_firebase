@@ -14,7 +14,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 const ProfileView = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false)
-  const { userProfile, setUserProfile } = useContext(UserContext)
+  const { userProfile, setUserProfile, isPasswordSignIn } =
+    useContext(UserContext)
   const [editMode, setEditMode] = useState(false)
   const [newDisplayName, setNewDisplayName] = useState(
     userProfile?.displayName || '',
@@ -73,7 +74,7 @@ const ProfileView = () => {
 
   const variants = {
     hidden: { opacity: 0, x: -40 },
-    visible: { opacity: 1, x: 70 },
+    visible: { opacity: 1, x: 0 },
   }
   const parentVariants = {
     hidden: { opacity: 0, x: -40 },
@@ -255,25 +256,27 @@ const ProfileView = () => {
             value={new Date(userProfile.joinedDate).toLocaleDateString('fr-FR')}
           />
         </motion.div>
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={itemVariants}
-          custom={3}
-        >
-          <div
-            className="d-flex align-items-center py-2"
-            onClick={handleShowPasswordModal}
-            style={{ cursor: 'pointer' }}
+        {isPasswordSignIn && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={itemVariants}
+            custom={3}
           >
-            <Lock size={24} className="me-2" />
-            Changer mon mot de passe
-          </div>
-          <PasswordChangeModal
-            showModal={showPasswordModal}
-            handleClose={handleClosePasswordModal}
-          />
-        </motion.div>
+            <div
+              className="d-flex align-items-center py-2"
+              onClick={handleShowPasswordModal}
+              style={{ cursor: 'pointer' }}
+            >
+              <Lock size={24} className="me-2" />
+              Changer mon mot de passe
+            </div>
+            <PasswordChangeModal
+              showModal={showPasswordModal}
+              handleClose={handleClosePasswordModal}
+            />
+          </motion.div>
+        )}
       </Card.Body>
     </Card>
   )

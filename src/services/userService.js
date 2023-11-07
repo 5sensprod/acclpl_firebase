@@ -20,7 +20,7 @@ async function addUser(userData) {
       collection(firestore, 'users'),
       user.toFirebaseObject(),
     )
-    console.log('User document written with ID: ', docRef.id)
+    // console.log('User document written with ID: ', docRef.id)
     return docRef.id // Retourne l'ID du document pour une utilisation ultérieure
   } catch (e) {
     console.error('Error adding user document: ', e)
