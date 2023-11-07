@@ -5,6 +5,7 @@ import SidebarMenu from '../../../components/ui/SidebarMenu'
 import ViewHeader from '../../../components/views/ViewHeader'
 import ProfileView from '../../../components/views/ProfileView'
 import MapView from '../../../components/views/MapView'
+import ReportingsView from '../../../components/views/ReportingsView'
 import { UserContext } from '../../../context/userContext'
 import { motion } from 'framer-motion'
 
@@ -50,6 +51,9 @@ export default function PrivateHome() {
     case 'announcements':
     default:
       contentView = <FormWizard />
+      break
+    case 'reportings':
+      contentView = <ReportingsView />
       break
   }
 
