@@ -1,5 +1,13 @@
 import { firestore } from '../firebaseConfig'
-import { collection, addDoc, doc, getDoc } from 'firebase/firestore'
+import {
+  collection,
+  query,
+  addDoc,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+} from 'firebase/firestore'
 import UserModel from '../models/UserModel'
 
 // Fonction pour ajouter un nouvel utilisateur
@@ -22,18 +30,32 @@ async function addUser(userData) {
 
 // Fonction pour obtenir les données d'un utilisateur par ID
 async function getUser(userID) {
-  try {
-    const userDoc = await getDoc(doc(firestore, 'users', userID))
-    if (userDoc.exists()) {
-      return userDoc.data()
-    } else {
-      throw new Error('No user found with ID: ' + userID)
+  const usersRef = collection(firestore, 'users')
+  const q = query(usersRef, where('userID', '==', userID))
+  const querySnapshot = await getDocs(q)
+
+  if (!querySnapshot.empty) {
+    const userDoc = querySnapshot.docs[0]
+    return {
+      ...userDoc.data(),
+      docId: userDoc.id, // Ajoutez l'ID du document Firestore au résultat
     }
+  } else {
+    throw new Error('No user found with userID: ' + userID)
+  }
+}
+
+async function updateUserDisplayName(docId, newDisplayName) {
+  const userRef = doc(firestore, 'users', docId) // Utilisez l'ID du document Firestore ici
+  try {
+    await updateDoc(userRef, {
+      displayName: newDisplayName,
+    })
   } catch (e) {
-    console.error('Error getting user document: ', e)
-    throw e // Propage l'erreur pour la gérer plus haut dans la pile d'appels
+    console.error('Error updating user display name: ', e)
+    throw e
   }
 }
 
 // Exporte les fonctions pour pouvoir les importer dans d'autres fichiers
-export { addUser, getUser }
+export { addUser, getUser, updateUserDisplayName }
