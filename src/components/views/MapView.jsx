@@ -25,7 +25,7 @@ const MapView = () => {
   }))
 
   return (
-    <div className="map-view">
+    <div className="map-view text-light">
       <p>Vue de la carte interactive.</p>
       <LeafletMapView
         center={[48.9562, 4.3631]}
