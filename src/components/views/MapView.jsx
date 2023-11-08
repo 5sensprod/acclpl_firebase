@@ -13,18 +13,26 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context/userContext'
 import { getObservationsForUser } from '../../services/observationService'
-
+import Table from 'react-bootstrap/Table'
 const MapView = () => {
-  const { currentUser } = useContext(UserContext) // Supposons que currentUser contient l'ID de l'utilisateur actuel
+  const { currentUser } = useContext(UserContext)
   const [observations, setObservations] = useState([])
 
   useEffect(() => {
     if (currentUser?.uid) {
-      console.log('Fetching observations for user ID:', currentUser.uid) // Log de débogage
+      console.log('Fetching observations for user ID:', currentUser.uid)
       const fetchObservations = async () => {
         try {
           const obs = await getObservationsForUser(currentUser.uid)
-          console.log('Observations fetched:', obs) // Log des observations récupérées
+          console.log('Observations fetched:', obs)
+          if (obs.length > 0) {
+            // Log additional details if needed
+            obs.forEach((o) => {
+              console.log(
+                `Observation ID: ${o.id}, Establishment ID: ${o.establishment?.id}, Street ID: ${o.street?.id}`,
+              )
+            })
+          }
           setObservations(obs)
         } catch (error) {
           console.error('Failed to fetch observations for user:', error)
@@ -36,16 +44,44 @@ const MapView = () => {
   }, [currentUser])
 
   return (
-    <div className="reporting-view">
-      <p>Vue des observations par utilisateur.</p>
+    <div className="reporting-view text-light">
+      <h2 className="text-light">Observations des Lumières Allumées</h2>
       {observations.length > 0 ? (
-        observations.map((obs) => (
-          <div key={obs.id}>
-            <p>Date: {obs.date}</p>
-            <p>Heure: {obs.time}</p>
-            {/* Autres détails de l'observation */}
-          </div>
-        ))
+        <Table striped bordered hover variant="dark">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Heure</th>
+              <th>Entreprise</th>
+              <th>Adresse</th>
+              <th>Notes supplémentaires</th>
+              <th>Photos</th>
+            </tr>
+          </thead>
+          <tbody>
+            {observations.map((obs) => (
+              <tr key={obs.id}>
+                <td>{obs.date}</td>
+                <td>{obs.time}</td>
+                <td>{obs.establishment.establishmentName}</td>
+                <td>{`${obs.street.streetName}, ${obs.street.city}, ${obs.street.postalCode}`}</td>
+                <td>{obs.additionalNotes}</td>
+                <td>
+                  {obs.photoURLs.map((url, index) => (
+                    <div key={index} className="mb-2">
+                      <img
+                        src={url}
+                        alt={`Observation ${index + 1}`}
+                        className="img-fluid"
+                        style={{ maxWidth: '100px' }}
+                      />
+                    </div>
+                  ))}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       ) : (
         <p>Aucune observation trouvée pour cet utilisateur.</p>
       )}

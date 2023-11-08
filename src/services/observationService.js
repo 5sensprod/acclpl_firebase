@@ -1,5 +1,13 @@
 import { firestore } from '../firebaseConfig'
-import { collection, query, where, getDocs, addDoc } from 'firebase/firestore'
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  getDoc,
+  doc,
+} from 'firebase/firestore'
 import ObservationModel from '../models/ObservationModel'
 
 async function addObservation(observationData, establishmentRef) {
@@ -36,28 +44,42 @@ async function getObservationsForUser(userId) {
     const establishmentsSnapshot = await getDocs(establishmentsRef)
 
     // Pour chaque établissement, récupérer les observations pour l'utilisateur
-    const observationsPromises = establishmentsSnapshot.docs.map(
-      (establishmentDoc) =>
-        getDocs(
-          query(
-            collection(
-              firestore,
-              'establishments',
-              establishmentDoc.id,
-              'observations',
-            ),
-            where('userID', '==', userId),
+    let observations = []
+    for (const establishmentDoc of establishmentsSnapshot.docs) {
+      const obsSnapshot = await getDocs(
+        query(
+          collection(
+            firestore,
+            'establishments',
+            establishmentDoc.id,
+            'observations',
           ),
+          where('userID', '==', userId),
         ),
-    )
+      )
 
-    // Attendre que toutes les promesses d'observations soient résolues
-    const observationsSnapshots = await Promise.all(observationsPromises)
+      // Pour chaque observation, ajouter les détails de l'établissement et de la rue
+      for (const obsDoc of obsSnapshot.docs) {
+        const establishmentData = establishmentDoc.data()
+        const streetRef = establishmentData.streetRef
+        const streetSnapshot = await getDoc(
+          doc(firestore, 'streets', streetRef),
+        )
+        const streetData = streetSnapshot.exists()
+          ? streetSnapshot.data()
+          : null
 
-    // Extraire les données des observations et les aplatir dans un seul tableau
-    const observations = observationsSnapshots.flatMap((snapshot) =>
-      snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
-    )
+        observations.push({
+          id: obsDoc.id,
+          ...obsDoc.data(),
+          establishment: {
+            id: establishmentDoc.id,
+            ...establishmentData,
+          },
+          street: streetData,
+        })
+      }
+    }
 
     return observations
   } catch (error) {
