@@ -5,6 +5,7 @@ import { Accordion, Card, Button, useAccordionButton } from 'react-bootstrap'
 import { Calendar, Clock } from 'react-bootstrap-icons'
 import styles from '../styles/ReportingsView.module.css'
 import { ChevronDown } from 'react-bootstrap-icons'
+import { motion } from 'framer-motion'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
@@ -22,16 +23,31 @@ const ReportingsView = () => {
   }
 
   useEffect(() => {
-    if (currentUser?.uid) {
-      const fetchObservations = async () => {
-        try {
+    const fetchObservations = async () => {
+      try {
+        // Vérifiez d'abord si les données sont stockées dans le localStorage
+        const localData = localStorage.getItem(
+          `observations-${currentUser.uid}`,
+        )
+        if (localData) {
+          // Parsez les données stockées et mettez à jour l'état
+          setObservations(JSON.parse(localData))
+        } else {
+          // Si les données ne sont pas dans le localStorage, faites l'appel réseau
           const obs = await getObservationsForUser(currentUser.uid)
           setObservations(obs)
-        } catch (error) {
-          console.error('Failed to fetch observations:', error)
+          // Stockez les données dans le localStorage pour une utilisation ultérieure
+          localStorage.setItem(
+            `observations-${currentUser.uid}`,
+            JSON.stringify(obs),
+          )
         }
+      } catch (error) {
+        console.error('Failed to fetch observations:', error)
       }
+    }
 
+    if (currentUser?.uid) {
       fetchObservations()
     }
   }, [currentUser])
@@ -85,16 +101,18 @@ const ReportingsView = () => {
       <Accordion activeKey={activeKey}>
         {Object.entries(observationsByEstablishment).map(
           ([key, { name, address, observations }], index) => (
-            <Card key={key} className="mb-3">
-              <Card.Header className="bg-dark text-light rounded">
-                <CustomToggle
-                  eventKey={`${index}`}
-                  className={`${styles.customToggle}`}
-                >
+            <Card key={key} className="mb-3 bg-dark ">
+              <motion.div
+                initial={{ x: -60 }}
+                animate={{ x: 0 }}
+                transition={{ delay: 0.1 + index * 0.04, duration: 0.15 }}
+                className="card-header bg-dark text-light rounded"
+              >
+                <CustomToggle eventKey={`${index}`}>
                   <h3>{name}</h3>
                   <div>{address.split(',')[0]} </div>
                 </CustomToggle>
-              </Card.Header>
+              </motion.div>
               <Accordion.Collapse eventKey={`${index}`}>
                 <Card.Body className="bg-dark text-light rounded">
                   {observations.map((obs, obsIndex) => (

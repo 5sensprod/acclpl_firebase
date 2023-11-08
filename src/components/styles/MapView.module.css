@@ -1,17 +1,17 @@
 .customToggle {
   text-decoration: none !important;
   color: white !important;
-  opacity: .7 !important;
+  /* opacity: .7 !important; */
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   width: 100% !important;
-  transition: opacity 0.3s ease !important;
+  /* transition: opacity 0.3s ease !important; */
 }
 
-.customToggle:hover {
+/* .customToggle:hover {
   opacity: 1 !important;
-}
+} */
 
 .chevron {
   transition: transform 0.3s ease;

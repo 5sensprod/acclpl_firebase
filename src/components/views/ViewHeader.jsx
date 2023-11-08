@@ -10,7 +10,7 @@ const ViewHeader = ({ icon: IconComponent, title }) => {
           }
         `}
       </style>
-      <h1 className="display-5 text-light mb-4 text-center inset-shadow rounded-top py-2 pb-3">
+      <h1 className="display-5 text-light mb-4 text-center inset-shadow rounded-top py-2 pb-3 d-flex align-items-baseline justify-content-center">
         <IconComponent size={32} className="me-5 bg-dark shadow" />
         {title}
       </h1>
