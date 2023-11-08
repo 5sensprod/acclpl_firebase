@@ -5,7 +5,7 @@ import SidebarMenu from '../../../components/ui/SidebarMenu'
 import ViewHeader from '../../../components/views/ViewHeader'
 import ProfileView from '../../../components/views/ProfileView'
 import MapView from '../../../components/views/MapView'
-import ReportingsView from '../../../components/views/ReportingsView'
+// import ReportingsView from '../../../components/views/ReportingsView'
 import { UserContext } from '../../../context/userContext'
 import { motion } from 'framer-motion'
 
@@ -36,7 +36,7 @@ export default function PrivateHome() {
   // Déclaration de l'objet 'headers'
   const headers = {
     profile: { title: 'Profil', Icon: Person },
-    map: { title: 'Carte', Icon: Map },
+    map: { title: 'Mes signalements', Icon: Map },
     announcements: { title: 'Éco-veille', Icon: Megaphone },
   }
 
@@ -52,9 +52,9 @@ export default function PrivateHome() {
     default:
       contentView = <FormWizard />
       break
-    case 'reportings':
-      contentView = <ReportingsView />
-      break
+    // case 'reportings':
+    //   contentView = <ReportingsView />
+    //   break
   }
 
   // Extrayez l'icône et le titre de 'headers' basé sur 'activeView'

@@ -1,41 +1,33 @@
-// import React from 'react'
-
-// const MapView = () => {
-//   return (
-//     <div className="map-view">
-//       <p>Vue de la carte interactive.</p>
-//     </div>
-//   )
-// }
-
-// export default MapView
-
 import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context/userContext'
 import { getObservationsForUser } from '../../services/observationService'
-import Table from 'react-bootstrap/Table'
+import { Accordion, Card, Button, useAccordionButton } from 'react-bootstrap'
+import { Calendar, Clock } from 'react-bootstrap-icons'
+import styles from '../styles/MapView.module.css'
+
 const MapView = () => {
   const { currentUser } = useContext(UserContext)
   const [observations, setObservations] = useState([])
+  const [activeKey, setActiveKey] = useState(null)
+
+  const formatDate = (dateString) => {
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }
+    return new Date(dateString).toLocaleDateString('fr-FR', options)
+  }
 
   useEffect(() => {
     if (currentUser?.uid) {
-      console.log('Fetching observations for user ID:', currentUser.uid)
       const fetchObservations = async () => {
         try {
           const obs = await getObservationsForUser(currentUser.uid)
-          console.log('Observations fetched:', obs)
-          if (obs.length > 0) {
-            // Log additional details if needed
-            obs.forEach((o) => {
-              console.log(
-                `Observation ID: ${o.id}, Establishment ID: ${o.establishment?.id}, Street ID: ${o.street?.id}`,
-              )
-            })
-          }
           setObservations(obs)
         } catch (error) {
-          console.error('Failed to fetch observations for user:', error)
+          console.error('Failed to fetch observations:', error)
         }
       }
 
@@ -43,48 +35,95 @@ const MapView = () => {
     }
   }, [currentUser])
 
+  // Group observations by establishment id
+  const observationsByEstablishment = observations.reduce((acc, obs) => {
+    const key = obs.establishment.id
+    if (!acc[key]) {
+      acc[key] = {
+        name: obs.establishment.establishmentName,
+        address: `${obs.street.streetName}, ${obs.street.city}, ${obs.street.postalCode}`,
+        observations: [],
+      }
+    }
+    acc[key].observations.push({
+      date: obs.date,
+      time: obs.time,
+      photoURLs: obs.photoURLs,
+    })
+    return acc
+  }, {})
+
+  // Function to create a custom accordion toggle
+  function CustomToggle({ children, eventKey }) {
+    const decoratedOnClick = useAccordionButton(eventKey, () => {
+      setActiveKey((prevKey) => (prevKey === eventKey ? null : eventKey))
+    })
+
+    return (
+      <Button
+        variant="link"
+        onClick={decoratedOnClick}
+        className={`text-start ${styles.customToggle}`}
+      >
+        {children}
+      </Button>
+    )
+  }
+
   return (
     <div className="reporting-view text-light">
-      <h2 className="text-light">Observations des Lumières Allumées</h2>
-      {observations.length > 0 ? (
-        <Table striped bordered hover variant="dark">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Heure</th>
-              <th>Entreprise</th>
-              <th>Adresse</th>
-              <th>Notes supplémentaires</th>
-              <th>Photos</th>
-            </tr>
-          </thead>
-          <tbody>
-            {observations.map((obs) => (
-              <tr key={obs.id}>
-                <td>{obs.date}</td>
-                <td>{obs.time}</td>
-                <td>{obs.establishment.establishmentName}</td>
-                <td>{`${obs.street.streetName}, ${obs.street.city}, ${obs.street.postalCode}`}</td>
-                <td>{obs.additionalNotes}</td>
-                <td>
-                  {obs.photoURLs.map((url, index) => (
-                    <div key={index} className="mb-2">
-                      <img
-                        src={url}
-                        alt={`Observation ${index + 1}`}
-                        className="img-fluid"
-                        style={{ maxWidth: '100px' }}
-                      />
+      {/* <h2>Observations des Lumières Allumées</h2> */}
+      <Accordion activeKey={activeKey}>
+        {Object.entries(observationsByEstablishment).map(
+          ([key, { name, address, observations }], index) => (
+            <Card key={key}>
+              <Card.Header className="bg-dark text-light">
+                <CustomToggle
+                  eventKey={`${index}`}
+                  // style={{ textDecoration: 'none', color: 'white' }}
+                  className={`${styles.customToggle}`}
+                >
+                  <div>{name}</div>
+                  <div>{address.split(',')[0]} </div>
+
+                  {/* Ici, on affiche juste la rue */}
+                </CustomToggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey={`${index}`}>
+                <Card.Body className="bg-dark text-light">
+                  {observations.map((obs, obsIndex) => (
+                    <div
+                      key={obsIndex}
+                      className="d-flex align-items-center justify-content-between mb-2"
+                    >
+                      <div className="flex-grow-1 d-flex flex-column">
+                        <div className="mb-1">
+                          <Calendar size="20" className="me-2" />
+                          <span>{formatDate(obs.date)}</span>
+                        </div>
+                        <div>
+                          <Clock size="20" className="me-2" />
+                          <span>{obs.time}</span>
+                        </div>
+                      </div>
+                      {obs.photoURLs &&
+                        obs.photoURLs.map((url, urlIndex) => (
+                          <img
+                            key={urlIndex}
+                            src={url}
+                            alt={`Observation ${obsIndex + 1}`}
+                            className="img-fluid rounded"
+                            style={{ maxWidth: '50px' }}
+                          />
+                        ))}
                     </div>
                   ))}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      ) : (
-        <p>Aucune observation trouvée pour cet utilisateur.</p>
-      )}
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+          ),
+        )}
+      </Accordion>
     </div>
   )
 }
