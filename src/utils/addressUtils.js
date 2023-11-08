@@ -28,7 +28,6 @@ export function formatAddress(address) {
       city,
     }
   } else {
-    // Si l'expression régulière ne correspond pas, lancer une erreur
     throw new Error('Invalid address format')
   }
 }

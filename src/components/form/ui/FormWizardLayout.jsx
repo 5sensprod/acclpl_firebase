@@ -15,10 +15,7 @@ const FormWizardLayout = ({ children }) => {
           <h3 className="mb-3">
             {state.steps[state.currentStep - 1].label}
           </h3>{' '}
-          {/* Afficher le label de l'étape active */}
-          {children}{' '}
-          {/* C'est ici que votre composant d'étape actif sera rendu */}
-          <WizardStepManager />
+          {children} <WizardStepManager />
         </Container>
       </Card.Body>
     </Card>

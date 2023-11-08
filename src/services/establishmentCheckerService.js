@@ -22,7 +22,6 @@ async function findClosestEstablishmentMatches(normalizedEstablishmentName) {
     const similarity = ratio(normalizedEstablishmentName, nameInDb)
 
     if (similarity > 85) {
-      // utilisez le seuil de votre choix
       matches.push({ doc, similarity })
     }
   })
@@ -108,7 +107,6 @@ async function checkDuplicateEstablishment(
       )
       isApproximateMatch = true
 
-      // Log the establishment names for debugging
       establishmentsDetails.forEach((detail) => {
         console.log(
           'Approximate match for establishment:',
@@ -131,7 +129,6 @@ async function checkDuplicateEstablishment(
           detail.establishmentName,
         )
       })
-      // Dispatch SET_CURRENT_ESTABLISHMENTS_DATA here as well
       dispatch({
         type: 'SET_CURRENT_ESTABLISHMENTS_DATA',
         payload: establishmentsDetails,

@@ -62,7 +62,6 @@ const MapView = () => {
 
     const isCurrentEventKeyActive = activeKey === eventKey
 
-    // Style inline pour le chevron
     const chevronStyle = {
       transform: isCurrentEventKeyActive ? 'rotate(180deg)' : 'none',
       transition: 'transform 0.3s ease',

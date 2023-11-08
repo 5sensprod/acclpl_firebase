@@ -1,4 +1,3 @@
-// PasswordChangeModal.jsx
 import React, { useState, useContext } from 'react'
 import { Modal, Button, Form, InputGroup, Alert, Toast } from 'react-bootstrap'
 import { LockFill, ShieldLockFill } from 'react-bootstrap-icons'
@@ -18,7 +17,7 @@ const PasswordChangeModal = ({ showModal, handleClose }) => {
     setNewPassword('')
     setConfirmNewPassword('')
     setError('')
-    setShowToast(false) // Si vous voulez aussi cacher le toast lors de la réinitialisation
+    setShowToast(false)
   }
 
   const handlePasswordChange = async (e) => {
@@ -30,9 +29,9 @@ const PasswordChangeModal = ({ showModal, handleClose }) => {
     try {
       await reauthenticateWithCredential(currentPassword)
       await changePassword(newPassword)
-      setShowToast(true) // Affiche le toast de succès
-      resetForm() // Réinitialise le formulaire
-      handleClose() // Fermez la modal après le changement de mot de passe
+      setShowToast(true)
+      resetForm()
+      handleClose()
     } catch (error) {
       setError(
         "Une erreur s'est produite lors du changement de mot de passe. Assurez-vous que votre mot de passe actuel est correct.",

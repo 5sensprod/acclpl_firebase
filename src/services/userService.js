@@ -13,22 +13,20 @@ import UserModel from '../models/UserModel'
 // Fonction pour ajouter un nouvel utilisateur
 async function addUser(userData) {
   const user = new UserModel(userData)
-  user.validate() // Valide les données de l'utilisateur en utilisant la méthode validate du modèle
+  user.validate()
 
   try {
     const docRef = await addDoc(
       collection(firestore, 'users'),
       user.toFirebaseObject(),
     )
-    // console.log('User document written with ID: ', docRef.id)
-    return docRef.id // Retourne l'ID du document pour une utilisation ultérieure
+    return docRef.id
   } catch (e) {
     console.error('Error adding user document: ', e)
-    throw e // Propage l'erreur pour la gérer plus haut dans la pile d'appels
+    throw e
   }
 }
 
-// Fonction pour obtenir les données d'un utilisateur par ID
 async function getUser(userID) {
   const usersRef = collection(firestore, 'users')
   const q = query(usersRef, where('userID', '==', userID))
@@ -38,7 +36,7 @@ async function getUser(userID) {
     const userDoc = querySnapshot.docs[0]
     return {
       ...userDoc.data(),
-      docId: userDoc.id, // Ajoutez l'ID du document Firestore au résultat
+      docId: userDoc.id,
     }
   } else {
     throw new Error('No user found with userID: ' + userID)
@@ -46,7 +44,7 @@ async function getUser(userID) {
 }
 
 async function updateUserDisplayName(docId, newDisplayName) {
-  const userRef = doc(firestore, 'users', docId) // Utilisez l'ID du document Firestore ici
+  const userRef = doc(firestore, 'users', docId)
   try {
     await updateDoc(userRef, {
       displayName: newDisplayName,
@@ -57,5 +55,4 @@ async function updateUserDisplayName(docId, newDisplayName) {
   }
 }
 
-// Exporte les fonctions pour pouvoir les importer dans d'autres fichiers
 export { addUser, getUser, updateUserDisplayName }

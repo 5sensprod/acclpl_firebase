@@ -30,7 +30,7 @@ async function addObservation(observationData, establishmentRef) {
       ),
       observation.toFirebaseObject(),
     )
-    return docRef.id // Return the document ID for further use
+    return docRef.id
   } catch (e) {
     console.error('Error adding observation document: ', e)
     throw e

@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState } from 'react'
 import { UserContext } from '../context/userContext'
 import { useNavigate } from 'react-router-dom'
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap'
-import { Envelope, LockFill } from 'react-bootstrap-icons' // Importez les icônes nécessaires
+import { Envelope, LockFill } from 'react-bootstrap-icons'
 
 export default function SignInModal() {
   const { modalState, toggleModals, signIn } = useContext(UserContext)
@@ -43,7 +43,6 @@ export default function SignInModal() {
             <InputGroup>
               <InputGroup.Text>
                 <Envelope />{' '}
-                {/* Icône d'enveloppe à l'intérieur du champ de texte */}
               </InputGroup.Text>
               <Form.Control
                 ref={emailRef}
@@ -58,7 +57,6 @@ export default function SignInModal() {
             <InputGroup>
               <InputGroup.Text>
                 <LockFill />{' '}
-                {/* Icône de verrouillage à l'intérieur du champ de texte */}
               </InputGroup.Text>
               <Form.Control
                 ref={passwordRef}

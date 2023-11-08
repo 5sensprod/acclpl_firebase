@@ -6,15 +6,13 @@ import { Facebook } from 'react-bootstrap-icons'
 
 const FacebookSignInButton = () => {
   const { facebookSignIn } = useContext(UserContext)
-  const navigate = useNavigate() // Initialisez useNavigate
+  const navigate = useNavigate()
 
   const handleFacebookSignIn = async () => {
     try {
       await facebookSignIn()
-      // Redirection vers PrivateHome après une connexion réussie
       navigate('/private/private-home')
     } catch (error) {
-      // Gérer les erreurs ici
       console.error('Erreur lors de la connexion avec Facebook', error)
     }
   }

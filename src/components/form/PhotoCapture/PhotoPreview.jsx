@@ -43,10 +43,7 @@ const PhotoPreview = () => {
   )
 
   return (
-    <Figure
-      className={styles.figureStyle}
-      // onClick={() => document.getElementById('photo-input').click()}
-    >
+    <Figure className={styles.figureStyle}>
       <OverlayTrigger
         placement="top"
         overlay={<Tooltip id="tooltip-change">Change la photo</Tooltip>}

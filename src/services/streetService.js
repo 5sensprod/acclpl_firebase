@@ -15,8 +15,7 @@ async function addStreet(streetData) {
     )
     const querySnapshot = await getDocs(streetQuery)
     if (!querySnapshot.empty) {
-      // Street already exists, return the existing street reference
-      return querySnapshot.docs[0].id // Assuming the query will return the existing street document
+      return querySnapshot.docs[0].id
     }
 
     const docRef = await addDoc(
@@ -24,7 +23,7 @@ async function addStreet(streetData) {
       street.toFirebaseObject(),
     )
     console.log('Street document written with ID: ', docRef.id)
-    return docRef.id // Return the document ID for further use
+    return docRef.id
   } catch (e) {
     console.error('Error adding street document: ', e)
     throw e

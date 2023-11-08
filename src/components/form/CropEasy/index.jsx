@@ -1,5 +1,3 @@
-//src\components\form\CropEasy\index.jsx
-
 import React, { useState, useCallback } from 'react'
 import { Modal } from 'react-bootstrap'
 import { cropImage } from './utils/CropImage'

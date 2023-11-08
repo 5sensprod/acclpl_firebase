@@ -62,7 +62,6 @@ const ReportingsView = () => {
 
     const isCurrentEventKeyActive = activeKey === eventKey
 
-    // Style inline pour le chevron
     const chevronStyle = {
       transform: isCurrentEventKeyActive ? 'rotate(180deg)' : 'none',
       transition: 'transform 0.3s ease',
@@ -90,13 +89,10 @@ const ReportingsView = () => {
               <Card.Header className="bg-dark text-light rounded">
                 <CustomToggle
                   eventKey={`${index}`}
-                  // style={{ textDecoration: 'none', color: 'white' }}
                   className={`${styles.customToggle}`}
                 >
                   <h3>{name}</h3>
                   <div>{address.split(',')[0]} </div>
-
-                  {/* Ici, on affiche juste la rue */}
                 </CustomToggle>
               </Card.Header>
               <Accordion.Collapse eventKey={`${index}`}>

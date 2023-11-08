@@ -1,4 +1,3 @@
-// src\components\form\inputs\additionalNotes.jsx
 import React from 'react'
 import { useFormWizardState } from '../context/FormWizardContext'
 

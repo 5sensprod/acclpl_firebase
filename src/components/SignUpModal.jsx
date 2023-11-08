@@ -68,7 +68,7 @@ export default function SignUpModal() {
           <Form.Group className="mb-3">
             <InputGroup>
               <InputGroup.Text>
-                <PersonBadge /> {/* Icone pour le displayName */}
+                <PersonBadge />
               </InputGroup.Text>
               <Form.Control
                 ref={displayNameRef}

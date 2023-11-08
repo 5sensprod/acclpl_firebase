@@ -23,7 +23,6 @@ const useHandleSubmitClick = (setIsLoading) => {
         // First, compress the image
         const compressedImage = await compressImage(state.formData.photoBlob)
 
-        // Then, upload the compressed image
         const uniqueFileName = generateUniqueFileName('uploaded_image')
         downloadURL = await uploadImage(compressedImage, uniqueFileName)
       }
@@ -37,12 +36,10 @@ const useHandleSubmitClick = (setIsLoading) => {
       }
 
       if (state.establishmentExists) {
-        // If the establishment already exists, submit the observation data only.
         await addObservation(observationData, {
           id: state.formData.currentEstablishmentId,
         })
       } else {
-        // If the establishment doesn't exist, submit both the establishment and observation data.
         await submitData(observationData, currentUser)
       }
 

@@ -38,27 +38,22 @@ const ProfileView = () => {
   }, [userProfile])
 
   const handleCancel = () => {
-    setNewDisplayName(userProfile.displayName) // Réinitialisez le nom à la valeur actuelle en cas d'annulation
+    setNewDisplayName(userProfile.displayName)
     setEditMode(false)
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    // Fermez le formulaire de modification si le nouveau nom est identique à l'ancien ou si l'ID est manquant
     if (!userProfile?.docId || newDisplayName === userProfile.displayName) {
-      setEditMode(false) // Sortir du mode édition et fermer le formulaire sans autre action
+      setEditMode(false)
       return
     }
 
-    // Si le code continue ici, cela signifie que le nom a changé et l'ID du document est présent
     try {
       await updateUserDisplayName(userProfile.docId, newDisplayName)
       setUserProfile({ ...userProfile, displayName: newDisplayName })
-    } catch (error) {
-      // Vous pouvez choisir de gérer l'erreur d'une manière qui ne soit pas visible par l'utilisateur,
-      // par exemple, en envoyant l'erreur à un service de suivi des erreurs ou en la loguant silencieusement.
-    }
-    setEditMode(false) // Fermez le formulaire de modification après avoir tenté la mise à jour
+    } catch (error) {}
+    setEditMode(false)
   }
 
   const itemVariants = {
@@ -81,7 +76,7 @@ const ProfileView = () => {
       opacity: 1,
       x: 0,
       transition: {
-        staggerChildren: 0.05, // Chaque enfant commencera son animation avec un délai de 0.1 seconde
+        staggerChildren: 0.05,
       },
     },
   }
@@ -92,7 +87,7 @@ const ProfileView = () => {
       opacity: 1,
       x: 0,
       transition: {
-        delay: custom * 0.1, // Custom est l'index et détermine le délai
+        delay: custom * 0.1,
         duration: 0.15,
       },
     }),
@@ -110,16 +105,13 @@ const ProfileView = () => {
 
     const handleLocalSubmit = async (event) => {
       event.preventDefault()
-      // Si le nom local est différent du nom dans le profil utilisateur et que l'ID du document existe
       if (userProfile?.docId && localDisplayName !== userProfile.displayName) {
         try {
           await updateUserDisplayName(userProfile.docId, localDisplayName)
-          setUserProfile({ ...userProfile, displayName: localDisplayName }) // Mettez à jour l'état global après confirmation
-        } catch (error) {
-          // Gérer l'erreur d'une manière non intrusive pour l'utilisateur
-        }
+          setUserProfile({ ...userProfile, displayName: localDisplayName })
+        } catch (error) {}
       }
-      setEditMode(false) // Sortir du mode d'édition quelle que soit l'issue
+      setEditMode(false)
     }
 
     return (
@@ -139,8 +131,8 @@ const ProfileView = () => {
                   style={{ height: '40px' }}
                   autoFocus
                   className="me-0"
-                  value={localDisplayName} // La valeur de l'input est contrôlée par l'état local
-                  onChange={(e) => setLocalDisplayName(e.target.value)} // Mettez à jour l'état local lorsque l'input change
+                  value={localDisplayName}
+                  onChange={(e) => setLocalDisplayName(e.target.value)}
                 />
                 <Button variant="secondary" onClick={handleLocalSubmit}>
                   Ok
@@ -162,7 +154,7 @@ const ProfileView = () => {
                 initial="hidden"
                 animate="visible"
                 variants={childVariants}
-                custom={0} // Index personnalisé pour le délai
+                custom={0}
               >
                 <PersonCircle size={24} />
               </motion.div>
@@ -170,7 +162,7 @@ const ProfileView = () => {
                 initial="hidden"
                 animate="visible"
                 variants={childVariants}
-                custom={1} // Index personnalisé pour le délai
+                custom={1}
               >
                 {userProfile.displayName}
               </motion.span>
@@ -178,7 +170,7 @@ const ProfileView = () => {
                 initial="hidden"
                 animate="visible"
                 variants={childVariants}
-                custom={2} // Index personnalisé pour le délai
+                custom={2}
               >
                 <Pencil
                   className="me-0"

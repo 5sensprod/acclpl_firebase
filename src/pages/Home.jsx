@@ -4,13 +4,11 @@ import { UserContext } from '../context/userContext'
 import HeaderTitle from '../components/ui/HeaderTitle'
 import AuthenticationButtons from '../components/ui/AuthenticationButtons'
 import LogoImage from '../components/ui/LogoImage'
-// import SidebarMenu from '../components/ui/SidebarMenu';
 
 const Home = () => {
   const { currentUser } = useContext(UserContext)
   const navigate = useNavigate()
 
-  // Redirigez l'utilisateur s'il est déjà connecté
   useEffect(() => {
     if (currentUser) {
       navigate('/private/private-home')
@@ -33,7 +31,6 @@ const Home = () => {
               </>
             )}
           </div>
-          {/* {currentUser && <SidebarMenu />} */}
         </div>
       </div>
     </>

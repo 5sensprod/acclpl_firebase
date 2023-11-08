@@ -32,14 +32,13 @@ function getModalButtonsConfig(
   setModalConfig,
   companyName,
   photoURLs,
-  isMultipleOccurrences, // Ajoutez ce paramètre
+  isMultipleOccurrences,
 ) {
   // Définir le texte du bouton "Non" en fonction du nombre d'occurrences
   const noButtonText = isMultipleOccurrences
     ? "Il s'agit d'un autre établissement"
     : 'Non'
 
-  // Commencer par le bouton "Non" qui est toujours présent
   const buttons = [
     {
       text: noButtonText,
@@ -56,7 +55,6 @@ function getModalButtonsConfig(
     },
   ]
 
-  // Ajoute le bouton "Oui" seulement s'il y a une seule occurrence
   if (!isMultipleOccurrences) {
     buttons.push({
       text: 'Oui',

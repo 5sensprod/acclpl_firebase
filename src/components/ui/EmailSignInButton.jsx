@@ -13,7 +13,7 @@ const EmailSignInButton = () => {
         variant="secondary"
         className="text-start"
       >
-        <Envelope size={24} className="me-2" /> {/* Icône d'enveloppe */}
+        <Envelope size={24} className="me-2" />
         Se connecter avec l'email
       </Button>
     </>

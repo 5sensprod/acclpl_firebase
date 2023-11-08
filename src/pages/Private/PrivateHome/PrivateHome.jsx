@@ -12,15 +12,15 @@ import { motion } from 'framer-motion'
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: -50, // déplacez le composant vers le haut initialement
+    y: -50,
   },
   in: {
     opacity: 1,
-    y: 0, // animez le composant pour revenir à sa position d'origine
+    y: 0,
   },
   out: {
     opacity: 0,
-    y: 50, // faites glisser le composant vers le bas lorsqu'il sort
+    y: 50,
   },
 }
 
@@ -33,12 +33,11 @@ const pageTransition = {
 export default function PrivateHome() {
   const { activeView } = useContext(UserContext)
 
-  // Déclaration de l'objet 'headers'
   const headers = {
     profile: { title: 'Profil', Icon: Person },
     map: { title: 'Mes signalements', Icon: Map },
     announcements: { title: 'Éco-veille', Icon: Megaphone },
-    reportings: { title: 'Mes signalements', Icon: CardHeading }, // Nouvel en-tête pour les signalements
+    reportings: { title: 'Mes signalements', Icon: CardHeading },
   }
 
   let contentView
@@ -49,7 +48,7 @@ export default function PrivateHome() {
     case 'map':
       contentView = <MapView />
       break
-    case 'reportings': // Cas pour afficher ReportingsView
+    case 'reportings':
       contentView = <ReportingsView />
       break
     case 'announcements':
@@ -58,7 +57,6 @@ export default function PrivateHome() {
       break
   }
 
-  // Extrayez l'icône et le titre de 'headers' basé sur 'activeView'
   const { Icon, title } = headers[activeView] || headers['announcements']
 
   return (

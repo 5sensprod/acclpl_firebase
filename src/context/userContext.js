@@ -114,16 +114,13 @@ export function UserContextProvider(props) {
     return firebaseReauthenticateWithCredential(currentUser, credential)
   }
 
-  // Dans UserContextProvider, après avoir récupéré l'utilisateur
   const [isPasswordSignIn, setIsPasswordSignIn] = useState(false)
 
-  // Suivez l'état d'authentification de l'utilisateur
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user)
-      setLoadingData(true) // Commence le chargement jusqu'à ce que le profil soit récupéré
+      setLoadingData(true)
       if (user) {
-        // Vérifiez si l'utilisateur est connecté via un email et un mot de passe
         setIsPasswordSignIn(
           user.providerData.some((p) => p.providerId === 'password'),
         )
@@ -131,24 +128,20 @@ export function UserContextProvider(props) {
           let profileData = await getUser(user.uid)
           setUserProfile(profileData)
         } catch (error) {
-          // Si l'erreur est "No user found with userID", ne rien faire
           if (!error.message.includes('No user found with userID')) {
-            // Pour toutes les autres erreurs, vous pourriez vouloir les traiter d'une manière ou d'une autre
           }
-          // Optionnellement, implémentez ici une logique de réessai ou de récupération pour les erreurs non attendues
         } finally {
-          setLoadingData(false) // Arrête le chargement indépendamment des erreurs
+          setLoadingData(false)
         }
       } else {
-        setIsPasswordSignIn(false) // Réinitialisez ceci aussi lors de la déconnexion
-        setUserProfile({}) // Définir un objet vide lors de la déconnexion
+        setIsPasswordSignIn(false)
+        setUserProfile({})
         setLoadingData(false)
       }
     })
-    return unsubscribe // Cela nettoie l'observateur lorsque le composant est démonté
+    return unsubscribe
   }, [])
 
-  // Gestion des modals
   const [modalState, setModalState] = useState({
     signUpModal: false,
     signInModal: false,

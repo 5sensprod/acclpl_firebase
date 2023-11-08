@@ -1,4 +1,3 @@
-// src/components/views/ViewHeader.jsx
 import React from 'react'
 
 const ViewHeader = ({ icon: IconComponent, title }) => {

@@ -1,7 +1,6 @@
 import formatCompanyName from './formatCompanyName'
 
 function normalizedCompanyName(str) {
-  // Appeler formatCompanyName pour formater la chaîne avant de la normaliser
   const formattedStr = formatCompanyName(str)
 
   // Suppression des accents

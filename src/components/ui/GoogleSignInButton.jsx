@@ -1,20 +1,18 @@
 import { useContext } from 'react'
-import { useNavigate } from 'react-router-dom' // Importez useNavigate
+import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../../context/userContext'
 import { Button } from 'react-bootstrap'
 import { Google } from 'react-bootstrap-icons'
 
 const GoogleSignInButton = () => {
   const { googleSignIn } = useContext(UserContext)
-  const navigate = useNavigate() // Initialisez useNavigate
+  const navigate = useNavigate()
 
   const handleGoogleSignIn = async () => {
     try {
       await googleSignIn()
-      // gérer la réussite de la connexion
-      navigate('/private/private-home') // Ajoutez la redirection ici
+      navigate('/private/private-home')
     } catch (error) {
-      // gérer les erreurs
       console.error(error)
     }
   }
@@ -25,7 +23,7 @@ const GoogleSignInButton = () => {
       className="text-dark d-flex align-items-center"
       onClick={handleGoogleSignIn}
     >
-      <Google size={24} className="me-2" /> {/* Icône Google */}
+      <Google size={24} className="me-2" />
       Connectez-vous avec Google
     </Button>
   )

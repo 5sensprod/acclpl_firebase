@@ -9,9 +9,8 @@ import PrivateHome from './pages/Private/PrivateHome/PrivateHome'
 import 'leaflet/dist/leaflet.css'
 import ErrorBoundary from './components/ui/ErrorBoundary'
 import Footer from './components/Footer'
-// import SidebarMenu from './components/ui/SidebarMenu'
 
-import { UserContext } from './context/userContext' // Assurez-vous que le chemin d'accès est correct
+import { UserContext } from './context/userContext'
 
 function App() {
   const { currentUser } = useContext(UserContext)
@@ -22,7 +21,6 @@ function App() {
         <SignUpModal />
         <SignInModal />
         {!currentUser && <NavBar />}
-        {/* {currentUser && <SidebarMenu />} */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/private" element={<Private />}>

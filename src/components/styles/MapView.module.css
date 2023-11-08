@@ -1,9 +1,7 @@
-/* MapView.module.css */
 .customToggle {
   text-decoration: none !important;
   color: white !important;
   opacity: .7 !important;
-  /* font-size: 20px !important; */
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;

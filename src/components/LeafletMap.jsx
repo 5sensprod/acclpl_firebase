@@ -48,15 +48,13 @@ function LeafletMap({
 
     const marker = L.marker(markerCoords).addTo(map)
 
-    // Ajouter le popup avec le nom de l'entreprise si présent
     if (companyName) {
       const popupContent = document.createElement('div')
 
-      // Ajoutez ces styles pour centrer les éléments dans popupContent
       popupContent.style.display = 'flex'
-      popupContent.style.flexDirection = 'column' // pour les aligner verticalement
-      popupContent.style.alignItems = 'center' // pour centrer horizontalement
-      popupContent.style.justifyContent = 'center' // pour centrer verticalement
+      popupContent.style.flexDirection = 'column'
+      popupContent.style.alignItems = 'center'
+      popupContent.style.justifyContent = 'center'
 
       const companyNameElement = document.createElement('p')
       companyNameElement.textContent = companyName

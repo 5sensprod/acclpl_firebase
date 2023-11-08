@@ -1,6 +1,6 @@
 import React from 'react'
 import logo from '../../assets/images/logo.png'
-import styles from '../styles/LogoImage.module.css' // Ajustez le chemin d'accès selon la structure de votre projet
+import styles from '../styles/LogoImage.module.css'
 
 const LogoImage = () => (
   <div className="mt-5 text-center">

@@ -30,7 +30,6 @@ const wizardSteps = [
     component: Step4Component,
     props: {},
   },
-  // ... ajoutez d'autres étapes si nécessaire
 ]
 
 export default wizardSteps

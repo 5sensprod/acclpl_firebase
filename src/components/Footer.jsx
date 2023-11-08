@@ -3,7 +3,7 @@ import { Facebook } from 'react-bootstrap-icons'
 import styles from './styles/Footer.module.css'
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear() // Obtient l'année en cours
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className="bg-dark text-light fixed-bottom shadow p-0 p-3 text-center">
@@ -14,7 +14,7 @@ const Footer = () => {
           rel="noopener noreferrer"
           className={`text-light ${styles.link} ${styles.noUnderline}`}
         >
-          <Facebook className="me-2" /> {/* Icône Facebook */}
+          <Facebook className="me-2" />
           Acclpl™
         </a>
       </small>{' '}

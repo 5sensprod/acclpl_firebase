@@ -28,7 +28,6 @@ export default function Navbar() {
     >
       <Link to="/" className="navbar-brand">
         <img src={logo} alt="Logo" height="30" />{' '}
-        {/* Mettre à jour l'attribut 'height' selon la taille souhaitée */}
       </Link>
 
       <div>
@@ -40,7 +39,6 @@ export default function Navbar() {
             >
               S'inscrire
             </button>
-            {/* Button pour la connexion remplacé par le modal */}
           </>
         )}
         {currentUser && (
