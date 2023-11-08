@@ -106,7 +106,7 @@ const ReportingsView = () => {
                 initial={{ x: -60 }}
                 animate={{ x: 0 }}
                 transition={{ delay: 0.1 + index * 0.04, duration: 0.15 }}
-                className="card-header bg-dark text-light rounded"
+                className="card-header bg-dark text-light rounded shadow"
               >
                 <CustomToggle eventKey={`${index}`}>
                   <h3>{name}</h3>
