@@ -4,6 +4,7 @@ import { getObservationsForUser } from '../../services/observationService'
 import { Accordion, Card, Button, useAccordionButton } from 'react-bootstrap'
 import { Calendar, Clock } from 'react-bootstrap-icons'
 import styles from '../styles/MapView.module.css'
+import { ChevronDown } from 'react-bootstrap-icons'
 
 const MapView = () => {
   const { currentUser } = useContext(UserContext)
@@ -59,13 +60,23 @@ const MapView = () => {
       setActiveKey((prevKey) => (prevKey === eventKey ? null : eventKey))
     })
 
+    const isCurrentEventKeyActive = activeKey === eventKey
+
+    // Style inline pour le chevron
+    const chevronStyle = {
+      transform: isCurrentEventKeyActive ? 'rotate(180deg)' : 'none',
+      transition: 'transform 0.3s ease',
+    }
+
     return (
       <Button
         variant="link"
         onClick={decoratedOnClick}
         className={`text-start ${styles.customToggle}`}
+        aria-expanded={isCurrentEventKeyActive}
       >
-        {children}
+        <span>{children}</span>
+        <ChevronDown style={chevronStyle} />
       </Button>
     )
   }
@@ -76,8 +87,8 @@ const MapView = () => {
       <Accordion activeKey={activeKey}>
         {Object.entries(observationsByEstablishment).map(
           ([key, { name, address, observations }], index) => (
-            <Card key={key}>
-              <Card.Header className="bg-dark text-light">
+            <Card key={key} className="mb-3">
+              <Card.Header className="bg-dark text-light rounded mb-1">
                 <CustomToggle
                   eventKey={`${index}`}
                   // style={{ textDecoration: 'none', color: 'white' }}
@@ -90,11 +101,11 @@ const MapView = () => {
                 </CustomToggle>
               </Card.Header>
               <Accordion.Collapse eventKey={`${index}`}>
-                <Card.Body className="bg-dark text-light">
+                <Card.Body className="bg-dark text-light rounded">
                   {observations.map((obs, obsIndex) => (
                     <div
                       key={obsIndex}
-                      className="d-flex align-items-center justify-content-between mb-2"
+                      className="d-flex align-items-center justify-content-between"
                     >
                       <div className="flex-grow-1 d-flex flex-column">
                         <div className="mb-1">

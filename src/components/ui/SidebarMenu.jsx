@@ -6,6 +6,7 @@ import {
   Map,
   BoxArrowRight,
   List,
+  CardHeading,
 } from 'react-bootstrap-icons'
 import { UserContext } from '../../context/userContext'
 import { useNavigate } from 'react-router-dom'
@@ -21,6 +22,11 @@ export default function SidebarMenu() {
   const menuItems = [
     { name: 'profile', icon: <Person size={24} />, label: 'Profil' },
     { name: 'announcements', icon: <Megaphone size={24} />, label: 'Annonces' },
+    {
+      name: 'reportings',
+      icon: <CardHeading size={24} />,
+      label: 'Signalements',
+    },
     { name: 'map', icon: <Map size={24} />, label: 'Carte' },
   ]
 

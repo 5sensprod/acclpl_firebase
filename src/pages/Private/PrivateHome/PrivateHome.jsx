@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
-import { Megaphone, Person, Map } from 'react-bootstrap-icons'
+import { Megaphone, Person, Map, CardHeading } from 'react-bootstrap-icons'
 import FormWizard from '../../../components/form/wizard'
 import SidebarMenu from '../../../components/ui/SidebarMenu'
 import ViewHeader from '../../../components/views/ViewHeader'
 import ProfileView from '../../../components/views/ProfileView'
 import MapView from '../../../components/views/MapView'
-// import ReportingsView from '../../../components/views/ReportingsView'
+import ReportingsView from '../../../components/views/ReportingsView'
 import { UserContext } from '../../../context/userContext'
 import { motion } from 'framer-motion'
 
@@ -38,6 +38,7 @@ export default function PrivateHome() {
     profile: { title: 'Profil', Icon: Person },
     map: { title: 'Mes signalements', Icon: Map },
     announcements: { title: 'Éco-veille', Icon: Megaphone },
+    reportings: { title: 'Mes signalements', Icon: CardHeading }, // Nouvel en-tête pour les signalements
   }
 
   let contentView
@@ -48,13 +49,13 @@ export default function PrivateHome() {
     case 'map':
       contentView = <MapView />
       break
+    case 'reportings': // Cas pour afficher ReportingsView
+      contentView = <ReportingsView />
+      break
     case 'announcements':
     default:
       contentView = <FormWizard />
       break
-    // case 'reportings':
-    //   contentView = <ReportingsView />
-    //   break
   }
 
   // Extrayez l'icône et le titre de 'headers' basé sur 'activeView'
