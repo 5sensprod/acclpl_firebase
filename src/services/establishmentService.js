@@ -57,31 +57,15 @@ async function addEstablishment(establishmentData) {
   }
 }
 
-async function getEstablishmentRef(normalizedEstablishmentName) {
-  if (!normalizedEstablishmentName) {
-    throw new Error('normalizedEstablishmentName is required.')
-  }
+async function getEstablishmentByRef(establishmentRef) {
+  const establishmentDocRef = doc(firestore, 'establishments', establishmentRef)
+  const establishmentSnap = await getDoc(establishmentDocRef)
 
-  try {
-    const establishmentQuery = query(
-      collection(firestore, 'establishments'),
-      where('normalizedEstablishmentName', '==', normalizedEstablishmentName),
-    )
-
-    const querySnapshot = await getDocs(establishmentQuery)
-    if (!querySnapshot.empty) {
-      const doc = querySnapshot.docs[0]
-      return {
-        id: doc.id,
-        data: doc.data(),
-      }
-    } else {
-      return null
-    }
-  } catch (error) {
-    console.error('Error fetching establishment reference: ', error)
-    throw error
+  if (establishmentSnap.exists()) {
+    return establishmentSnap.data()
+  } else {
+    throw new Error('Establishment not found')
   }
 }
 
-export { addEstablishment, getEstablishmentRef, getStreetByRef }
+export { addEstablishment, getEstablishmentByRef, getStreetByRef }

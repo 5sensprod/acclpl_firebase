@@ -1,28 +1,46 @@
 import React, { useState, useEffect, useContext } from 'react'
 import LeafletMapView from './LeafletMapView'
 import { UserContext } from '../../context/userContext'
+import { getObservationsForUser } from '../../services/observationService'
+import { getEstablishmentByRef } from '../../services/establishmentService'
 
 const MapView = () => {
   const { currentUser } = useContext(UserContext)
   const [observations, setObservations] = useState([])
 
   useEffect(() => {
-    // Récupére les observations du localStorage
-    const localData = localStorage.getItem(`observations-${currentUser.uid}`)
-    if (localData) {
-      setObservations(JSON.parse(localData))
+    const fetchObservations = async () => {
+      if (currentUser?.uid) {
+        try {
+          const obs = await getObservationsForUser(currentUser.uid)
+          const enrichedObservations = await Promise.all(
+            obs.map(async (observation) => {
+              const establishmentDetails = await getEstablishmentByRef(
+                observation.establishmentRef,
+              )
+              return { ...observation, establishment: establishmentDetails }
+            }),
+          )
+          setObservations(enrichedObservations)
+        } catch (error) {
+          console.error('Failed to fetch observations:', error)
+        }
+      }
     }
+
+    fetchObservations()
   }, [currentUser])
 
-  // Crée une fonction pour extraire les données nécessaires des observations
-  const markersData = observations.map((obs) => ({
-    markerCoords: [
-      obs.establishment.coordinates.latitude,
-      obs.establishment.coordinates.longitude,
-    ],
-    companyName: obs.establishment.establishmentName,
-    imageURL: obs.photoURLs[0],
-  }))
+  const markersData = observations
+    .map((obs) => {
+      const coords = obs.establishment?.coordinates
+      return {
+        markerCoords: coords ? [coords.latitude, coords.longitude] : null,
+        companyName: obs.establishment?.establishmentName || 'Inconnu',
+        imageURL: obs.photoURLs && obs.photoURLs[0],
+      }
+    })
+    .filter((marker) => marker.markerCoords)
 
   return (
     <div className="map-view text-light">

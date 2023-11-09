@@ -6,6 +6,7 @@ import { Calendar, Clock } from 'react-bootstrap-icons'
 import styles from '../styles/ReportingsView.module.css'
 import { ChevronDown } from 'react-bootstrap-icons'
 import { motion } from 'framer-motion'
+import { getEstablishmentByRef } from '../../services/establishmentService'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
@@ -24,49 +25,49 @@ const ReportingsView = () => {
 
   useEffect(() => {
     const fetchObservations = async () => {
-      try {
-        // Vérifiez d'abord si les données sont stockées dans le localStorage
-        const localData = localStorage.getItem(
-          `observations-${currentUser.uid}`,
-        )
-        if (localData) {
-          // Parsez les données stockées et mettez à jour l'état
-          setObservations(JSON.parse(localData))
-        } else {
-          // Si les données ne sont pas dans le localStorage, faites l'appel réseau
+      if (currentUser?.uid) {
+        try {
           const obs = await getObservationsForUser(currentUser.uid)
-          setObservations(obs)
-          // Stockez les données dans le localStorage pour une utilisation ultérieure
-          localStorage.setItem(
-            `observations-${currentUser.uid}`,
-            JSON.stringify(obs),
+          const enrichedObservations = await Promise.all(
+            obs.map(async (observation) => {
+              const establishmentDetails = await getEstablishmentByRef(
+                observation.establishmentRef,
+              )
+              return { ...observation, establishment: establishmentDetails }
+            }),
           )
+          setObservations(enrichedObservations)
+        } catch (error) {
+          console.error('Failed to fetch observations:', error)
         }
-      } catch (error) {
-        console.error('Failed to fetch observations:', error)
       }
     }
 
-    if (currentUser?.uid) {
-      fetchObservations()
-    }
+    fetchObservations()
   }, [currentUser])
 
   // Group observations by establishment id
   const observationsByEstablishment = observations.reduce((acc, obs) => {
-    const key = obs.establishment.id
-    if (!acc[key]) {
-      acc[key] = {
-        name: obs.establishment.establishmentName,
-        address: `${obs.street.streetName}, ${obs.street.city}, ${obs.street.postalCode}`,
-        observations: [],
+    // S'assurer que les détails de l'établissement sont présents
+    if (obs.establishment) {
+      const key = obs.establishmentRef // Utiliser establishmentRef comme clé
+      if (!acc[key]) {
+        acc[key] = {
+          name: obs.establishment.establishmentName, // Utiliser directement establishmentName
+          address: obs.establishment.address, // Utiliser directement l'adresse complète
+          observations: [],
+        }
       }
+      acc[key].observations.push({
+        date: obs.date,
+        time: obs.time,
+        photoURLs: obs.photoURLs,
+        additionalNotes: obs.additionalNotes, // Si vous souhaitez inclure des notes supplémentaires
+      })
+    } else {
+      // Si les détails de l'établissement ne sont pas inclus dans l'observation, vous devrez gérer ce cas.
+      console.error('Establishment details are missing for observation', obs)
     }
-    acc[key].observations.push({
-      date: obs.date,
-      time: obs.time,
-      photoURLs: obs.photoURLs,
-    })
     return acc
   }, {})
 
