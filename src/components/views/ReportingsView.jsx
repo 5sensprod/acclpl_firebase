@@ -7,6 +7,7 @@ import styles from '../styles/ReportingsView.module.css'
 import { ChevronDown } from 'react-bootstrap-icons'
 import { motion } from 'framer-motion'
 import { getEstablishmentByRef } from '../../services/establishmentService'
+import AddObservationButton from './AddObservationButton'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
@@ -25,17 +26,34 @@ const ReportingsView = () => {
 
   useEffect(() => {
     const fetchObservations = async () => {
+      const localDataKey = `observations-${currentUser?.uid}`
+
       if (currentUser?.uid) {
         try {
-          const obs = await getObservationsForUser(currentUser.uid)
-          const enrichedObservations = await Promise.all(
-            obs.map(async (observation) => {
-              const establishmentDetails = await getEstablishmentByRef(
-                observation.establishmentRef,
-              )
-              return { ...observation, establishment: establishmentDetails }
-            }),
-          )
+          let enrichedObservations = localStorage.getItem(localDataKey)
+            ? JSON.parse(localStorage.getItem(localDataKey))
+            : null
+
+          if (!enrichedObservations) {
+            // Données non trouvées dans localStorage, les récupérer depuis Firestore
+            const obs = await getObservationsForUser(currentUser.uid)
+            enrichedObservations = await Promise.all(
+              obs.map(async (observation) => {
+                const establishmentDetails = await getEstablishmentByRef(
+                  observation.establishmentRef,
+                )
+                return { ...observation, establishment: establishmentDetails }
+              }),
+            )
+
+            // Stocker les données enrichies dans localStorage
+            localStorage.setItem(
+              localDataKey,
+              JSON.stringify(enrichedObservations),
+            )
+          }
+
+          // Mettre à jour l'état avec les observations enrichies
           setObservations(enrichedObservations)
         } catch (error) {
           console.error('Failed to fetch observations:', error)
@@ -96,6 +114,9 @@ const ReportingsView = () => {
       </Button>
     )
   }
+  const handleAddObservation = (establishmentRef) => {
+    // Logique pour ajouter une observation, par exemple ouvrir une modal
+  }
 
   return (
     <div className="reporting-view text-light">
@@ -143,6 +164,12 @@ const ReportingsView = () => {
                         ))}
                     </div>
                   ))}
+                  <div className="text-center">
+                    <AddObservationButton
+                      establishmentRef={key}
+                      onAdd={handleAddObservation}
+                    />
+                  </div>
                 </Card.Body>
               </Accordion.Collapse>
             </Card>
