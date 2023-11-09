@@ -1,89 +1,75 @@
 import { firestore } from '../firebaseConfig'
 import {
   collection,
+  addDoc,
   query,
   where,
   getDocs,
-  addDoc,
-  getDoc,
+  updateDoc,
+  arrayUnion,
   doc,
+  increment,
 } from 'firebase/firestore'
 import ObservationModel from '../models/ObservationModel'
 
-async function addObservation(observationData, establishmentRef) {
+async function addObservation(observationData) {
   const observation = new ObservationModel(observationData)
   observation.validate()
 
-  // Vérifiez si establishmentRef et establishmentRef.id sont bien définis
-  if (!establishmentRef || !establishmentRef.id) {
-    console.log('Invalid establishmentRef:', establishmentRef)
-    throw new Error('Invalid establishment reference')
-  }
-
   try {
     const docRef = await addDoc(
-      collection(
-        firestore,
-        'establishments',
-        establishmentRef.id,
-        'observations',
-      ),
+      collection(firestore, 'observations'),
       observation.toFirebaseObject(),
     )
-    return docRef.id
+
+    console.log('Observation ajoutée avec ID:', docRef.id)
+    // Après avoir créé l'observation, liez-la à l'établissement
+    const establishmentRef = doc(
+      firestore,
+      'establishments',
+      observationData.establishmentRef,
+    )
+    console.log(
+      'Mise à jour de l’établissement avec ID:',
+      observationData.establishmentRef,
+    )
+
+    await updateDoc(establishmentRef, {
+      observationRefs: arrayUnion(docRef.id),
+      observationCount: increment(1),
+    })
+    console.log('Établissement mis à jour avec succès.')
+
+    return docRef.id // Retourne l'ID de l'observation pour une utilisation ultérieure
   } catch (e) {
-    console.error('Error adding observation document: ', e)
+    console.error("Erreur lors de l'ajout du document d'observation :", e)
     throw e
   }
 }
 
 async function getObservationsForUser(userId) {
   try {
-    // Récupérer tous les établissements
-    const establishmentsRef = collection(firestore, 'establishments')
-    const establishmentsSnapshot = await getDocs(establishmentsRef)
+    const obsSnapshot = await getDocs(
+      query(
+        collection(firestore, 'observations'),
+        where('userID', '==', userId),
+      ),
+    )
 
-    // Pour chaque établissement, récupérer les observations pour l'utilisateur
     let observations = []
-    for (const establishmentDoc of establishmentsSnapshot.docs) {
-      const obsSnapshot = await getDocs(
-        query(
-          collection(
-            firestore,
-            'establishments',
-            establishmentDoc.id,
-            'observations',
-          ),
-          where('userID', '==', userId),
-        ),
-      )
-
-      // Pour chaque observation, ajouter les détails de l'établissement et de la rue
-      for (const obsDoc of obsSnapshot.docs) {
-        const establishmentData = establishmentDoc.data()
-        const streetRef = establishmentData.streetRef
-        const streetSnapshot = await getDoc(
-          doc(firestore, 'streets', streetRef),
-        )
-        const streetData = streetSnapshot.exists()
-          ? streetSnapshot.data()
-          : null
-
-        observations.push({
-          id: obsDoc.id,
-          ...obsDoc.data(),
-          establishment: {
-            id: establishmentDoc.id,
-            ...establishmentData,
-          },
-          street: streetData,
-        })
-      }
-    }
+    obsSnapshot.forEach((doc) => {
+      observations.push({
+        id: doc.id,
+        ...doc.data(),
+      })
+    })
 
     return observations
   } catch (error) {
-    console.error('Error fetching observations for user:', error)
+    console.error(
+      "Erreur lors de la récupération des observations pour l'utilisateur :",
+      error,
+    )
     throw error
   }
 }

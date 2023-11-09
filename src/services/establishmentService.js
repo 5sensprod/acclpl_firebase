@@ -29,29 +29,20 @@ async function addEstablishment(establishmentData) {
   establishment.validate()
 
   try {
-    const establishmentQueryConditions = [
+    const establishmentQuery = query(
+      collection(firestore, 'establishments'),
       where(
         'normalizedEstablishmentName',
         '==',
         establishment.normalizedEstablishmentName,
       ),
-      where('streetRef', '==', establishment.streetRef),
-    ]
-
-    if (establishment.streetNumber) {
-      establishmentQueryConditions.push(
-        where('streetNumber', '==', establishment.streetNumber),
-      )
-    }
-
-    const establishmentQuery = query(
-      collection(firestore, 'establishments'),
-      ...establishmentQueryConditions,
+      where('address', '==', establishment.address),
     )
 
     const querySnapshot = await getDocs(establishmentQuery)
     if (!querySnapshot.empty) {
-      throw new Error('Establishment already exists')
+      // Un établissement avec le même nom normalisé et la même adresse existe déjà.
+      throw new Error('Establishment already exists at this address')
     }
 
     const docRef = await addDoc(
@@ -59,11 +50,9 @@ async function addEstablishment(establishmentData) {
       establishment.toFirebaseObject(),
     )
     console.log('Establishment document written with ID: ', docRef.id)
-    return { id: docRef.id }
+    return { id: docRef.id } // Retourne l'objet avec l'ID pour une utilisation ultérieure
   } catch (e) {
-    if (e.message !== 'Establishment already exists') {
-      console.error('Error adding establishment document: ', e)
-    }
+    console.error('Error adding establishment document: ', e)
     throw e
   }
 }

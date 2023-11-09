@@ -1,9 +1,16 @@
 class UserModel {
-  constructor({ userID, displayName, email, joinedDate }) {
+  constructor({
+    userID,
+    displayName,
+    email,
+    joinedDate,
+    observationRefs = [],
+  }) {
     this.userID = userID
     this.displayName = displayName
     this.email = email
     this.joinedDate = joinedDate
+    this.observationRefs = observationRefs
   }
 
   validate() {
@@ -19,6 +26,10 @@ class UserModel {
     if (!this.joinedDate || isNaN(new Date(this.joinedDate).getTime())) {
       throw new Error('Valid joined date is required')
     }
+    // Optionally validate the observationRefs array
+    if (!Array.isArray(this.observationRefs)) {
+      throw new Error('Observation references should be an array')
+    }
   }
 
   toFirebaseObject() {
@@ -27,6 +38,7 @@ class UserModel {
       displayName: this.displayName,
       email: this.email,
       joinedDate: this.joinedDate,
+      observationRefs: this.observationRefs,
     }
   }
 }

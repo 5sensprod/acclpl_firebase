@@ -1,24 +1,30 @@
-export const handleYesClick = (
-  dispatch,
-  coordinates,
-  fullAddress,
-  setModalConfig,
-  companyName,
-  photoURL,
-) => {
-  const invertedCoordinates = [coordinates[1], coordinates[0]]
+export const handleYesClick = (dispatch, details, setModalConfig) => {
+  const invertedCoordinates = [
+    details.coordinates.latitude,
+    details.coordinates.longitude,
+  ]
+
   dispatch({
     type: 'UPDATE_FORM_DATA',
     payload: {
-      companyAddress: fullAddress,
+      companyAddress: details.address,
       companyCoordinates: invertedCoordinates,
-      companyName: companyName,
-      photoURLs: [photoURL],
+      companyName: details.establishmentName,
+      photoURLs: [details.photoURL],
       isDefaultPhoto: false,
     },
   })
-  dispatch({ type: 'SET_STEP', payload: 3 })
-  dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
+
+  dispatch({
+    type: 'SET_CURRENT_ESTABLISHMENT_ID',
+    payload: details.establishmentId,
+  })
+
+  dispatch({
+    type: 'SET_STEP',
+    payload: 3,
+  })
+
   setModalConfig((prevConfig) => ({
     ...prevConfig,
     isVisible: false,
@@ -27,11 +33,8 @@ export const handleYesClick = (
 
 function getModalButtonsConfig(
   dispatch,
-  coordinates,
-  fullAddress,
+  details,
   setModalConfig,
-  companyName,
-  photoURLs,
   isMultipleOccurrences,
 ) {
   // Définir le texte du bouton "Non" en fonction du nombre d'occurrences
@@ -58,15 +61,7 @@ function getModalButtonsConfig(
   if (!isMultipleOccurrences) {
     buttons.push({
       text: 'Oui',
-      onClick: () =>
-        handleYesClick(
-          dispatch,
-          coordinates,
-          fullAddress,
-          setModalConfig,
-          companyName,
-          photoURLs,
-        ),
+      onClick: () => handleYesClick(dispatch, details, setModalConfig),
     })
   }
 

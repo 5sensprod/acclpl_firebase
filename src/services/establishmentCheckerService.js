@@ -6,8 +6,6 @@ import {
   collection,
   doc,
   getDoc,
-  limit,
-  orderBy,
 } from 'firebase/firestore'
 import { ratio } from 'fuzzball'
 
@@ -32,47 +30,43 @@ async function findClosestEstablishmentMatches(normalizedEstablishmentName) {
   return matches.length ? matches : null
 }
 
-async function getObservationDetails(establishmentId) {
-  const observationsQuery = query(
-    collection(firestore, 'establishments', establishmentId, 'observations'),
-    orderBy('date', 'desc'),
-    limit(1),
-  )
-  const observationsSnapshot = await getDocs(observationsQuery)
-  return observationsSnapshot.empty ||
-    !observationsSnapshot.docs[0].data().photoURLs?.length
-    ? null
-    : observationsSnapshot.docs[0].data().photoURLs[0]
-}
-
-async function getStreetDetails(streetRef) {
-  const streetId = typeof streetRef === 'string' ? streetRef : streetRef.id
-  const streetDocRef = doc(firestore, 'streets', streetId)
-  const streetDoc = await getDoc(streetDocRef)
-  return streetDoc.data()
-}
-
 async function buildEstablishmentDetails(establishmentDoc) {
   const establishmentId = establishmentDoc.id
   const establishmentData = establishmentDoc.data()
-  const photoURL = await getObservationDetails(establishmentId)
-  const streetData = await getStreetDetails(establishmentData.streetRef)
+
+  // Récupérer la première URL de photo de la liste des références d'observations si disponible
+  let photoURL = ''
+  if (
+    establishmentData.observationRefs &&
+    establishmentData.observationRefs.length > 0
+  ) {
+    const firstObservationRef = establishmentData.observationRefs[0]
+    const observationDoc = await getDoc(
+      doc(firestore, 'observations', firstObservationRef),
+    )
+    if (observationDoc.exists() && observationDoc.data().photoURLs) {
+      photoURL = observationDoc.data().photoURLs[0] // Prendre la première photo de la liste
+    }
+  }
+
+  console.log('Détails de l’établissement construits:', {
+    establishmentId,
+    establishmentName: establishmentData.establishmentName,
+    address: establishmentData.address,
+    coordinates: establishmentData.coordinates,
+    observationCount: establishmentData.observationCount,
+    photoURL,
+  })
 
   return {
     establishmentId,
     establishmentName: establishmentData.establishmentName,
-    streetName: streetData.streetName,
-    city: streetData.city,
-    postalCode: streetData.postalCode,
-    streetNumber: establishmentData.streetNumber,
-    photoURL,
-    coordinates: [
-      establishmentData.coordinates.longitude,
-      establishmentData.coordinates.latitude,
-    ],
+    address: establishmentData.address,
+    coordinates: establishmentData.coordinates, // Inclure les coordonnées directement
+    observationCount: establishmentData.observationCount,
+    photoURL, // Inclure l'URL de la photo récupérée
   }
 }
-
 async function checkDuplicateEstablishment(
   normalizedEstablishmentName,
   dispatch,
@@ -142,12 +136,17 @@ async function checkDuplicateEstablishment(
   dispatch({ type: 'SET_ESTABLISHMENT_EXISTS', payload: true })
 
   if (singleDetail) {
+    console.log('Détail unique d’établissement trouvé:', singleDetail)
     dispatch({
       type: 'SET_CURRENT_ESTABLISHMENT_ID',
       payload: singleDetail.establishmentId,
     })
     return { found: true, details: singleDetail, isApproximateMatch }
   } else {
+    console.log(
+      'Détails multiples d’établissements trouvés:',
+      establishmentsDetails,
+    )
     dispatch({
       type: 'SET_CURRENT_ESTABLISHMENTS_DATA',
       payload: establishmentsDetails,

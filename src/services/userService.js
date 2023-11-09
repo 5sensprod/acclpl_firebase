@@ -7,6 +7,7 @@ import {
   getDocs,
   doc,
   updateDoc,
+  arrayUnion,
 } from 'firebase/firestore'
 import UserModel from '../models/UserModel'
 
@@ -55,4 +56,18 @@ async function updateUserDisplayName(docId, newDisplayName) {
   }
 }
 
-export { addUser, getUser, updateUserDisplayName }
+// Fonction pour ajouter une référence d'observation à un utilisateur
+async function addObservationRefToUser(docId, observationRef) {
+  const userRef = doc(firestore, 'users', docId)
+  try {
+    await updateDoc(userRef, {
+      // Utilisez arrayUnion pour ajouter la référence sans supprimer les existantes
+      observationRefs: arrayUnion(observationRef),
+    })
+  } catch (e) {
+    console.error("Erreur lors de l'ajout de la référence d'observation: ", e)
+    throw e
+  }
+}
+
+export { addUser, getUser, updateUserDisplayName, addObservationRefToUser }

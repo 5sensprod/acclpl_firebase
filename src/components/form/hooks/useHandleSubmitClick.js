@@ -3,9 +3,9 @@ import { useFormWizardState } from '../context/FormWizardContext'
 import { UserContext } from '../../../context/userContext'
 import { uploadImage } from '../../../services/uploadImageWizard'
 import { generateUniqueFileName } from '../../../utils/filenameUtils'
-import { submitData } from '../wizard/wizardHandlers'
 import { compressImage } from '../../../utils/imageCompression'
 import { addObservation } from '../../../services/observationService'
+import { addEstablishment } from '../../../services/establishmentService'
 
 const useHandleSubmitClick = (setIsLoading) => {
   const { state } = useFormWizardState()
@@ -20,27 +20,35 @@ const useHandleSubmitClick = (setIsLoading) => {
 
     try {
       if (state.formData.photoBlob) {
-        // First, compress the image
         const compressedImage = await compressImage(state.formData.photoBlob)
-
         const uniqueFileName = generateUniqueFileName('uploaded_image')
         downloadURL = await uploadImage(compressedImage, uniqueFileName)
       }
 
+      // Préparer les données de l'observation avec les données de l'utilisateur et de l'image
       const observationData = {
-        ...state.formData,
-        userID: currentUser?.uid || null,
+        userID: currentUser?.uid,
         photoURLs: downloadURL ? [downloadURL] : state.formData.photoURLs,
         date: state.formData.dateOfObservation,
         time: state.formData.timeOfObservation,
+        additionalNotes: state.formData.additionalNotes,
       }
 
-      if (state.establishmentExists) {
-        await addObservation(observationData, {
-          id: state.formData.currentEstablishmentId,
+      // Si l'établissement n'existe pas, créer un nouvel établissement et ensuite ajouter l'observation.
+      if (!state.establishmentExists) {
+        // Créer un nouvel établissement puis ajouter l'observation en utilisant son ID.
+        const newEstablishmentRef = await addEstablishment({
+          establishmentName: state.formData.companyName,
+          address: state.formData.companyAddress,
+          coordinates: state.formData.companyCoordinates,
         })
+
+        observationData.establishmentRef = newEstablishmentRef.id
+        await addObservation(observationData)
       } else {
-        await submitData(observationData, currentUser)
+        // L'établissement existe, ajouter l'observation avec l'ID de l'établissement existant.
+        observationData.establishmentRef = state.formData.currentEstablishmentId
+        await addObservation(observationData)
       }
 
       setShowModal(true)
