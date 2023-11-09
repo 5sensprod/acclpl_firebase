@@ -26,18 +26,19 @@ const ReportingsView = () => {
 
   useEffect(() => {
     const fetchObservations = async () => {
-      const localDataKey = `observations-${currentUser?.uid}`
+      const localDataKey = `establishments-${currentUser?.uid}`
 
       if (currentUser?.uid) {
         try {
-          let enrichedObservations = localStorage.getItem(localDataKey)
-            ? JSON.parse(localStorage.getItem(localDataKey))
-            : null
-
-          if (!enrichedObservations) {
-            // Données non trouvées dans localStorage, les récupérer depuis Firestore
+          // Vérifiez si les données sont déjà dans localStorage
+          const localData = localStorage.getItem(localDataKey)
+          if (localData) {
+            // Si oui, utilisez ces données sans faire d'appel réseau
+            setObservations(JSON.parse(localData))
+          } else {
+            // Sinon, récupérez les données de Firestore
             const obs = await getObservationsForUser(currentUser.uid)
-            enrichedObservations = await Promise.all(
+            const enrichedObservations = await Promise.all(
               obs.map(async (observation) => {
                 const establishmentDetails = await getEstablishmentByRef(
                   observation.establishmentRef,
@@ -46,21 +47,20 @@ const ReportingsView = () => {
               }),
             )
 
-            // Stocker les données enrichies dans localStorage
+            // Stockez les observations enrichies dans localStorage
             localStorage.setItem(
               localDataKey,
               JSON.stringify(enrichedObservations),
             )
+            setObservations(enrichedObservations)
           }
-
-          // Mettre à jour l'état avec les observations enrichies
-          setObservations(enrichedObservations)
         } catch (error) {
           console.error('Failed to fetch observations:', error)
         }
       }
     }
 
+    // Appeler fetchObservations quand l'utilisateur change
     fetchObservations()
   }, [currentUser])
 
