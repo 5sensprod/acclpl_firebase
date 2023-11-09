@@ -11,6 +11,7 @@ import {
   increment,
 } from 'firebase/firestore'
 import ObservationModel from '../models/ObservationModel'
+import { addObservationRefToUser } from './userService'
 
 async function addObservation(observationData) {
   const observation = new ObservationModel(observationData)
@@ -21,9 +22,8 @@ async function addObservation(observationData) {
       collection(firestore, 'observations'),
       observation.toFirebaseObject(),
     )
-
+    await addObservationRefToUser(observationData.userID, docRef.id)
     console.log('Observation ajoutée avec ID:', docRef.id)
-    // Après avoir créé l'observation, liez-la à l'établissement
     const establishmentRef = doc(
       firestore,
       'establishments',
@@ -40,7 +40,7 @@ async function addObservation(observationData) {
     })
     console.log('Établissement mis à jour avec succès.')
 
-    return docRef.id // Retourne l'ID de l'observation pour une utilisation ultérieure
+    return docRef.id
   } catch (e) {
     console.error("Erreur lors de l'ajout du document d'observation :", e)
     throw e

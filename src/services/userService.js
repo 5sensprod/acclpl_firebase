@@ -1,14 +1,5 @@
 import { firestore } from '../firebaseConfig'
-import {
-  collection,
-  query,
-  addDoc,
-  where,
-  getDocs,
-  doc,
-  updateDoc,
-  arrayUnion,
-} from 'firebase/firestore'
+import { setDoc, getDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore'
 import UserModel from '../models/UserModel'
 
 // Fonction pour ajouter un nouvel utilisateur
@@ -17,35 +8,33 @@ async function addUser(userData) {
   user.validate()
 
   try {
-    const docRef = await addDoc(
-      collection(firestore, 'users'),
-      user.toFirebaseObject(),
-    )
-    return docRef.id
+    const userRef = doc(firestore, 'users', user.userID)
+    await setDoc(userRef, user.toFirebaseObject())
+    return user.userID
   } catch (e) {
     console.error('Error adding user document: ', e)
     throw e
   }
 }
 
+// Fonction pour récupérer les données d'un utilisateur par userID
 async function getUser(userID) {
-  const usersRef = collection(firestore, 'users')
-  const q = query(usersRef, where('userID', '==', userID))
-  const querySnapshot = await getDocs(q)
+  const userRef = doc(firestore, 'users', userID)
+  const userSnap = await getDoc(userRef)
 
-  if (!querySnapshot.empty) {
-    const userDoc = querySnapshot.docs[0]
+  if (userSnap.exists()) {
     return {
-      ...userDoc.data(),
-      docId: userDoc.id,
+      ...userSnap.data(),
+      docId: userSnap.id,
     }
   } else {
     throw new Error('No user found with userID: ' + userID)
   }
 }
 
-async function updateUserDisplayName(docId, newDisplayName) {
-  const userRef = doc(firestore, 'users', docId)
+// Fonction pour mettre à jour le displayName d'un utilisateur
+async function updateUserDisplayName(userID, newDisplayName) {
+  const userRef = doc(firestore, 'users', userID)
   try {
     await updateDoc(userRef, {
       displayName: newDisplayName,
@@ -57,11 +46,10 @@ async function updateUserDisplayName(docId, newDisplayName) {
 }
 
 // Fonction pour ajouter une référence d'observation à un utilisateur
-async function addObservationRefToUser(docId, observationRef) {
-  const userRef = doc(firestore, 'users', docId)
+async function addObservationRefToUser(userID, observationRef) {
+  const userRef = doc(firestore, 'users', userID)
   try {
     await updateDoc(userRef, {
-      // Utilisez arrayUnion pour ajouter la référence sans supprimer les existantes
       observationRefs: arrayUnion(observationRef),
     })
   } catch (e) {
@@ -69,5 +57,4 @@ async function addObservationRefToUser(docId, observationRef) {
     throw e
   }
 }
-
 export { addUser, getUser, updateUserDisplayName, addObservationRefToUser }

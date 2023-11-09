@@ -44,15 +44,17 @@ const ProfileView = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    if (!userProfile?.docId || newDisplayName === userProfile.displayName) {
+    if (!userProfile?.userID || newDisplayName === userProfile.displayName) {
       setEditMode(false)
       return
     }
 
     try {
-      await updateUserDisplayName(userProfile.docId, newDisplayName)
+      await updateUserDisplayName(userProfile.userID, newDisplayName)
       setUserProfile({ ...userProfile, displayName: newDisplayName })
-    } catch (error) {}
+    } catch (error) {
+      // Gérer l'erreur
+    }
     setEditMode(false)
   }
 
@@ -105,11 +107,13 @@ const ProfileView = () => {
 
     const handleLocalSubmit = async (event) => {
       event.preventDefault()
-      if (userProfile?.docId && localDisplayName !== userProfile.displayName) {
+      if (userProfile?.userID && localDisplayName !== userProfile.displayName) {
         try {
-          await updateUserDisplayName(userProfile.docId, localDisplayName)
+          await updateUserDisplayName(userProfile.userID, localDisplayName)
           setUserProfile({ ...userProfile, displayName: localDisplayName })
-        } catch (error) {}
+        } catch (error) {
+          // Gérer l'erreur
+        }
       }
       setEditMode(false)
     }
