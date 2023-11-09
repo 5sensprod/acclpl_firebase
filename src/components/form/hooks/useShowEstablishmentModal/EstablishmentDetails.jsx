@@ -2,17 +2,13 @@ import React from 'react'
 
 const EstablishmentDetails = ({
   establishmentName,
-  streetName,
-  city,
-  postalCode,
-  streetNumber,
+  address, // Utilisation de l'adresse complète au lieu des champs séparés
   photoURL,
   onClick,
   isMultipleOccurrences,
 }) => {
-  const fullAddress = streetNumber
-    ? `${streetNumber} ${streetName}, ${postalCode} ${city}`
-    : `${streetName}, ${postalCode} ${city}`
+  // L'adresse est déjà complète, donc pas besoin de la construire
+  const fullAddress = address
 
   const cursorStyle = isMultipleOccurrences ? { cursor: 'pointer' } : {}
 
@@ -21,8 +17,7 @@ const EstablishmentDetails = ({
       <div className="bg-dark text-light d-flex justify-content-around align-items-center p-3 mb-3 rounded">
         <div>
           <h3 className="mb-2">{establishmentName}</h3>
-          <p className="mb-0">{fullAddress.split(',')[0]}</p>
-          <p className="mb-2">{city}</p>
+          <p className="mb-0">{fullAddress}</p>
         </div>
         <div>
           <img

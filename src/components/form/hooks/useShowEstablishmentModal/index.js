@@ -2,76 +2,67 @@ import { useModal } from '../../context/ModalContext'
 import EstablishmentDisplay from './EstablishmentDisplay'
 import getModalButtonsConfig from './getModalButtonsConfig'
 
-// useShowEstablishmentModal/index.js
-
 const useShowEstablishmentModal = (setIsLoading, dispatch) => {
   const { setModalConfig } = useModal()
 
   const showEstablishmentModal = (duplicateCheckResult) => {
-    if (!duplicateCheckResult) {
-      console.error('Aucun résultat de vérification des doublons fourni.')
-      setIsLoading(false)
-      return
-    }
-
+    console.log(
+      'Coordonnées reçues dans la modal:',
+      duplicateCheckResult.details.coordinates,
+    )
     const {
       multiple: isMultipleOccurrences,
       details,
       isApproximateMatch,
     } = duplicateCheckResult
+    const companyName = details.establishmentName
+    const photoURLs = details.photoURL
 
-    // Assurez-vous que les détails contiennent toutes les informations nécessaires
-    if (
-      !details ||
-      !details.coordinates ||
-      !details.address ||
-      !details.photoURL
-    ) {
-      console.error(
-        'Les détails de l’établissement ne sont pas complets:',
-        details,
-      )
-      setIsLoading(false)
-      return
-    }
+    // Créer le message en fonction de isApproximateMatch
+    const messageBody = isApproximateMatch
+      ? 'Les informations semblent correspondre à un établissement existant, sélectionnez celui en rapport avec votre signalement.'
+      : "Sélectionnez l'établissement en rapport avec votre signalement."
 
+    // Inclure messageBody dans modalBodyContent
     const modalBodyContent = (
       <>
-        <p>
-          {isApproximateMatch
-            ? 'Les informations semblent correspondre à un établissement existant. Sélectionnez celui en rapport avec votre signalement.'
-            : "Sélectionnez l'établissement en rapport avec votre signalement."}
-        </p>
+        <p>{messageBody}</p>
         <EstablishmentDisplay
-          establishmentName={details.establishmentName}
-          address={details.address}
-          coordinates={details.coordinates}
-          photoURL={details.photoURL}
+          duplicateCheckResult={duplicateCheckResult}
           onSelect={(selectedEstablishmentId) => {
             dispatch({
               type: 'SET_CURRENT_ESTABLISHMENT_ID',
               payload: selectedEstablishmentId,
             })
-            // Autres actions si nécessaire...
           }}
+          dispatch={dispatch}
+          setModalConfig={setModalConfig}
         />
       </>
     )
 
-    let title = isApproximateMatch
-      ? 'Etablissement probablement similaire trouvé'
-      : 'Etablissement existant'
+    let title = 'Etablissement existant'
+    if (isMultipleOccurrences) {
+      title = 'Plusieurs établissements trouvés'
+    } else if (isApproximateMatch) {
+      title = 'Etablissement probablement similaire trouvé'
+    }
 
     const buttonsConfig = getModalButtonsConfig(
       dispatch,
-      details, // Passer l'objet complet ici
+      details.coordinates,
+      `${details.streetNumber || ''} ${details.streetName}, ${
+        details.postalCode
+      } ${details.city}`,
       setModalConfig,
-      isMultipleOccurrences,
+      companyName,
+      photoURLs,
+      duplicateCheckResult.multiple,
     )
 
     setModalConfig({
       isVisible: true,
-      title,
+      title: title,
       body: modalBodyContent,
       buttons: buttonsConfig,
     })

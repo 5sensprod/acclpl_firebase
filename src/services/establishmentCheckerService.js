@@ -9,6 +9,23 @@ import {
 } from 'firebase/firestore'
 import { ratio } from 'fuzzball'
 
+async function getObservationDetails(establishmentDoc) {
+  const observationRefs = establishmentDoc.data().observationRefs
+  if (observationRefs.length === 0) {
+    return null // Si aucune observation n'est associée
+  }
+
+  // Récupérer le dernier ID d'observation dans le tableau
+  const lastObservationRef = observationRefs[observationRefs.length - 1]
+
+  // Récupérer le document d'observation
+  const observationDocRef = doc(firestore, 'observations', lastObservationRef)
+  const observationDoc = await getDoc(observationDocRef)
+
+  // Retourner les URLs des photos si disponibles
+  return observationDoc.exists() ? observationDoc.data().photoURLs : null
+}
+
 async function findClosestEstablishmentMatches(normalizedEstablishmentName) {
   const establishmentsSnapshot = await getDocs(
     collection(firestore, 'establishments'),
@@ -31,40 +48,15 @@ async function findClosestEstablishmentMatches(normalizedEstablishmentName) {
 }
 
 async function buildEstablishmentDetails(establishmentDoc) {
-  const establishmentId = establishmentDoc.id
   const establishmentData = establishmentDoc.data()
-
-  // Récupérer la première URL de photo de la liste des références d'observations si disponible
-  let photoURL = ''
-  if (
-    establishmentData.observationRefs &&
-    establishmentData.observationRefs.length > 0
-  ) {
-    const firstObservationRef = establishmentData.observationRefs[0]
-    const observationDoc = await getDoc(
-      doc(firestore, 'observations', firstObservationRef),
-    )
-    if (observationDoc.exists() && observationDoc.data().photoURLs) {
-      photoURL = observationDoc.data().photoURLs[0] // Prendre la première photo de la liste
-    }
-  }
-
-  console.log('Détails de l’établissement construits:', {
-    establishmentId,
-    establishmentName: establishmentData.establishmentName,
-    address: establishmentData.address,
-    coordinates: establishmentData.coordinates,
-    observationCount: establishmentData.observationCount,
-    photoURL,
-  })
+  const photoURLs = await getObservationDetails(establishmentDoc)
 
   return {
-    establishmentId,
+    establishmentId: establishmentDoc.id,
     establishmentName: establishmentData.establishmentName,
-    address: establishmentData.address,
-    coordinates: establishmentData.coordinates, // Inclure les coordonnées directement
-    observationCount: establishmentData.observationCount,
-    photoURL, // Inclure l'URL de la photo récupérée
+    address: establishmentData.address, // adresse complète
+    photoURL: photoURLs ? photoURLs[0] : null, // première URL de photo si disponible
+    coordinates: establishmentData.coordinates, // déjà un objet {latitude, longitude}
   }
 }
 async function checkDuplicateEstablishment(

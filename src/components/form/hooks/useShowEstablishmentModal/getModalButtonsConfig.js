@@ -1,30 +1,26 @@
-export const handleYesClick = (dispatch, details, setModalConfig) => {
-  const invertedCoordinates = [
-    details.coordinates.latitude,
-    details.coordinates.longitude,
-  ]
-
+export const handleYesClick = (
+  dispatch,
+  coordinates,
+  fullAddress,
+  setModalConfig,
+  companyName,
+  photoURL,
+) => {
+  console.log('Coordonnées avant inversion dans handleYesClick:', coordinates)
+  const invertedCoordinates = [coordinates.latitude, coordinates.longitude]
+  console.log('Coordonnées après inversion:', invertedCoordinates) // Ajouter ce log
   dispatch({
     type: 'UPDATE_FORM_DATA',
     payload: {
-      companyAddress: details.address,
+      companyAddress: fullAddress,
       companyCoordinates: invertedCoordinates,
-      companyName: details.establishmentName,
-      photoURLs: [details.photoURL],
+      companyName: companyName,
+      photoURLs: [photoURL],
       isDefaultPhoto: false,
     },
   })
-
-  dispatch({
-    type: 'SET_CURRENT_ESTABLISHMENT_ID',
-    payload: details.establishmentId,
-  })
-
-  dispatch({
-    type: 'SET_STEP',
-    payload: 3,
-  })
-
+  dispatch({ type: 'SET_STEP', payload: 3 })
+  dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
   setModalConfig((prevConfig) => ({
     ...prevConfig,
     isVisible: false,
@@ -33,8 +29,11 @@ export const handleYesClick = (dispatch, details, setModalConfig) => {
 
 function getModalButtonsConfig(
   dispatch,
-  details,
+  coordinates,
+  fullAddress,
   setModalConfig,
+  companyName,
+  photoURLs,
   isMultipleOccurrences,
 ) {
   // Définir le texte du bouton "Non" en fonction du nombre d'occurrences
@@ -61,7 +60,15 @@ function getModalButtonsConfig(
   if (!isMultipleOccurrences) {
     buttons.push({
       text: 'Oui',
-      onClick: () => handleYesClick(dispatch, details, setModalConfig),
+      onClick: () =>
+        handleYesClick(
+          dispatch,
+          coordinates,
+          fullAddress,
+          setModalConfig,
+          companyName,
+          photoURLs,
+        ),
     })
   }
 

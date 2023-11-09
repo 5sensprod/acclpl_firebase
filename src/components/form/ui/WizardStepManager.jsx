@@ -48,13 +48,11 @@ const WizardStepManager = () => {
     ) {
       const formattedName = formatCompanyName(state.formData.companyName)
       const normalized = normalizedCompanyName(formattedName)
-      const establishmentAddress = state.formData.companyAddress
 
       dispatch({
         type: 'FORMAT_COMPANY',
         payload: {
           companyName: formattedName,
-          establishmentAddress,
           normalizedCompanyName: normalized,
         },
       })
