@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context/userContext'
-import { getObservationsForUser } from '../../services/observationService'
-import { getEstablishmentByRef } from '../../services/establishmentService'
+// import { getObservationsForUser } from '../../services/observationService'
+// import { getEstablishmentByRef } from '../../services/establishmentService'
 import defaultPhoto from '../../assets/images/defaultPhoto.jpg'
 import { Accordion, Card, Button, useAccordionButton } from 'react-bootstrap'
 import { Calendar, Clock, ChevronDown } from 'react-bootstrap-icons'
@@ -9,6 +9,7 @@ import styles from '../styles/ReportingsView.module.css'
 import { motion } from 'framer-motion'
 import AddObservationButton from './AddObservationButton'
 import { formatDate } from '../../utils/dateUtils'
+import db from '../../db/db'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
@@ -16,48 +17,40 @@ const ReportingsView = () => {
   const [activeKey, setActiveKey] = useState(null)
 
   useEffect(() => {
-    const fetchObservations = async () => {
-      const localDataKey = `establishments-${currentUser?.uid}`
-
+    const fetchObservationsFromIndexedDB = async () => {
       if (currentUser?.uid) {
         try {
-          // Vérifiez si les données sont déjà dans localStorage
-          const localData = localStorage.getItem(localDataKey)
-          if (localData) {
-            // Si oui, utilisez ces données sans faire d'appel réseau
-            setObservations(JSON.parse(localData))
-          } else {
-            // Sinon, récupérez les données de Firestore
-            const obs = await getObservationsForUser(currentUser.uid)
-            const enrichedObservations = await Promise.all(
-              obs.map(async (observation) => {
-                const establishmentDetails = await getEstablishmentByRef(
-                  observation.establishmentRef,
-                )
-                return {
-                  ...observation,
-                  establishment: establishmentDetails,
-                  photoURLs:
-                    observation.photoURLs && observation.photoURLs.length > 0
-                      ? observation.photoURLs
-                      : [defaultPhoto],
-                }
-              }),
-            )
+          // Récupérer les observations de l'utilisateur depuis IndexedDB
+          const userObservations = await db.observations
+            .where('userID')
+            .equals(currentUser.uid)
+            .toArray()
 
-            // Stockez les observations enrichies dans localStorage
-            localStorage.setItem(
-              localDataKey,
-              JSON.stringify(enrichedObservations),
-            )
-            setObservations(enrichedObservations)
-          }
+          // Enrichir les observations avec les détails de l'établissement
+          const enrichedObservations = await Promise.all(
+            userObservations.map(async (observation) => {
+              const establishment = await db.establishments.get(
+                observation.establishmentRef,
+              )
+              return {
+                ...observation,
+                establishment: establishment || {},
+                photoURLs:
+                  observation.photoURLs && observation.photoURLs.length > 0
+                    ? observation.photoURLs
+                    : [defaultPhoto],
+              }
+            }),
+          )
+
+          setObservations(enrichedObservations)
         } catch (error) {
-          console.error('Failed to fetch observations:', error)
+          console.error('Failed to fetch observations from IndexedDB:', error)
         }
       }
     }
-    fetchObservations()
+
+    fetchObservationsFromIndexedDB()
   }, [currentUser])
 
   // Group observations by establishment id

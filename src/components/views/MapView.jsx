@@ -1,35 +1,46 @@
 import React, { useState, useEffect, useContext } from 'react'
 import LeafletMapView from './LeafletMapView'
 import { UserContext } from '../../context/userContext'
-import { getObservationsForUser } from '../../services/observationService'
-import { getEstablishmentByRef } from '../../services/establishmentService'
+// import { getObservationsForUser } from '../../services/observationService'
+// import { getEstablishmentByRef } from '../../services/establishmentService'
 import defaultPhoto from '../../assets/images/defaultPhoto.jpg'
+import db from '../../db/db'
 
 const MapView = () => {
   const { currentUser } = useContext(UserContext)
   const [observations, setObservations] = useState([])
 
   useEffect(() => {
-    const fetchObservations = async () => {
+    const fetchObservationsFromIndexedDB = async () => {
       if (currentUser?.uid) {
         try {
-          const obs = await getObservationsForUser(currentUser.uid)
+          // Récupérer les observations de l'utilisateur depuis IndexedDB
+          const userObservations = await db.observations
+            .where('userID') // Assure-toi que la casse est correcte, basée sur ton schéma IndexedDB
+            .equals(currentUser.uid)
+            .toArray()
+
+          // Enrichir les observations avec les détails des établissements
           const enrichedObservations = await Promise.all(
-            obs.map(async (observation) => {
-              const establishmentDetails = await getEstablishmentByRef(
+            userObservations.map(async (observation) => {
+              const establishment = await db.establishments.get(
                 observation.establishmentRef,
               )
-              return { ...observation, establishment: establishmentDetails }
+              return {
+                ...observation,
+                establishment: establishment || {},
+              }
             }),
           )
+
           setObservations(enrichedObservations)
         } catch (error) {
-          console.error('Failed to fetch observations:', error)
+          console.error('Failed to fetch observations from IndexedDB:', error)
         }
       }
     }
 
-    fetchObservations()
+    fetchObservationsFromIndexedDB()
   }, [currentUser])
 
   const markersData = observations

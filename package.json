@@ -16,6 +16,7 @@
     "axios": "^1.5.1",
     "bootstrap": "^5.3.2",
     "browser-image-compression": "^2.0.2",
+    "dexie": "^3.2.4",
     "firebase": "^10.5.0",
     "framer-motion": "^10.16.4",
     "fuzzball": "^2.1.2",
