@@ -25,14 +25,12 @@ export function UserContextProvider(props) {
   const signUp = async (email, pwd, displayName) => {
     const response = await createUserWithEmailAndPassword(auth, email, pwd)
     const user = response.user
-    // Créez l'objet utilisateur pour Firestore en utilisant les informations de l'utilisateur Firebase Auth
     const newUser = {
-      userID: user.uid, // L'UID fourni par Firebase Auth
-      displayName, // Le displayName fourni dans le formulaire d'inscription
-      email: user.email, // L'email de l'utilisateur
-      joinedDate: new Date().toISOString(), // La date actuelle formatée en ISO
+      userID: user.uid,
+      displayName,
+      email: user.email,
+      joinedDate: new Date().toISOString(),
     }
-    // Utilisez addUser pour créer le document utilisateur dans Firestore
     await addUser(newUser)
     return user
   }
@@ -49,15 +47,15 @@ export function UserContextProvider(props) {
         // Si getUser échoue, créez un nouvel utilisateur dans Firestore
         const newUser = {
           userID: user.uid,
-          displayName: user.displayName || 'Nouvel Utilisateur', // Utilisez le nom fourni ou un nom par défaut
+          displayName: user.displayName || 'Nouvel Utilisateur',
           email: user.email,
           joinedDate: new Date().toISOString(),
         }
-        await addUser(newUser) // Créez l'utilisateur dans Firestore
-        return newUser // Retourne le nouvel utilisateur pour mise à jour de l'état
+        await addUser(newUser)
+        return newUser
       })
 
-      setUserProfile(userProfile) // Mettez à jour l'état du profil utilisateur
+      setUserProfile(userProfile)
       return user
     } catch (error) {
       console.error('Erreur lors de la connexion avec Google', error)
@@ -79,11 +77,11 @@ export function UserContextProvider(props) {
           email: user.email,
           joinedDate: new Date().toISOString(),
         }
-        await addUser(newUser) // Créez l'utilisateur dans Firestore
-        return newUser // Retourne le nouvel utilisateur pour mise à jour de l'état
+        await addUser(newUser)
+        return newUser
       })
 
-      setUserProfile(userProfile) // Mettez à jour l'état du profil utilisateur
+      setUserProfile(userProfile)
       return user
     } catch (error) {
       console.error('Erreur lors de la connexion avec Facebook', error)
