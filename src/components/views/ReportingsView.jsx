@@ -50,7 +50,7 @@ const ReportingsView = () => {
                   photoURLs:
                     observation.photoURLs && observation.photoURLs.length > 0
                       ? observation.photoURLs
-                      : [defaultPhoto], // Utilisez l'importation de l'image par défaut
+                      : [defaultPhoto],
                 }
               }),
             )

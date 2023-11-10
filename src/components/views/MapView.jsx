@@ -3,6 +3,7 @@ import LeafletMapView from './LeafletMapView'
 import { UserContext } from '../../context/userContext'
 import { getObservationsForUser } from '../../services/observationService'
 import { getEstablishmentByRef } from '../../services/establishmentService'
+import defaultPhoto from '../../assets/images/defaultPhoto.jpg'
 
 const MapView = () => {
   const { currentUser } = useContext(UserContext)
@@ -37,7 +38,10 @@ const MapView = () => {
       return {
         markerCoords: coords ? [coords.latitude, coords.longitude] : null,
         companyName: obs.establishment?.establishmentName || 'Inconnu',
-        imageURL: obs.photoURLs && obs.photoURLs[0],
+        imageURL:
+          obs.photoURLs && obs.photoURLs.length > 0
+            ? obs.photoURLs[0]
+            : defaultPhoto,
       }
     })
     .filter((marker) => marker.markerCoords)
