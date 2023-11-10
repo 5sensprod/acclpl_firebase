@@ -8,21 +8,12 @@ import { Calendar, Clock, ChevronDown } from 'react-bootstrap-icons'
 import styles from '../styles/ReportingsView.module.css'
 import { motion } from 'framer-motion'
 import AddObservationButton from './AddObservationButton'
+import { formatDate } from '../../utils/dateUtils'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
   const [observations, setObservations] = useState([])
   const [activeKey, setActiveKey] = useState(null)
-
-  const formatDate = (dateString) => {
-    const options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }
-    return new Date(dateString).toLocaleDateString('fr-FR', options)
-  }
 
   useEffect(() => {
     const fetchObservations = async () => {
@@ -66,8 +57,6 @@ const ReportingsView = () => {
         }
       }
     }
-
-    // Appeler fetchObservations quand l'utilisateur change
     fetchObservations()
   }, [currentUser])
 
