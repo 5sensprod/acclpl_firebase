@@ -1,14 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context/userContext'
 import { getObservationsForUser } from '../../services/observationService'
-import { Accordion, Card, Button, useAccordionButton } from 'react-bootstrap'
-import { Calendar, Clock } from 'react-bootstrap-icons'
-import styles from '../styles/ReportingsView.module.css'
-import { ChevronDown } from 'react-bootstrap-icons'
-import { motion } from 'framer-motion'
 import { getEstablishmentByRef } from '../../services/establishmentService'
-import AddObservationButton from './AddObservationButton'
 import defaultPhoto from '../../assets/images/defaultPhoto.jpg'
+import { Accordion, Card, Button, useAccordionButton } from 'react-bootstrap'
+import { Calendar, Clock, ChevronDown } from 'react-bootstrap-icons'
+import styles from '../styles/ReportingsView.module.css'
+import { motion } from 'framer-motion'
+import AddObservationButton from './AddObservationButton'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
