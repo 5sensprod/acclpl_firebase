@@ -2,12 +2,11 @@ import React from 'react'
 
 const EstablishmentDetails = ({
   establishmentName,
-  address, // Utilisation de l'adresse complète au lieu des champs séparés
+  address,
   photoURL,
   onClick,
   isMultipleOccurrences,
 }) => {
-  // L'adresse est déjà complète, donc pas besoin de la construire
   const fullAddress = address
 
   const cursorStyle = isMultipleOccurrences ? { cursor: 'pointer' } : {}

@@ -8,7 +8,7 @@ export const handleYesClick = (
 ) => {
   console.log('Coordonnées avant inversion dans handleYesClick:', coordinates)
   const invertedCoordinates = [coordinates.latitude, coordinates.longitude]
-  console.log('Coordonnées après inversion:', invertedCoordinates) // Ajouter ce log
+  console.log('Coordonnées après inversion:', invertedCoordinates)
   dispatch({
     type: 'UPDATE_FORM_DATA',
     payload: {
@@ -21,6 +21,7 @@ export const handleYesClick = (
   })
   dispatch({ type: 'SET_STEP', payload: 3 })
   dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
+  dispatch({ type: 'SET_IS_OCCURRENCE_TRUE' })
   setModalConfig((prevConfig) => ({
     ...prevConfig,
     isVisible: false,

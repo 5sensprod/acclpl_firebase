@@ -18,6 +18,7 @@ const initialState = {
   previewPhotoURL: defaultPhoto,
   photoURL: defaultPhoto,
   isDefaultPhoto: true,
+  isOccurrence: false,
   openCrop: false,
   currentStep: 1,
   steps: [],
@@ -47,6 +48,17 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_IS_OCCURRENCE_TRUE':
+      return {
+        ...state,
+        isOccurrence: true,
+      }
+    case 'SET_IS_OCCURRENCE_FALSE':
+      return {
+        ...state,
+        isOccurrence: false,
+      }
+
     case 'UPDATE_ADDITIONAL_NOTES':
       return {
         ...state,

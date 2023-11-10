@@ -64,6 +64,8 @@ function PhotoCapture() {
     dispatch({
       type: 'RESET_TEMP_PHOTO',
     })
+
+    dispatch({ type: 'SET_IS_OCCURRENCE_FALSE' })
   }
 
   const imageUrl = formWizardState.formData.photoBlob

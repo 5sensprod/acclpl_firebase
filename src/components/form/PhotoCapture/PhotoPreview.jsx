@@ -6,7 +6,7 @@ import { useFormWizardState } from '../context/FormWizardContext'
 
 const PhotoPreview = () => {
   const {
-    state: { photoURL, originalPhotoURL, isDefaultPhoto },
+    state: { photoURL, originalPhotoURL, isDefaultPhoto, isOccurrence },
     dispatch,
   } = useFormWizardState()
 
@@ -30,17 +30,18 @@ const PhotoPreview = () => {
     dispatch({ type: 'RESET_TO_DEFAULT_PHOTO' })
   }
 
-  const icons = isDefaultPhoto ? (
-    <Camera
-      className={styles.icon}
-      onClick={() => document.getElementById('photo-input').click()}
-    />
-  ) : (
-    <>
-      <Pencil className={styles.icon} onClick={handleEditClick} />
-      <Trash className={styles.icon} onClick={handleTrashClick} />
-    </>
-  )
+  const icons =
+    isDefaultPhoto || isOccurrence ? (
+      <Camera
+        className={styles.icon}
+        onClick={() => document.getElementById('photo-input').click()}
+      />
+    ) : (
+      <>
+        <Pencil className={styles.icon} onClick={handleEditClick} />
+        <Trash className={styles.icon} onClick={handleTrashClick} />
+      </>
+    )
 
   return (
     <Figure className={styles.figureStyle}>
