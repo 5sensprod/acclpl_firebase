@@ -8,6 +8,7 @@ import { Calendar, Clock, ChevronDown } from 'react-bootstrap-icons'
 import styles from '../styles/ReportingsView.module.css'
 import { motion } from 'framer-motion'
 import AddObservationButton from './AddObservationButton'
+import AddObservationModal from './AddObservationModal'
 import { formatDate } from '../../utils/dateUtils'
 import db from '../../db/db'
 
@@ -15,6 +16,31 @@ const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
   const [observations, setObservations] = useState([])
   const [activeKey, setActiveKey] = useState(null)
+
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [selectedEstablishmentId, setSelectedEstablishmentId] = useState(null)
+  const [establishmentName, setEstablishmentName] = useState('')
+
+  useEffect(() => {
+    if (selectedEstablishmentId) {
+      db.establishments.get(selectedEstablishmentId).then((est) => {
+        setEstablishmentName(est ? est.establishmentName : 'Inconnu')
+      })
+    }
+  }, [selectedEstablishmentId])
+
+  const handleOpenAddModal = (establishmentId) => {
+    setSelectedEstablishmentId(establishmentId)
+    setShowAddModal(true)
+    // Récupérer le nom de l'établissement depuis IndexedDB et le mettre à jour
+    db.establishments.get(establishmentId).then((est) => {
+      setEstablishmentName(est ? est.establishmentName : 'Inconnu')
+    })
+  }
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    // Logique pour soumettre l'observation
+  }
 
   useEffect(() => {
     const fetchObservationsFromIndexedDB = async () => {
@@ -155,8 +181,13 @@ const ReportingsView = () => {
                   ))}
                   <div className="text-center">
                     <AddObservationButton
-                      establishmentRef={key}
-                      onAdd={handleAddObservation}
+                      onClick={() => handleOpenAddModal(key)}
+                    />
+                    <AddObservationModal
+                      show={showAddModal}
+                      onHide={() => setShowAddModal(false)}
+                      title={`Ajouter une observation à ${establishmentName}`}
+                      handleSubmit={handleSubmit}
                     />
                   </div>
                 </Card.Body>

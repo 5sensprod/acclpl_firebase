@@ -1,40 +1,24 @@
-import React, { useEffect } from 'react'
+// src/components/views/AddObservationModal.jsx
+import React from 'react'
+import { Modal, Form, Button } from 'react-bootstrap'
+import DateTimeInput from './DateTimeInput'
 
-import { Modal, Button, Form } from 'react-bootstrap'
-
-const AddObservationModal = ({ show, onHide, establishment }) => {
-  // Ajoutez ici votre logique de formulaire
-
-  useEffect(() => {
-    console.log('Props reçues par AddObservationModal:', establishment)
-  }, [establishment])
-
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    // Ici, vous traiterez la soumission du formulaire
-    console.log(
-      "Une nouvelle observation est ajoutée pour l'établissement: ",
-      establishment,
-    )
-    onHide() // Cacher la modal après la soumission
-  }
-
+const AddObservationModal = ({ show, onHide, title, handleSubmit }) => {
   return (
     <Modal show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>
-          Ajouter une observation à {establishment.name || "l'établissement"}
-        </Modal.Title>
+      <Modal.Header closeButton className="bg-dark text-light">
+        <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {/* ... champs de formulaire */}
         <Form onSubmit={handleSubmit}>
-          {/* ... autres éléments du formulaire */}
+          <DateTimeInput />
         </Form>
-        <Button variant="primary" type="submit" onClick={handleSubmit}>
+      </Modal.Body>
+      <Modal.Footer className="bg-dark text-light text-start">
+        <Button variant="secondary" type="submit" onClick={handleSubmit}>
           Soumettre
         </Button>
-      </Modal.Body>
+      </Modal.Footer>
     </Modal>
   )
 }
