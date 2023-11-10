@@ -8,6 +8,7 @@ import {
   getDoc,
 } from 'firebase/firestore'
 import { ratio } from 'fuzzball'
+import defaultPhoto from '../assets/images/defaultPhoto.jpg'
 
 async function getObservationDetails(establishmentDoc) {
   const observationRefs = establishmentDoc.data().observationRefs
@@ -54,9 +55,9 @@ async function buildEstablishmentDetails(establishmentDoc) {
   return {
     establishmentId: establishmentDoc.id,
     establishmentName: establishmentData.establishmentName,
-    address: establishmentData.address, // adresse complète
-    photoURL: photoURLs ? photoURLs[0] : null, // première URL de photo si disponible
-    coordinates: establishmentData.coordinates, // déjà un objet {latitude, longitude}
+    address: establishmentData.address,
+    photoURL: photoURLs && photoURLs.length > 0 ? photoURLs[0] : defaultPhoto,
+    coordinates: establishmentData.coordinates,
   }
 }
 async function checkDuplicateEstablishment(

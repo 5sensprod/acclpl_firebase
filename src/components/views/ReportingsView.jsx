@@ -8,6 +8,7 @@ import { ChevronDown } from 'react-bootstrap-icons'
 import { motion } from 'framer-motion'
 import { getEstablishmentByRef } from '../../services/establishmentService'
 import AddObservationButton from './AddObservationButton'
+import defaultPhoto from '../../assets/images/defaultPhoto.jpg'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
@@ -43,7 +44,14 @@ const ReportingsView = () => {
                 const establishmentDetails = await getEstablishmentByRef(
                   observation.establishmentRef,
                 )
-                return { ...observation, establishment: establishmentDetails }
+                return {
+                  ...observation,
+                  establishment: establishmentDetails,
+                  photoURLs:
+                    observation.photoURLs && observation.photoURLs.length > 0
+                      ? observation.photoURLs
+                      : [defaultPhoto], // Utilisez l'importation de l'image par défaut
+                }
               }),
             )
 
