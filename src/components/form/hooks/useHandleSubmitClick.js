@@ -2,10 +2,10 @@ import { useContext, useState } from 'react'
 import { useFormWizardState } from '../context/FormWizardContext'
 import { UserContext } from '../../../context/userContext'
 import { uploadImage } from '../../../services/uploadImageWizard'
-import { generateUniqueFileName } from '../../../utils/filenameUtils'
-import { compressImage } from '../../../utils/imageCompression'
 import { addObservation } from '../../../services/observationService'
 import { addEstablishment } from '../../../services/establishmentService'
+import { generateUniqueFileName } from '../../../utils/filenameUtils'
+import { compressImage } from '../../../utils/imageCompression'
 
 const useHandleSubmitClick = (setIsLoading) => {
   const { state } = useFormWizardState()
