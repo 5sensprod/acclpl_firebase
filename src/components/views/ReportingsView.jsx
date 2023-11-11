@@ -3,7 +3,13 @@ import { UserContext } from '../../context/userContext'
 // import { getObservationsForUser } from '../../services/observationService'
 // import { getEstablishmentByRef } from '../../services/establishmentService'
 import defaultPhoto from '../../assets/images/defaultPhoto.jpg'
-import { Accordion, Card, Button, useAccordionButton } from 'react-bootstrap'
+import {
+  Accordion,
+  Card,
+  Button,
+  useAccordionButton,
+  Spinner,
+} from 'react-bootstrap'
 import { Calendar, Clock, ChevronDown } from 'react-bootstrap-icons'
 import styles from '../styles/ReportingsView.module.css'
 import { motion } from 'framer-motion'
@@ -20,6 +26,15 @@ const ReportingsView = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedEstablishmentId, setSelectedEstablishmentId] = useState(null)
   const [establishmentName, setEstablishmentName] = useState('')
+  const [loaded, setLoaded] = useState({})
+
+  const handleImageLoaded = (urlIndex) => {
+    setLoaded((prevState) => ({ ...prevState, [urlIndex]: true }))
+  }
+
+  const isImageLoaded = (urlIndex) => {
+    return loaded[urlIndex]
+  }
 
   useEffect(() => {
     if (selectedEstablishmentId) {
@@ -37,11 +52,6 @@ const ReportingsView = () => {
       setEstablishmentName(est ? est.establishmentName : 'Inconnu')
     })
   }
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    // Logique pour soumettre l'observation
-  }
-
   useEffect(() => {
     const fetchObservationsFromIndexedDB = async () => {
       if (currentUser?.uid) {
@@ -83,11 +93,11 @@ const ReportingsView = () => {
   const observationsByEstablishment = observations.reduce((acc, obs) => {
     // S'assurer que les détails de l'établissement sont présents
     if (obs.establishment) {
-      const key = obs.establishmentRef // Utiliser establishmentRef comme clé
+      const key = obs.establishmentRef
       if (!acc[key]) {
         acc[key] = {
-          name: obs.establishment.establishmentName, // Utiliser directement establishmentName
-          address: obs.establishment.address, // Utiliser directement l'adresse complète
+          name: obs.establishment.establishmentName,
+          address: obs.establishment.address,
           observations: [],
         }
       }
@@ -95,7 +105,7 @@ const ReportingsView = () => {
         date: obs.date,
         time: obs.time,
         photoURLs: obs.photoURLs,
-        additionalNotes: obs.additionalNotes, // Si vous souhaitez inclure des notes supplémentaires
+        additionalNotes: obs.additionalNotes,
       })
     } else {
       // Si les détails de l'établissement ne sont pas inclus dans l'observation, vous devrez gérer ce cas.
@@ -169,13 +179,26 @@ const ReportingsView = () => {
                       </div>
                       {obs.photoURLs &&
                         obs.photoURLs.map((url, urlIndex) => (
-                          <img
+                          <div
                             key={urlIndex}
-                            src={url}
-                            alt={`Observation ${obsIndex + 1}`}
-                            className="img-fluid rounded"
-                            style={{ maxWidth: '50px' }}
-                          />
+                            style={{ width: '50px', height: '50px' }}
+                          >
+                            {!isImageLoaded(urlIndex) && (
+                              <Spinner animation="border" />
+                            )}
+                            <img
+                              src={url}
+                              alt={`Observation ${obsIndex + 1}`}
+                              className="img-fluid rounded"
+                              style={{
+                                maxWidth: '50px',
+                                display: isImageLoaded(urlIndex)
+                                  ? 'block'
+                                  : 'none',
+                              }}
+                              onLoad={() => handleImageLoaded(urlIndex)}
+                            />
+                          </div>
                         ))}
                     </div>
                   ))}
@@ -187,7 +210,7 @@ const ReportingsView = () => {
                       show={showAddModal}
                       onHide={() => setShowAddModal(false)}
                       title={`Ajouter une observation à ${establishmentName}`}
-                      handleSubmit={handleSubmit}
+                      handleSubmit={handleAddObservation}
                     />
                   </div>
                 </Card.Body>
