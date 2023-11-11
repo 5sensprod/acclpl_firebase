@@ -160,7 +160,9 @@ const ProfileView = () => {
                 variants={childVariants}
                 custom={0}
               >
-                <PersonCircle size={24} />
+                <div className="bg-primary rounded p-1">
+                  <PersonCircle size={24} />
+                </div>
               </motion.div>
               <motion.span
                 initial="hidden"
@@ -176,12 +178,17 @@ const ProfileView = () => {
                 variants={childVariants}
                 custom={2}
               >
-                <Pencil
-                  className="me-0"
-                  size={20}
+                <Button
+                  variant="secondary"
+                  className="py-1 px-2 text-d-flex justify-content-center"
                   onClick={handleEdit}
-                  style={{ cursor: 'pointer', marginLeft: '10px' }}
-                />
+                >
+                  <Pencil
+                    className="ms-0 text-start"
+                    size={18}
+                    style={{ cursor: 'pointer', marginLeft: '10px' }}
+                  />
+                </Button>
               </motion.div>
             </motion.div>
           )}
@@ -192,7 +199,7 @@ const ProfileView = () => {
 
   const UserInfo = ({ icon: Icon, label, value }) => (
     <div className="d-flex align-items-center py-2">
-      <Icon size={24} className="me-2" />
+      <Icon size={28} className="me-2 bg-primary rounded p-1" />
       {label}: {value}
     </div>
   )

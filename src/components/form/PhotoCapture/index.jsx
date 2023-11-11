@@ -99,7 +99,8 @@ function PhotoCapture() {
 
       {!isLoading && !error && (
         <>
-          <div style={{ textAlign: 'center' }}>
+          <div className="text-start">
+            <p className="mb-2 text-start">Photo</p>
             <PhotoPreview
               imageUrl={imageUrl}
               defaultPhoto={defaultPhoto}

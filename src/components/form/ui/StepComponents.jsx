@@ -101,7 +101,7 @@ export const Step3Component = () => (
 export const Step4Component = () => {
   return (
     <AnimatedWrapper>
-      <div className="d-flex flex-column gap-1">
+      <div className="d-flex gap-3">
         <PhotoCapture />
         <Notes />
       </div>

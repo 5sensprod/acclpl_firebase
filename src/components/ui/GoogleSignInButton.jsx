@@ -24,7 +24,7 @@ const GoogleSignInButton = () => {
       onClick={handleGoogleSignIn}
     >
       <Google size={24} className="me-2" />
-      Connectez-vous avec Google
+      Se connectez avec Google
     </Button>
   )
 }

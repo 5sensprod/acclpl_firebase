@@ -8,6 +8,7 @@ import MapView from '../../../components/views/MapView'
 import ReportingsView from '../../../components/views/ReportingsView'
 import { UserContext } from '../../../context/userContext'
 import { motion } from 'framer-motion'
+import { FormWizardProvider } from '../../../components/form/context/FormWizardContext'
 
 const pageVariants = {
   initial: {
@@ -66,17 +67,19 @@ export default function PrivateHome() {
         className="container shadow-sm pt-5 pb-5 rounded-bottom"
         style={{ maxWidth: '800px' }}
       >
-        <motion.div
-          key={activeView}
-          variants={pageVariants}
-          initial="initial"
-          animate="in"
-          exit="out"
-          transition={pageTransition}
-        >
-          <ViewHeader icon={Icon} title={title} />
-          {contentView}
-        </motion.div>
+        <FormWizardProvider>
+          <motion.div
+            key={activeView}
+            variants={pageVariants}
+            initial="initial"
+            animate="in"
+            exit="out"
+            transition={pageTransition}
+          >
+            <ViewHeader icon={Icon} title={title} />
+            {contentView}
+          </motion.div>
+        </FormWizardProvider>
       </div>
     </>
   )
