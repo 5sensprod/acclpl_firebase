@@ -32,3 +32,21 @@
     margin: 0;
     border-radius: 0 0 0.25rem 0.25rem;
 }
+
+.imageLoaderContainer {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e1e1e1;
+  position: relative;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.spinner {
+  position: absolute;
+}

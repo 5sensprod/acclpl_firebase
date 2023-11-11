@@ -1,5 +1,5 @@
-import React from 'react'
-import { Figure, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Figure, OverlayTrigger, Tooltip, Spinner } from 'react-bootstrap'
 import { Trash, Camera, Pencil } from 'react-bootstrap-icons'
 import styles from './PhotoCapture.module.css'
 import { useFormWizardState } from '../context/FormWizardContext'
@@ -9,6 +9,8 @@ const PhotoPreview = () => {
     state: { photoURL, originalPhotoURL, isDefaultPhoto, isOccurrence },
     dispatch,
   } = useFormWizardState()
+
+  const [isImageLoading, setImageLoading] = useState(true)
 
   if (!photoURL) return null
 
@@ -50,13 +52,31 @@ const PhotoPreview = () => {
         overlay={<Tooltip id="tooltip-change">Change la photo</Tooltip>}
       >
         <span>
-          <Figure.Image
-            src={photoURL}
-            alt=""
-            thumbnail
-            className={styles.figureImage}
-            onClick={() => document.getElementById('photo-input').click()}
-          />
+          <div className={styles.imageLoaderContainer}>
+            {isImageLoading && (
+              <Spinner
+                animation="border"
+                role="status"
+                className={styles.spinner}
+              >
+                <span className="visually-hidden">Chargement...</span>
+              </Spinner>
+            )}
+            <Figure.Image
+              src={photoURL}
+              alt="Aperçu de la photo"
+              thumbnail
+              className={styles.figureImage}
+              onClick={() => document.getElementById('photo-input').click()}
+              onLoad={() => setImageLoading(false)}
+              onError={() => setImageLoading(false)}
+              style={{
+                width: '150px',
+                height: '150px',
+                display: isImageLoading ? 'none' : 'block',
+              }}
+            />
+          </div>
         </span>
       </OverlayTrigger>
       <Figure.Caption className={styles.captionStyle}>{icons}</Figure.Caption>
