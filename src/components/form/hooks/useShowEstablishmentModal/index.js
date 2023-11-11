@@ -6,10 +6,6 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
   const { setModalConfig } = useModal()
 
   const showEstablishmentModal = (duplicateCheckResult) => {
-    console.log(
-      'Coordonnées reçues dans la modal:',
-      duplicateCheckResult.details.coordinates,
-    )
     const {
       multiple: isMultipleOccurrences,
       details,

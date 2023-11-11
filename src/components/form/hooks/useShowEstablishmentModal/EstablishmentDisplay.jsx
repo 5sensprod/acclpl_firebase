@@ -19,8 +19,6 @@ const handleItemClick = (
   companyName,
   photoURL,
 ) => {
-  console.log('URL de la photo récupérée:', photoURL)
-  console.log('Coordonnées avant inversion:', coordinates) // Ajouter ce log
   onSelect(establishmentId)
   handleYesClick(
     dispatch,

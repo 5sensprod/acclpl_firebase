@@ -7,7 +7,7 @@ import { addEstablishment } from '../../../services/establishmentService'
 import { generateUniqueFileName } from '../../../utils/filenameUtils'
 import { compressImage } from '../../../utils/imageCompression'
 
-const useHandleSubmitClick = (setIsLoading) => {
+const useHandleSubmitClick = (setIsLoading, setShowAddModal) => {
   const { state } = useFormWizardState()
   const { currentUser } = useContext(UserContext)
   const { dispatch } = useFormWizardState()
@@ -51,16 +51,18 @@ const useHandleSubmitClick = (setIsLoading) => {
         await addObservation(observationData)
       }
 
-      setShowModal(true)
       dispatch({ type: 'RESET_FORM_DATA' })
       dispatch({ type: 'RESET_TO_DEFAULT_PHOTO' })
       dispatch({ type: 'RESET_TO_FIRST_STEP' })
+
+      setShowModal(true)
+      setShowAddModal(false)
     } catch (error) {
       alert("Une erreur s'est produite lors de la soumission des données.")
       console.error('Erreur lors de la soumission des données:', error)
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
   return { handleSubmitClick, showModal, handleCloseModal }

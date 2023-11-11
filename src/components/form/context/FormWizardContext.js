@@ -48,6 +48,87 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
+    case 'UPDATE_FORM_DATA_MODAL':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          ...action.payload, // mise à jour de tous les champs fournis dans le payload
+        },
+      }
+
+    case 'RESET_FORM_DATA_MODAL':
+      return {
+        ...state,
+        formData: { ...initialState.formData },
+      }
+
+    case 'RESET_NOTES':
+      console.log('Réinitialisation de la notes.')
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          additionalNotes: '',
+        },
+      }
+
+    case 'UPDATE_COMPANY_NAME_MODAL':
+      console.log('Mise à jour companyName: ', action.payload.companyName)
+      console.log(
+        'Mise à jour normalizedCompanyName: ',
+        action.payload.normalizedCompanyName,
+      )
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          companyName: action.payload.companyName,
+          normalizedCompanyName: action.payload.normalizedCompanyName,
+        },
+      }
+    // Réinitialisation des noms de l'entreprise
+    case 'RESET_COMPANY_NAME_MODAL':
+      console.log('Réinitialisation des noms de l’entreprise.')
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          companyName: '',
+          normalizedCompanyName: '',
+        },
+      }
+
+    case 'RESET_COMPANY_ADDRESS':
+      console.log('Adresse de l’entreprise réinitialisée.')
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          companyAddress: '',
+        },
+      }
+
+    case 'UPDATE_COMPANY_ADDRESS':
+      console.log('Nouvelle adresse reçue: ', action.payload) // Log pour vérification
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          companyAddress: action.payload,
+        },
+      }
+
+    case 'RESET_DATE_TIME':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          dateOfObservation: '',
+          timeOfObservation: '',
+        },
+      }
+
     case 'SET_IS_OCCURRENCE_TRUE':
       return {
         ...state,
@@ -81,11 +162,12 @@ const wizardReducer = (state, action) => {
       }
 
     case 'SET_COMPANY_COORDINATES':
+      console.log('Payload pour SET_COMPANY_COORDINATES:', action.payload)
       return {
         ...state,
         formData: {
           ...state.formData,
-          companyCoordinates: [action.payload],
+          companyCoordinates: action.payload, // Ici, action.payload est déjà un tableau
         },
       }
     case 'SET_DEFAULT_IMAGE':
@@ -240,7 +322,7 @@ const wizardReducer = (state, action) => {
       return {
         ...state,
         formData: updatedFormData,
-        isDefaultPhoto: isDefaultPhoto, // Assurez-vous de mettre à jour isDefaultPhoto ici
+        isDefaultPhoto: isDefaultPhoto,
       }
     case 'UPDATE_HAS_CLOSED_MODAL':
       return {

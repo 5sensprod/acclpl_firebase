@@ -17,6 +17,9 @@ import AddObservationButton from './AddObservationButton'
 import AddObservationModal from './AddObservationModal'
 import { formatDate } from '../../utils/dateUtils'
 import db from '../../db/db'
+import { useFormWizardState } from '../form/context/FormWizardContext'
+import useHandleSubmitClick from '../form/hooks/useHandleSubmitClick'
+import SuccessModal from '../form/modals/SuccessModal'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
@@ -27,6 +30,12 @@ const ReportingsView = () => {
   const [selectedEstablishmentId, setSelectedEstablishmentId] = useState(null)
   const [establishmentName, setEstablishmentName] = useState('')
   const [loaded, setLoaded] = useState({})
+
+  const { dispatch } = useFormWizardState()
+
+  const [isLoading, setIsLoading] = useState(false)
+  const { handleSubmitClick, showModal, handleCloseModal } =
+    useHandleSubmitClick(setIsLoading, setShowAddModal)
 
   const handleImageLoaded = (urlIndex) => {
     setLoaded((prevState) => ({ ...prevState, [urlIndex]: true }))
@@ -47,11 +56,50 @@ const ReportingsView = () => {
   const handleOpenAddModal = (establishmentId) => {
     setSelectedEstablishmentId(establishmentId)
     setShowAddModal(true)
-    // Récupérer le nom de l'établissement depuis IndexedDB et le mettre à jour
+
     db.establishments.get(establishmentId).then((est) => {
-      setEstablishmentName(est ? est.establishmentName : 'Inconnu')
+      if (est) {
+        setEstablishmentName(est.establishmentName)
+        // Dispatchez l'action pour mettre à jour le nom et l'adresse dans le state global
+        dispatch({
+          type: 'UPDATE_COMPANY_NAME_MODAL',
+          payload: {
+            companyName: est.establishmentName,
+            normalizedCompanyName: est.normalizedEstablishmentName, // Supposons que vous avez cette donnée
+          },
+        })
+        dispatch({
+          type: 'UPDATE_COMPANY_ADDRESS',
+          payload: est.address,
+        })
+        dispatch({
+          type: 'SET_COMPANY_COORDINATES',
+          payload: [est.coordinates.latitude, est.coordinates.longitude],
+        })
+
+        dispatch({
+          type: 'SET_ESTABLISHMENT_EXISTS',
+          payload: true,
+        })
+
+        dispatch({
+          type: 'SET_CURRENT_ESTABLISHMENT_ID',
+          payload: establishmentId,
+        })
+      } else {
+        setEstablishmentName('Inconnu')
+        // Si l'établissement est inconnu, réinitialisez les données dans le state global
+        dispatch({ type: 'RESET_COMPANY_ADDRESS' })
+        dispatch({ type: 'RESET_COMPANY_NAME_MODAL' })
+        dispatch({
+          type: 'SET_ESTABLISHMENT_EXISTS',
+          payload: false,
+        })
+        dispatch({ type: 'SET_CURRENT_ESTABLISHMENT_ID', payload: null })
+      }
     })
   }
+
   useEffect(() => {
     const fetchObservationsFromIndexedDB = async () => {
       if (currentUser?.uid) {
@@ -135,12 +183,13 @@ const ReportingsView = () => {
         aria-expanded={isCurrentEventKeyActive}
       >
         <span>{children}</span>
-        <ChevronDown style={chevronStyle} />
+        <ChevronDown
+          size={24}
+          className="bg-primary rounded p-1"
+          style={chevronStyle}
+        />
       </Button>
     )
-  }
-  const handleAddObservation = (establishmentRef) => {
-    // Logique pour ajouter une observation, par exemple ouvrir une modal
   }
 
   return (
@@ -207,10 +256,12 @@ const ReportingsView = () => {
                       onClick={() => handleOpenAddModal(key)}
                     />
                     <AddObservationModal
+                      isLoading={isLoading}
+                      setIsLoading={setIsLoading}
                       show={showAddModal}
                       onHide={() => setShowAddModal(false)}
-                      title={`Ajouter une observation à ${establishmentName}`}
-                      handleSubmit={handleAddObservation}
+                      title={`Ajouter à ${establishmentName}`}
+                      handleAddObservation={handleSubmitClick}
                     />
                   </div>
                 </Card.Body>
@@ -219,6 +270,7 @@ const ReportingsView = () => {
           ),
         )}
       </Accordion>
+      <SuccessModal show={showModal} handleClose={handleCloseModal} />
     </div>
   )
 }
