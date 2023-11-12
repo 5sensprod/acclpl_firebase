@@ -1,42 +1,38 @@
 import React, { useState, useContext } from 'react'
-import { Modal, Button, Form, Alert, Toast } from 'react-bootstrap'
+import { Modal, Button, Form } from 'react-bootstrap'
 import { LockFill, ShieldLockFill } from 'react-bootstrap-icons'
 import { UserContext } from '../../../context/userContext'
+import { useToast } from '../../../context/toastContext'
 import InputWithIcon from '../../ui/InputWithIcon'
-import { useAlert } from '../../../context/AlertContext'
 
 const PasswordChangeModal = ({ showModal, handleClose }) => {
   const { reauthenticateWithCredential, changePassword } =
     useContext(UserContext)
+  const { addToast } = useToast()
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
-  const { showAlert } = useAlert()
-  const [error, setError] = useState('')
-  const [showToast, setShowToast] = useState(false)
 
   const resetForm = () => {
     setCurrentPassword('')
     setNewPassword('')
     setConfirmNewPassword('')
-    setError('')
-    setShowToast(false)
   }
 
   const handlePasswordChange = async (e) => {
     e.preventDefault()
     if (newPassword !== confirmNewPassword) {
-      showAlert('Les nouveaux mots de passe ne correspondent pas.', 'danger')
+      addToast('Les nouveaux mots de passe ne correspondent pas.', 'danger')
       return
     }
     try {
       await reauthenticateWithCredential(currentPassword)
       await changePassword(newPassword)
-      showAlert('Votre mot de passe a été changé avec succès !', 'success')
+      addToast('Votre mot de passe a été changé avec succès !', 'success')
       resetForm()
       handleClose()
     } catch (error) {
-      showAlert(
+      addToast(
         "Une erreur s'est produite lors du changement de mot de passe. Assurez-vous que votre mot de passe actuel est correct.",
         'danger',
       )
@@ -55,7 +51,6 @@ const PasswordChangeModal = ({ showModal, handleClose }) => {
           <Modal.Title>Changer de mot de passe</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handlePasswordChange}>
             <InputWithIcon
               icon={<ShieldLockFill />}
@@ -89,16 +84,6 @@ const PasswordChangeModal = ({ showModal, handleClose }) => {
           </Form>
         </Modal.Body>
       </Modal>
-      <Toast
-        onClose={() => setShowToast(false)}
-        show={showToast}
-        delay={3000}
-        autohide
-        bg="success"
-        position="top-end"
-      >
-        <Toast.Body>Votre mot de passe a été changé avec succès !</Toast.Body>
-      </Toast>
     </>
   )
 }

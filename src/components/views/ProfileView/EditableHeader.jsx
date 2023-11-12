@@ -3,7 +3,6 @@ import { Button, Form, InputGroup } from 'react-bootstrap'
 import { motion } from 'framer-motion'
 import { updateUserDisplayName } from '../../../services/userService'
 import { PersonCircle, Pencil } from 'react-bootstrap-icons'
-import { useAlert } from '../../../context/AlertContext'
 import { variants } from '../../../animations/motionVariants'
 
 const EditableHeader = ({
@@ -16,7 +15,6 @@ const EditableHeader = ({
   const [localDisplayName, setLocalDisplayName] = useState(
     userProfile.displayName,
   )
-  const { showAlert } = useAlert()
 
   const handleLocalSubmit = async (event) => {
     event.preventDefault()
@@ -24,8 +22,11 @@ const EditableHeader = ({
       await updateUserDisplayName(userProfile.userID, localDisplayName)
       setUserProfile({ ...userProfile, displayName: localDisplayName })
     } catch (error) {
-      showAlert('Une erreur est survenue. Veuillez réessayer plus tard.')
+      // Ici, vous pourriez vouloir informer l'utilisateur de l'échec de la mise à jour.
+      console.error('Failed to update display name:', error)
     }
+
+    // Sortez du mode d'édition quelle que soit l'issue de la tentative de mise à jour.
     setEditMode(false)
   }
 

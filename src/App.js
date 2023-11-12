@@ -14,10 +14,7 @@ import {
   checkIfDataIsInitialized,
   logCurrentData,
 } from './db/sync'
-
 import { UserContext } from './context/userContext'
-import { AlertProvider } from './context/AlertContext'
-import AlertContainer from './components/AlertContainer'
 
 function App() {
   const { currentUser } = useContext(UserContext)
@@ -31,23 +28,20 @@ function App() {
   }, [currentUser])
 
   return (
-    <AlertProvider>
-      {' '}
-      <ErrorBoundary>
-        <>
-          <AlertContainer /> <SignUpModal />
-          <SignInModal />
-          {!currentUser && <NavBar />}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/private" element={<Private />}>
-              <Route path="/private/private-home" element={<PrivateHome />} />
-            </Route>
-          </Routes>
-          <Footer />
-        </>
-      </ErrorBoundary>
-    </AlertProvider>
+    <ErrorBoundary>
+      <>
+        <SignUpModal />
+        <SignInModal />
+        {!currentUser && <NavBar />}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/private" element={<Private />}>
+            <Route path="/private/private-home" element={<PrivateHome />} />
+          </Route>
+        </Routes>
+        <Footer />
+      </>
+    </ErrorBoundary>
   )
 }
 
