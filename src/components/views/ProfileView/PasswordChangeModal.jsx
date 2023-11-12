@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { Modal, Button, Form, InputGroup, Alert, Toast } from 'react-bootstrap'
 import { LockFill, ShieldLockFill } from 'react-bootstrap-icons'
-import { UserContext } from '../../context/userContext'
+import { UserContext } from '../../../context/userContext'
 
 const PasswordChangeModal = ({ showModal, handleClose }) => {
   const { reauthenticateWithCredential, changePassword } =

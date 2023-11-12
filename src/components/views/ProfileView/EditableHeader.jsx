@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button, Form, InputGroup } from 'react-bootstrap'
 import { motion } from 'framer-motion'
 import { updateUserDisplayName } from '../../../services/userService'
@@ -17,11 +17,6 @@ const EditableHeader = ({
   )
   const { showAlert } = useAlert()
 
-  useEffect(() => {
-    // Simuler une erreur au chargement du composant
-    showAlert('Ceci est une alerte de test. Une erreur est survenue.', 'danger')
-  }, [showAlert])
-
   const handleLocalSubmit = async (event) => {
     event.preventDefault()
     try {
@@ -30,10 +25,9 @@ const EditableHeader = ({
     } catch (error) {
       showAlert('Une erreur est survenue. Veuillez réessayer plus tard.')
     }
-
-    // Sortez du mode d'édition quelle que soit l'issue de la tentative de mise à jour.
     setEditMode(false)
   }
+
   const variants = {
     hidden: { x: -40 },
     visible: { x: 0 },
