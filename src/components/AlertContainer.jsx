@@ -4,9 +4,10 @@ import AlertMessage from './ui/AlertMessage'
 
 const AlertContainer = () => {
   const { alert, hideAlert } = useAlert()
+
   return (
     <AlertMessage
-      key={Date.now()}
+      key={alert}
       variant={alert.variant}
       message={alert.message}
       onClose={hideAlert}
