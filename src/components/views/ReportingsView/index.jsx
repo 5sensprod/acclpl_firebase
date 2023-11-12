@@ -1,25 +1,19 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { UserContext } from '../../context/userContext'
+import { UserContext } from '../../../context/userContext'
 // import { getObservationsForUser } from '../../services/observationService'
 // import { getEstablishmentByRef } from '../../services/establishmentService'
-import defaultPhoto from '../../assets/images/defaultPhoto.jpg'
-import {
-  Accordion,
-  Card,
-  Button,
-  useAccordionButton,
-  Spinner,
-} from 'react-bootstrap'
-import { Calendar, Clock, ChevronDown } from 'react-bootstrap-icons'
-import styles from '../styles/ReportingsView.module.css'
+import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
+import { Accordion, Card } from 'react-bootstrap'
 import { motion } from 'framer-motion'
-import AddObservationButton from './AddObservationButton'
-import AddObservationModal from './AddObservationModal'
-import { formatDate } from '../../utils/dateUtils'
-import db from '../../db/db'
-import { useFormWizardState } from '../form/context/FormWizardContext'
-import useHandleSubmitClick from '../form/hooks/useHandleSubmitClick'
-import SuccessModal from '../form/modals/SuccessModal'
+import AddObservationButton from '../AddObservationButton'
+import AddObservationModal from '../AddObservationModal'
+import db from '../../../db/db'
+import { useFormWizardState } from '../../form/context/FormWizardContext'
+import useHandleSubmitClick from '../../form/hooks/useHandleSubmitClick'
+import SuccessModal from '../../form/modals/SuccessModal'
+import CustomToggle from './CustomToggle'
+import './ReportingsView.module.css'
+import ObservationDetail from './ObservationDetail'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
@@ -156,41 +150,10 @@ const ReportingsView = () => {
         additionalNotes: obs.additionalNotes,
       })
     } else {
-      // Si les détails de l'établissement ne sont pas inclus dans l'observation, vous devrez gérer ce cas.
       console.error('Establishment details are missing for observation', obs)
     }
     return acc
   }, {})
-
-  // Function to create a custom accordion toggle
-  function CustomToggle({ children, eventKey }) {
-    const decoratedOnClick = useAccordionButton(eventKey, () => {
-      setActiveKey((prevKey) => (prevKey === eventKey ? null : eventKey))
-    })
-
-    const isCurrentEventKeyActive = activeKey === eventKey
-
-    const chevronStyle = {
-      transform: isCurrentEventKeyActive ? 'rotate(180deg)' : 'none',
-      transition: 'transform 0.3s ease',
-    }
-
-    return (
-      <Button
-        variant="link"
-        onClick={decoratedOnClick}
-        className={`text-start ${styles.customToggle}`}
-        aria-expanded={isCurrentEventKeyActive}
-      >
-        <span>{children}</span>
-        <ChevronDown
-          size={24}
-          className="bg-primary rounded p-1"
-          style={chevronStyle}
-        />
-      </Button>
-    )
-  }
 
   return (
     <div className="reporting-view text-light">
@@ -204,7 +167,11 @@ const ReportingsView = () => {
                 transition={{ delay: 0.1 + index * 0.04, duration: 0.15 }}
                 className="card-header bg-dark text-light rounded shadow"
               >
-                <CustomToggle eventKey={`${index}`}>
+                <CustomToggle
+                  eventKey={`${index}`}
+                  activeKey={activeKey}
+                  setActiveKey={setActiveKey}
+                >
                   <h3>{name}</h3>
                   <div>{address.split(',')[0]} </div>
                 </CustomToggle>
@@ -212,44 +179,12 @@ const ReportingsView = () => {
               <Accordion.Collapse eventKey={`${index}`}>
                 <Card.Body className="bg-dark text-light rounded">
                   {observations.map((obs, obsIndex) => (
-                    <div
+                    <ObservationDetail
                       key={obsIndex}
-                      className="d-flex align-items-center justify-content-between mb-3"
-                    >
-                      <div className="flex-grow-1 d-flex flex-column">
-                        <div className="mb-1">
-                          <Calendar size="18" className="me-2" />
-                          <span>{formatDate(obs.date)}</span>
-                        </div>
-                        <div>
-                          <Clock size="18" className="me-2" />
-                          <span>{obs.time}</span>
-                        </div>
-                      </div>
-                      {obs.photoURLs &&
-                        obs.photoURLs.map((url, urlIndex) => (
-                          <div
-                            key={urlIndex}
-                            style={{ width: '50px', height: '50px' }}
-                          >
-                            {!isImageLoaded(urlIndex) && (
-                              <Spinner animation="border" />
-                            )}
-                            <img
-                              src={url}
-                              alt={`Observation ${obsIndex + 1}`}
-                              className="img-fluid rounded"
-                              style={{
-                                maxWidth: '50px',
-                                display: isImageLoaded(urlIndex)
-                                  ? 'block'
-                                  : 'none',
-                              }}
-                              onLoad={() => handleImageLoaded(urlIndex)}
-                            />
-                          </div>
-                        ))}
-                    </div>
+                      observation={obs}
+                      isImageLoaded={isImageLoaded}
+                      handleImageLoaded={handleImageLoaded}
+                    />
                   ))}
                   <div className="text-center">
                     <AddObservationButton

@@ -15,8 +15,9 @@ import SuccessModal from '../modals/SuccessModal'
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
   const [isLoading, setIsLoading] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
   const { handleSubmitClick, showModal, handleCloseModal } =
-    useHandleSubmitClick(setIsLoading)
+    useHandleSubmitClick(setIsLoading, setShowAddModal)
 
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
@@ -95,6 +96,7 @@ const WizardStepManager = () => {
             variant="primary"
             onClick={handleVisualizeClick}
             disabled={!canFinish || isLoading}
+            onChange={showAddModal}
           >
             <Map />
           </Button>
