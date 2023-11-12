@@ -9,9 +9,9 @@ import { formatAddress } from '../../../utils/addressUtils'
 import Notes from '../inputs/Notes'
 
 const slideVariants = {
-  initial: { opacity: 0, x: '-100vw' },
+  initial: { opacity: 0, x: '-50%' },
   enter: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: '100vw' },
+  exit: { opacity: 0, x: '50%' },
 }
 
 const AnimatedWrapper = ({ children }) => (

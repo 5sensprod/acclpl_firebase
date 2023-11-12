@@ -16,7 +16,7 @@ export const AlertProvider = ({ children }) => {
   }
 
   const hideAlert = () => {
-    setAlert({ ...alert, show: false })
+    setAlert((prevAlert) => ({ ...prevAlert, show: false }))
   }
 
   return (

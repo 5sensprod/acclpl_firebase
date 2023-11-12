@@ -16,8 +16,8 @@ import {
 } from './db/sync'
 
 import { UserContext } from './context/userContext'
-import { AlertProvider } from './context/AlertContext' // Importez le AlertProvider
-import AlertContainer from './components/AlertContainer' // Importez le AlertContainer
+import { AlertProvider } from './context/AlertContext'
+import AlertContainer from './components/AlertContainer'
 
 function App() {
   const { currentUser } = useContext(UserContext)
@@ -33,12 +33,9 @@ function App() {
   return (
     <AlertProvider>
       {' '}
-      {/* Englobez l'application avec AlertProvider */}
       <ErrorBoundary>
         <>
-          <AlertContainer />{' '}
-          {/* Incluez le AlertContainer pour afficher les alertes */}
-          <SignUpModal />
+          <AlertContainer /> <SignUpModal />
           <SignInModal />
           {!currentUser && <NavBar />}
           <Routes>

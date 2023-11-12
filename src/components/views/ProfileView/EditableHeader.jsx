@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { updateUserDisplayName } from '../../../services/userService'
 import { PersonCircle, Pencil } from 'react-bootstrap-icons'
 import { useAlert } from '../../../context/AlertContext'
+import { variants } from '../../../animations/motionVariants'
 
 const EditableHeader = ({
   editMode,
@@ -26,11 +27,6 @@ const EditableHeader = ({
       showAlert('Une erreur est survenue. Veuillez réessayer plus tard.')
     }
     setEditMode(false)
-  }
-
-  const variants = {
-    hidden: { x: -40 },
-    visible: { x: 0 },
   }
 
   return editMode ? (

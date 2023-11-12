@@ -10,3 +10,9 @@ const itemVariants = {
 }
 
 export { itemVariants }
+
+const variants = {
+  hidden: { x: -40 },
+  visible: { x: 0 },
+}
+export { variants }

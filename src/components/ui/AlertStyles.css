@@ -1,0 +1,24 @@
+/* src/components/styles/AlertStyles.css */
+.alert-high-zindex {
+  z-index: 1060 !important;
+  /* Assurez-vous que cette valeur est supérieure à celle du z-index de votre modal */
+}
+
+.alertStyle {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f44336;
+  /* La couleur de fond pour variant='danger' */
+  color: white;
+  padding: 10px;
+  z-index: 9999;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  width: auto;
+  min-width: 300px;
+  max-width: 600px;
+  text-align: center;
+  box-sizing: border-box;
+}

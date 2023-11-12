@@ -1,43 +1,37 @@
-import React from 'react'
-import { Alert } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import './AlertStyles.css'
 
-const AlertMessage = ({ message, onClose }) => {
+const AlertMessage = ({ variant = 'danger', message }) => {
+  const [show, setShow] = useState(false)
+
+  useEffect(() => {
+    if (message) {
+      setShow(true) // Affiche l'alerte quand message est mis à jour
+      const timer = setTimeout(() => {
+        setShow(false) // Cache l'alerte après 3 secondes
+      }, 3000)
+      return () => clearTimeout(timer) // Nettoie le timer si le composant est démonté ou si le message change
+    }
+  }, [message])
+
   const animationVariants = {
     initial: { y: -100, opacity: 0 },
-    animate: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: 'spring', // Utilise un effet de ressort pour le rebond
-        stiffness: 260,
-        damping: 20,
-      },
-    },
-    exit: {
-      y: -100,
-      opacity: 0,
-      transition: { duration: 0.2 },
-    },
+    animate: { y: 0, opacity: 1 },
+    exit: { y: -100, opacity: 0 },
   }
 
   return (
     <AnimatePresence>
-      {message && (
+      {show && (
         <motion.div
           initial="initial"
           animate="animate"
           exit="exit"
           variants={animationVariants}
+          className="alertStyle"
         >
-          <Alert
-            // variant={variant}
-            onClose={onClose}
-            dismissible
-            className="alert-dark text-dark"
-          >
-            {message}
-          </Alert>
+          {message}
         </motion.div>
       )}
     </AnimatePresence>
