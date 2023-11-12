@@ -255,14 +255,6 @@ const ReportingsView = () => {
                     <AddObservationButton
                       onClick={() => handleOpenAddModal(key)}
                     />
-                    <AddObservationModal
-                      isLoading={isLoading}
-                      setIsLoading={setIsLoading}
-                      show={showAddModal}
-                      onHide={() => setShowAddModal(false)}
-                      title={`Ajouter à ${establishmentName}`}
-                      handleAddObservation={handleSubmitClick}
-                    />
                   </div>
                 </Card.Body>
               </Accordion.Collapse>
@@ -270,6 +262,14 @@ const ReportingsView = () => {
           ),
         )}
       </Accordion>
+      <AddObservationModal
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        show={showAddModal}
+        onHide={() => setShowAddModal(false)}
+        title={`Ajouter à ${establishmentName}`}
+        handleAddObservation={handleSubmitClick}
+      />
       <SuccessModal show={showModal} handleClose={handleCloseModal} />
     </div>
   )
