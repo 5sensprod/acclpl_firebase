@@ -4,36 +4,41 @@ import { getDocs, collection } from 'firebase/firestore'
 import { firestore } from '../firebaseConfig'
 
 export const initializeDBFromFirestore = async () => {
-  // Vérifier si des établissements sont déjà présents dans IndexedDB.
-  const countEstablishments = await db.establishments.count()
-  if (countEstablishments === 0) {
+  try {
     // Établissements
-    const establishmentsSnapshot = await getDocs(
-      collection(firestore, 'establishments'),
-    )
-    const establishments = establishmentsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }))
-    await db.establishments.bulkPut(establishments)
-  } else {
-    console.log('IndexedDB already initialized for establishments.')
-  }
+    const countEstablishments = await db.establishments.count()
+    if (countEstablishments === 0) {
+      const establishmentsSnapshot = await getDocs(
+        collection(firestore, 'establishments'),
+      )
+      const establishments = establishmentsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      await db.establishments.bulkPut(establishments)
+      console.log('Establishments synced with IndexedDB')
+    } else {
+      console.log('IndexedDB already initialized for establishments.')
+    }
 
-  // Vérifier si des observations sont déjà présentes dans IndexedDB.
-  const countObservations = await db.observations.count()
-  if (countObservations === 0) {
     // Observations
-    const observationsSnapshot = await getDocs(
-      collection(firestore, 'observations'),
-    )
-    const observations = observationsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }))
-    await db.observations.bulkPut(observations)
-  } else {
-    console.log('IndexedDB already initialized for observations.')
+    const countObservations = await db.observations.count()
+    if (countObservations === 0) {
+      const observationsSnapshot = await getDocs(
+        collection(firestore, 'observations'),
+      )
+      const observations = observationsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      await db.observations.bulkPut(observations)
+      console.log('Observations synced with IndexedDB')
+    } else {
+      console.log('IndexedDB already initialized for observations.')
+    }
+  } catch (error) {
+    console.error('Error syncing with Firestore:', error)
+    throw new Error('Failed to initialize data from Firestore.')
   }
 }
 
@@ -64,5 +69,19 @@ export const logCurrentData = async () => {
       'Erreur lors de la récupération des données IndexedDB:',
       error,
     )
+  }
+}
+
+export const clearData = async () => {
+  try {
+    // Effacer les données des établissements
+    await db.establishments.clear()
+    console.log('Les données des établissements ont été effacées.')
+
+    // Effacer les données des observations
+    await db.observations.clear()
+    console.log('Les données des observations ont été effacées.')
+  } catch (error) {
+    console.error('Erreur lors de l’effacement des données IndexedDB:', error)
   }
 }

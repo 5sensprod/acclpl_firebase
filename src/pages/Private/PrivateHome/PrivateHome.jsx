@@ -44,6 +44,7 @@ export default function PrivateHome() {
   let contentView
   switch (activeView) {
     case 'profile':
+    default:
       contentView = <ProfileView />
       break
     case 'map':
@@ -53,7 +54,6 @@ export default function PrivateHome() {
       contentView = <ReportingsView />
       break
     case 'announcements':
-    default:
       contentView = <FormWizard />
       break
   }

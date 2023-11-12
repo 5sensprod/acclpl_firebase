@@ -13,6 +13,7 @@ import {
 } from 'firebase/auth'
 import { auth } from '../firebaseConfig'
 import { addUser, getUser } from '../services/userService'
+import { clearData } from '../db/sync'
 
 export const UserContext = createContext()
 
@@ -89,7 +90,19 @@ export function UserContextProvider(props) {
     }
   }
 
-  const signOut = () => firebaseSignOut(auth)
+  const signOut = async () => {
+    try {
+      // Effacer les données d'IndexedDB avant de déconnecter l'utilisateur
+      await clearData()
+      await firebaseSignOut(auth)
+      // Réinitialiser les états de l'utilisateur après la déconnexion
+      setCurrentUser(null)
+      setUserProfile(null)
+      setActiveView('profile') // Ajoutez cette ligne pour réinitialiser la vue active
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion :', error)
+    }
+  }
 
   const changePassword = async (newPassword) => {
     if (!currentUser) {
@@ -132,6 +145,7 @@ export function UserContextProvider(props) {
           setLoadingData(false)
         }
       } else {
+        setActiveView('profile')
         setIsPasswordSignIn(false)
         setUserProfile({})
         setLoadingData(false)
