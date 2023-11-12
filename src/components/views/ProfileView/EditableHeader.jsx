@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { Button, Form, InputGroup } from 'react-bootstrap'
 import { motion } from 'framer-motion'
-import { updateUserDisplayName } from '../../../services/userService'
 import { PersonCircle, Pencil } from 'react-bootstrap-icons'
+import { updateUserDisplayName } from '../../../services/userService'
 import { variants } from '../../../animations/motionVariants'
+import { useToast } from '../../../context/toastContext'
 
 const EditableHeader = ({
   editMode,
@@ -15,18 +16,17 @@ const EditableHeader = ({
   const [localDisplayName, setLocalDisplayName] = useState(
     userProfile.displayName,
   )
+  const { addToast } = useToast()
 
   const handleLocalSubmit = async (event) => {
     event.preventDefault()
     try {
       await updateUserDisplayName(userProfile.userID, localDisplayName)
       setUserProfile({ ...userProfile, displayName: localDisplayName })
+      addToast('Le nom d’affichage a été mis à jour avec succès.', 'success')
     } catch (error) {
-      // Ici, vous pourriez vouloir informer l'utilisateur de l'échec de la mise à jour.
-      console.error('Failed to update display name:', error)
+      addToast('Échec de la mise à jour du nom d’affichage.', 'danger')
     }
-
-    // Sortez du mode d'édition quelle que soit l'issue de la tentative de mise à jour.
     setEditMode(false)
   }
 
