@@ -11,6 +11,7 @@ import PreviewModal from '../modals/PreviewModal'
 import useHandleSubmitClick from '../hooks/useHandleSubmitClick'
 import useShowEstablishmentModal from '../hooks/useShowEstablishmentModal'
 import SuccessModal from '../modals/SuccessModal'
+import { useUserContext } from '../../../context/userContext' // Import the user context
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
@@ -18,6 +19,8 @@ const WizardStepManager = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const { handleSubmitClick, showModal, handleCloseModal } =
     useHandleSubmitClick(setIsLoading, setShowAddModal)
+
+  const { setActiveView } = useUserContext() // Get the setActiveView function from the context
 
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
@@ -72,8 +75,14 @@ const WizardStepManager = () => {
     dispatch({ type: 'NEXT_STEP' })
     setIsLoading(false)
   }
+
   const handleVisualizeClick = () => {
     setShowPreview(true)
+  }
+
+  const handleSubmitAndRedirect = async () => {
+    await handleSubmitClick()
+    setActiveView('reportings') // Update the activeView to 'reportings'
   }
 
   return (
@@ -96,13 +105,13 @@ const WizardStepManager = () => {
             variant="primary"
             onClick={handleVisualizeClick}
             disabled={!canFinish || isLoading}
-            onChange={showAddModal}
+            onChange={showAddModal ? showAddModal : undefined}
           >
             <Map />
           </Button>
           <Button
             variant="success"
-            onClick={handleSubmitClick}
+            onClick={handleSubmitAndRedirect} // Use the new function to submit and redirect
             disabled={!canFinish || isLoading}
           >
             {isLoading ? <Spinner animation="border" size="sm" /> : 'Terminer'}
