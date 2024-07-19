@@ -1,18 +1,20 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
-import { Envelope, Calendar3, Lock } from 'react-bootstrap-icons'
+import { Envelope, Calendar3, Lock, Megaphone } from 'react-bootstrap-icons'
 import { UserContext } from '../../../context/userContext'
 import PasswordChangeModal from './PasswordChangeModal'
 import EditableHeader from './EditableHeader'
 import UserInfo from './UserInfo'
 import { itemVariants } from '../../../animations/motionVariants'
 import AnimatedDiv from '../../../animations/AnimatedDiv'
+import db from '../../../db/db'
 
 const ProfileView = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false)
   const { userProfile, setUserProfile, isPasswordSignIn } =
     useContext(UserContext)
   const [editMode, setEditMode] = useState(false)
+  const [observationCount, setObservationCount] = useState(0)
 
   const togglePasswordModal = () => {
     setShowPasswordModal((prev) => !prev)
@@ -21,6 +23,24 @@ const ProfileView = () => {
   const handleCancel = () => {
     setEditMode(false)
   }
+
+  useEffect(() => {
+    const fetchObservationCount = async () => {
+      if (userProfile?.userID) {
+        try {
+          const count = await db.observations
+            .where('userID')
+            .equals(userProfile.userID)
+            .count()
+          setObservationCount(count)
+        } catch (error) {
+          console.error('Failed to fetch observation count:', error)
+        }
+      }
+    }
+
+    fetchObservationCount()
+  }, [userProfile])
 
   return (
     <Card
@@ -52,8 +72,15 @@ const ProfileView = () => {
             value={new Date(userProfile.joinedDate).toLocaleDateString('fr-FR')}
           />
         </AnimatedDiv>
+        <AnimatedDiv variants={itemVariants} custom={3}>
+          <UserInfo
+            icon={Megaphone}
+            label="Nombre d'éco-signalements "
+            value={observationCount}
+          />
+        </AnimatedDiv>
         {isPasswordSignIn && (
-          <AnimatedDiv variants={itemVariants} custom={3}>
+          <AnimatedDiv variants={itemVariants} custom={4}>
             <div
               className="d-flex align-items-center py-2"
               onClick={togglePasswordModal}
