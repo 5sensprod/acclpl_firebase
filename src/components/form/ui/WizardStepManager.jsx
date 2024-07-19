@@ -96,7 +96,7 @@ const WizardStepManager = () => {
             variant="primary"
             onClick={handleVisualizeClick}
             disabled={!canFinish || isLoading}
-            onChange={showAddModal ? showAddModal : undefined} // Correction
+            onChange={showAddModal}
           >
             <Map />
           </Button>

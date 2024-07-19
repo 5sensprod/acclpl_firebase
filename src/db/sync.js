@@ -1,32 +1,41 @@
 // sync.js
 import db from './db'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { getDocs, collection } from 'firebase/firestore'
 import { firestore } from '../firebaseConfig'
 
 export const initializeDBFromFirestore = async () => {
   try {
-    const establishmentsCollection = collection(firestore, 'establishments')
-    const observationsCollection = collection(firestore, 'observations')
-
-    // Listener pour les établissements
-    onSnapshot(establishmentsCollection, (snapshot) => {
-      const establishments = snapshot.docs.map((doc) => ({
+    // Établissements
+    const countEstablishments = await db.establishments.count()
+    if (countEstablishments === 0) {
+      const establishmentsSnapshot = await getDocs(
+        collection(firestore, 'establishments'),
+      )
+      const establishments = establishmentsSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }))
-      db.establishments.bulkPut(establishments)
-      console.log('Establishments updated in IndexedDB')
-    })
+      await db.establishments.bulkPut(establishments)
+      console.log('Establishments synced with IndexedDB')
+    } else {
+      console.log('IndexedDB already initialized for establishments.')
+    }
 
-    // Listener pour les observations
-    onSnapshot(observationsCollection, (snapshot) => {
-      const observations = snapshot.docs.map((doc) => ({
+    // Observations
+    const countObservations = await db.observations.count()
+    if (countObservations === 0) {
+      const observationsSnapshot = await getDocs(
+        collection(firestore, 'observations'),
+      )
+      const observations = observationsSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }))
-      db.observations.bulkPut(observations)
-      console.log('Observations updated in IndexedDB')
-    })
+      await db.observations.bulkPut(observations)
+      console.log('Observations synced with IndexedDB')
+    } else {
+      console.log('IndexedDB already initialized for observations.')
+    }
   } catch (error) {
     console.error('Error syncing with Firestore:', error)
     throw new Error('Failed to initialize data from Firestore.')

@@ -9,7 +9,11 @@ import PrivateHome from './pages/Private/PrivateHome/PrivateHome'
 import 'leaflet/dist/leaflet.css'
 import ErrorBoundary from './components/ui/ErrorBoundary'
 import Footer from './components/Footer'
-import { initializeDBFromFirestore, logCurrentData } from './db/sync'
+import {
+  initializeDBFromFirestore,
+  checkIfDataIsInitialized,
+  logCurrentData,
+} from './db/sync'
 import { UserContext } from './context/userContext'
 
 function App() {
@@ -18,6 +22,7 @@ function App() {
   useEffect(() => {
     if (currentUser) {
       initializeDBFromFirestore().catch(console.error)
+      checkIfDataIsInitialized()
       logCurrentData()
     }
   }, [currentUser])
