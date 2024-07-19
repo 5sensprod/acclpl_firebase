@@ -6,6 +6,7 @@ import ViewHeader from '../../../components/views/ViewHeader'
 import ProfileView from '../../../components/views/ProfileView/'
 import MapView from '../../../components/views/MapView'
 import ReportingsView from '../../../components/views/ReportingsView/'
+import InfoView from '../../../components/views/InfoView'
 import { UserContext } from '../../../context/userContext'
 import { motion } from 'framer-motion'
 import { FormWizardProvider } from '../../../components/form/context/FormWizardContext'
@@ -39,6 +40,7 @@ export default function PrivateHome() {
     map: { title: 'Mes signalements', Icon: Map },
     announcements: { title: 'Éco-veille', Icon: Megaphone },
     reportings: { title: 'Mes signalements', Icon: CardHeading },
+    info: { title: 'Informations', Icon: CardHeading },
   }
 
   let contentView
@@ -55,6 +57,9 @@ export default function PrivateHome() {
       break
     case 'announcements':
       contentView = <FormWizard />
+      break
+    case 'info':
+      contentView = <InfoView />
       break
   }
 

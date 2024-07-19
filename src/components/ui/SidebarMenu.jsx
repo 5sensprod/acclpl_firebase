@@ -7,14 +7,18 @@ import {
   BoxArrowRight,
   List,
   CardHeading,
+  ExclamationCircle,
+  InfoCircle,
 } from 'react-bootstrap-icons'
 import { UserContext } from '../../context/userContext'
 import { useNavigate } from 'react-router-dom'
 import '../styles/sidebarStyles.css'
 import { motion } from 'framer-motion'
+import BugReportModal from './BugReportModal'
 
 export default function SidebarMenu() {
   const [show, setShow] = useState(false)
+  const [showBugModal, setShowBugModal] = useState(false)
   const { currentUser, signOut, setActiveView, activeView } =
     useContext(UserContext)
   const navigate = useNavigate()
@@ -28,6 +32,12 @@ export default function SidebarMenu() {
       label: 'Signalements',
     },
     { name: 'map', icon: <Map size={24} />, label: 'Carte' },
+    {
+      name: 'bugReport',
+      icon: <ExclamationCircle size={24} />,
+      label: 'Signaler un bug',
+    },
+    { name: 'info', icon: <InfoCircle size={24} />, label: 'Infos' },
   ]
 
   const handleClose = () => setShow(false)
@@ -44,8 +54,12 @@ export default function SidebarMenu() {
   }
 
   const changeView = (viewName) => {
-    setActiveView(viewName)
-    handleClose()
+    if (viewName === 'bugReport') {
+      setShowBugModal(true)
+    } else {
+      setActiveView(viewName)
+      handleClose()
+    }
   }
 
   const listVariants = {
@@ -132,6 +146,12 @@ export default function SidebarMenu() {
           </Nav>
         </Offcanvas.Body>
       </Offcanvas>
+
+      {/* Modal pour signaler un bug */}
+      <BugReportModal
+        show={showBugModal}
+        onHide={() => setShowBugModal(false)}
+      />
     </>
   )
 }
