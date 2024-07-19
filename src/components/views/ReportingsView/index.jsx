@@ -1,7 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../../context/userContext'
-// import { getObservationsForUser } from '../../services/observationService'
-// import { getEstablishmentByRef } from '../../services/establishmentService'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 import { Accordion, Card } from 'react-bootstrap'
 import { motion } from 'framer-motion'
@@ -104,6 +102,18 @@ const ReportingsView = () => {
             .equals(currentUser.uid)
             .toArray()
 
+          // Trier les observations par date et heure du plus récent au plus ancien
+          userObservations.sort(
+            (a, b) =>
+              new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`),
+          )
+
+          // Vérifiez le tri en loguant les dates et heures
+          console.log(
+            'Sorted Observations:',
+            userObservations.map((obs) => `${obs.date} ${obs.time}`),
+          )
+
           // Enrichir les observations avec les détails de l'établissement
           const enrichedObservations = await Promise.all(
             userObservations.map(async (observation) => {
@@ -154,6 +164,16 @@ const ReportingsView = () => {
     }
     return acc
   }, {})
+
+  // Trier les observations de chaque établissement par date et heure (du plus récent au plus ancien)
+  for (const key in observationsByEstablishment) {
+    if (observationsByEstablishment[key].observations) {
+      observationsByEstablishment[key].observations.sort(
+        (a, b) =>
+          new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`),
+      )
+    }
+  }
 
   return (
     <div className="reporting-view text-light">
