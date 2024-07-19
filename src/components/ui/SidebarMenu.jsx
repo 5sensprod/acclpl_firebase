@@ -7,8 +7,8 @@ import {
   BoxArrowRight,
   List,
   CardHeading,
-  ExclamationCircle,
   InfoCircle,
+  BugFill,
 } from 'react-bootstrap-icons'
 import { UserContext } from '../../context/userContext'
 import { useNavigate } from 'react-router-dom'
@@ -32,12 +32,12 @@ export default function SidebarMenu() {
       label: 'Signalements',
     },
     { name: 'map', icon: <Map size={24} />, label: 'Carte' },
+    { name: 'info', icon: <InfoCircle size={24} />, label: 'Infos' },
     {
       name: 'bugReport',
-      icon: <ExclamationCircle size={24} />,
+      icon: <BugFill size={24} />,
       label: 'Signaler un bug',
     },
-    { name: 'info', icon: <InfoCircle size={24} />, label: 'Infos' },
   ]
 
   const handleClose = () => setShow(false)
@@ -60,6 +60,11 @@ export default function SidebarMenu() {
       setActiveView(viewName)
       handleClose()
     }
+  }
+
+  const handleBugReportModalClose = () => {
+    setShowBugModal(false)
+    handleClose() // Fermer le side menu et l'overlay
   }
 
   const listVariants = {
@@ -148,10 +153,7 @@ export default function SidebarMenu() {
       </Offcanvas>
 
       {/* Modal pour signaler un bug */}
-      <BugReportModal
-        show={showBugModal}
-        onHide={() => setShowBugModal(false)}
-      />
+      <BugReportModal show={showBugModal} onHide={handleBugReportModalClose} />
     </>
   )
 }
