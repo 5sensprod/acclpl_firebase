@@ -7,7 +7,7 @@ import {
   BoxArrowRight,
   List,
   CardHeading,
-  InfoCircle,
+  FileText,
   BugFill,
 } from 'react-bootstrap-icons'
 import { UserContext } from '../../context/userContext'
@@ -32,7 +32,7 @@ export default function SidebarMenu() {
       label: 'Signalements',
     },
     { name: 'map', icon: <Map size={24} />, label: 'Carte' },
-    { name: 'info', icon: <InfoCircle size={24} />, label: 'Infos' },
+    { name: 'info', icon: <FileText size={24} />, label: 'Infos' },
     {
       name: 'bugReport',
       icon: <BugFill size={24} />,

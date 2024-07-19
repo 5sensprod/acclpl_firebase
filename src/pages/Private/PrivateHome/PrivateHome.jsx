@@ -1,5 +1,11 @@
 import React, { useContext } from 'react'
-import { Megaphone, Person, Map, CardHeading } from 'react-bootstrap-icons'
+import {
+  Megaphone,
+  Person,
+  Map,
+  CardHeading,
+  FileText,
+} from 'react-bootstrap-icons'
 import FormWizard from '../../../components/form/wizard'
 import SidebarMenu from '../../../components/ui/SidebarMenu'
 import ViewHeader from '../../../components/views/ViewHeader'
@@ -40,7 +46,7 @@ export default function PrivateHome() {
     map: { title: 'Mes signalements', Icon: Map },
     announcements: { title: 'Éco-veille', Icon: Megaphone },
     reportings: { title: 'Mes signalements', Icon: CardHeading },
-    info: { title: 'Informations', Icon: CardHeading },
+    info: { title: 'Que dit la Loi', Icon: FileText },
   }
 
   let contentView

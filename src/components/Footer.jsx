@@ -19,7 +19,7 @@ const Footer = () => {
         </a>
       </small>{' '}
       <small className={`text-light ${styles.tradeMark}`}>
-        &copy; {currentYear} Tous droits réservés.
+        &copy; {currentYear} Tous droits réservés. Dev par 5sensprod
       </small>
     </footer>
   )
