@@ -7,7 +7,11 @@ import { addEstablishment } from '../../../services/establishmentService'
 import { generateUniqueFileName } from '../../../utils/filenameUtils'
 import { compressImage } from '../../../utils/imageCompression'
 
-const useHandleSubmitClick = (setIsLoading, setShowAddModal) => {
+const useHandleSubmitClick = (
+  setIsLoading,
+  setShowAddModal,
+  updateObservations,
+) => {
   const { state } = useFormWizardState()
   const { currentUser } = useContext(UserContext)
   const { dispatch } = useFormWizardState()
@@ -54,6 +58,11 @@ const useHandleSubmitClick = (setIsLoading, setShowAddModal) => {
       dispatch({ type: 'RESET_FORM_DATA' })
       dispatch({ type: 'RESET_TO_DEFAULT_PHOTO' })
       dispatch({ type: 'RESET_TO_FIRST_STEP' })
+
+      // Mise à jour des observations après ajout
+      if (updateObservations) {
+        updateObservations()
+      }
 
       setShowModal(true)
       setShowAddModal(false)

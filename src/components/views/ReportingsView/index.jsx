@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useCallback } from 'react'
 import { UserContext } from '../../../context/userContext'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
 import { Accordion, Card } from 'react-bootstrap'
@@ -19,15 +19,62 @@ const ReportingsView = () => {
   const [activeKey, setActiveKey] = useState(null)
 
   const [showAddModal, setShowAddModal] = useState(false)
-  const [selectedEstablishmentId, setSelectedEstablishmentId] = useState(null)
   const [establishmentName, setEstablishmentName] = useState('')
   const [loaded, setLoaded] = useState({})
 
   const { dispatch } = useFormWizardState()
 
   const [isLoading, setIsLoading] = useState(false)
+
+  const fetchObservationsFromIndexedDB = useCallback(async () => {
+    if (currentUser?.uid) {
+      try {
+        // Récupérer les observations de l'utilisateur depuis IndexedDB
+        const userObservations = await db.observations
+          .where('userID')
+          .equals(currentUser.uid)
+          .toArray()
+
+        // Trier les observations par date et heure du plus récent au plus ancien
+        userObservations.sort(
+          (a, b) =>
+            new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`),
+        )
+
+        // Enrichir les observations avec les détails de l'établissement
+        const enrichedObservations = await Promise.all(
+          userObservations.map(async (observation) => {
+            const establishment = await db.establishments.get(
+              observation.establishmentRef,
+            )
+            return {
+              ...observation,
+              establishment: establishment || {},
+              photoURLs:
+                observation.photoURLs && observation.photoURLs.length > 0
+                  ? observation.photoURLs
+                  : [defaultPhoto],
+            }
+          }),
+        )
+
+        setObservations(enrichedObservations)
+      } catch (error) {
+        console.error('Failed to fetch observations from IndexedDB:', error)
+      }
+    }
+  }, [currentUser])
+
+  useEffect(() => {
+    fetchObservationsFromIndexedDB()
+  }, [currentUser, fetchObservationsFromIndexedDB])
+
   const { handleSubmitClick, showModal, handleCloseModal } =
-    useHandleSubmitClick(setIsLoading, setShowAddModal)
+    useHandleSubmitClick(
+      setIsLoading,
+      setShowAddModal,
+      fetchObservationsFromIndexedDB,
+    )
 
   const handleImageLoaded = (urlIndex) => {
     setLoaded((prevState) => ({ ...prevState, [urlIndex]: true }))
@@ -37,16 +84,7 @@ const ReportingsView = () => {
     return loaded[urlIndex]
   }
 
-  useEffect(() => {
-    if (selectedEstablishmentId) {
-      db.establishments.get(selectedEstablishmentId).then((est) => {
-        setEstablishmentName(est ? est.establishmentName : 'Inconnu')
-      })
-    }
-  }, [selectedEstablishmentId])
-
   const handleOpenAddModal = (establishmentId) => {
-    setSelectedEstablishmentId(establishmentId)
     setShowAddModal(true)
 
     db.establishments.get(establishmentId).then((est) => {
@@ -57,7 +95,7 @@ const ReportingsView = () => {
           type: 'UPDATE_COMPANY_NAME_MODAL',
           payload: {
             companyName: est.establishmentName,
-            normalizedCompanyName: est.normalizedEstablishmentName, // Supposons que vous avez cette donnée
+            normalizedCompanyName: est.normalizedEstablishmentName,
           },
         })
         dispatch({
@@ -91,55 +129,6 @@ const ReportingsView = () => {
       }
     })
   }
-
-  useEffect(() => {
-    const fetchObservationsFromIndexedDB = async () => {
-      if (currentUser?.uid) {
-        try {
-          // Récupérer les observations de l'utilisateur depuis IndexedDB
-          const userObservations = await db.observations
-            .where('userID')
-            .equals(currentUser.uid)
-            .toArray()
-
-          // Trier les observations par date et heure du plus récent au plus ancien
-          userObservations.sort(
-            (a, b) =>
-              new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`),
-          )
-
-          // Vérifiez le tri en loguant les dates et heures
-          console.log(
-            'Sorted Observations:',
-            userObservations.map((obs) => `${obs.date} ${obs.time}`),
-          )
-
-          // Enrichir les observations avec les détails de l'établissement
-          const enrichedObservations = await Promise.all(
-            userObservations.map(async (observation) => {
-              const establishment = await db.establishments.get(
-                observation.establishmentRef,
-              )
-              return {
-                ...observation,
-                establishment: establishment || {},
-                photoURLs:
-                  observation.photoURLs && observation.photoURLs.length > 0
-                    ? observation.photoURLs
-                    : [defaultPhoto],
-              }
-            }),
-          )
-
-          setObservations(enrichedObservations)
-        } catch (error) {
-          console.error('Failed to fetch observations from IndexedDB:', error)
-        }
-      }
-    }
-
-    fetchObservationsFromIndexedDB()
-  }, [currentUser])
 
   // Group observations by establishment id
   const observationsByEstablishment = observations.reduce((acc, obs) => {
@@ -193,7 +182,7 @@ const ReportingsView = () => {
                   setActiveKey={setActiveKey}
                 >
                   <h3>{name}</h3>
-                  <div>{address.split(',')[0]} </div>
+                  <div>{address.split(',')[0]}</div>
                 </CustomToggle>
               </motion.div>
               <Accordion.Collapse eventKey={`${index}`}>
