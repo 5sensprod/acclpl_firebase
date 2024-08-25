@@ -57,16 +57,16 @@ const MapView = () => {
       return {
         markerCoords: coords ? [coords.latitude, coords.longitude] : null,
         companyName: obs.establishment?.establishmentName || 'Inconnu',
-        imageURL:
-          obs.photoURLs && obs.photoURLs.length > 0
-            ? obs.photoURLs[0]
-            : defaultPhoto,
         isLastObservation: obs === lastObservation,
         observationDateTimes: observations
           .filter((o) => o.establishmentRef === obs.establishmentRef)
           .map((o) => ({
-            date: formatDate(o.date), // Formatage de la date
-            time: o.time, // Ajout de l'heure brute (vous pouvez la formater ici si besoin)
+            date: formatDate(o.date),
+            time: o.time,
+            photoURLs:
+              o.photoURLs && o.photoURLs.length > 0
+                ? o.photoURLs
+                : [defaultPhoto], // Inclure les images pour chaque observation
           })),
       }
     })

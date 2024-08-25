@@ -8,7 +8,6 @@ function LeafletMapView({ center, zoom, markersData }) {
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
 
-  // Définissez defaultIcon et lastIcon à l'extérieur des effets pour qu'ils soient accessibles partout
   const defaultIcon = L.icon({
     iconUrl: markerIcon,
     shadowUrl: markerShadow,
@@ -45,31 +44,77 @@ function LeafletMapView({ center, zoom, markersData }) {
     markersData.forEach((data) => {
       const icon = data.isLastObservation ? lastIcon : defaultIcon
       const marker = L.marker(data.markerCoords, { icon }).addTo(map)
+
       if (data.isLastObservation) {
         lastMarkerCoords = data.markerCoords
       }
-      marker.on('click', () => {
-        setTimeout(() => {
-          map.setView(data.markerCoords, 15)
-        }, 10)
-      })
 
-      // Inclure les dates et heures de signalement dans le popup
-      if (data.companyName) {
-        const dateTimesList = data.observationDateTimes
-          .map((dateTime) => `<li>${dateTime.date} à ${dateTime.time}</li>`)
-          .join('')
+      let currentIndex = 0
 
-        const popupContent = `
-      <div style="display: flex; flex-direction: column; align-items: start; justify-content: center; min-width: 80px; text-align:center;">
-        <p style="margin-top: 5px;margin-bottom: 5px;">${data.companyName}</p>
-        <p style="margin: 0;">Dates et heures des signalements :</p>
-        <ul style="list-style: none; padding: 0; margin: 5px 0;">${dateTimesList}</ul>
-        <img src="${data.imageURL}" alt="Image associée" style="max-width: 80px; max-height: 100px;">
-      </div>
-    `
-        marker.bindPopup(popupContent)
+      // Fonction de mise à jour du contenu du popup
+      const updatePopupContent = (popupElement, index) => {
+        const signalement = data.observationDateTimes[index]
+
+        // Mise à jour du texte de la date et de l'heure
+        popupElement.querySelector(
+          '.popup-date',
+        ).textContent = ` ${signalement.date} à ${signalement.time}`
+
+        // Mise à jour correcte de l'image en fonction de la date sélectionnée
+        const imageElement = popupElement.querySelector('.popup-image')
+        const imageURLs = signalement.photoURLs // Utiliser les images associées à la date
+        imageElement.src = imageURLs[0] // Affiche la première image du tableau de photos
+        imageElement.alt = `Image associée au signalement du ${signalement.date}`
       }
+
+      marker.on('click', () => {
+        const popupContent = `
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 80px; text-align:center;">
+            <p style="margin-top: 5px;margin-bottom: 5px;">${
+              data.companyName
+            }</p>
+            <p class="popup-date" style="margin: 0;">${
+              data.observationDateTimes[currentIndex].date
+            } à ${data.observationDateTimes[currentIndex].time}</p>
+            <img class="popup-image" src="${
+              data.observationDateTimes[currentIndex].photoURLs[0]
+            }" alt="Image associée" style="max-width: 80px; max-height: 100px;">
+            ${
+              data.observationDateTimes.length > 1
+                ? `<div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <button id="prev-btn" style="cursor: pointer;">&#8249;</button>
+                    <button id="next-btn" style="cursor: pointer;">&#8250;</button>
+                   </div>`
+                : ''
+            }
+          </div>
+        `
+
+        L.popup()
+          .setLatLng(data.markerCoords)
+          .setContent(popupContent)
+          .openOn(map)
+
+        const popupElement = document.querySelector('.leaflet-popup-content')
+
+        // Vérifiez l'existence des boutons avant de leur ajouter des écouteurs
+        const prevBtn = popupElement.querySelector('#prev-btn')
+        const nextBtn = popupElement.querySelector('#next-btn')
+
+        if (prevBtn && nextBtn) {
+          prevBtn.addEventListener('click', () => {
+            currentIndex =
+              (currentIndex - 1 + data.observationDateTimes.length) %
+              data.observationDateTimes.length
+            updatePopupContent(popupElement, currentIndex)
+          })
+
+          nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % data.observationDateTimes.length
+            updatePopupContent(popupElement, currentIndex)
+          })
+        }
+      })
     })
 
     if (lastMarkerCoords) {
