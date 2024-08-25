@@ -3,6 +3,7 @@ import LeafletMapView from './LeafletMapView'
 import { UserContext } from '../../context/userContext'
 import defaultPhoto from '../../assets/images/defaultPhoto.jpg'
 import db from '../../db/db'
+import { formatDate } from '../../utils/dateUtils'
 
 const MapView = () => {
   const { currentUser } = useContext(UserContext)
@@ -61,6 +62,12 @@ const MapView = () => {
             ? obs.photoURLs[0]
             : defaultPhoto,
         isLastObservation: obs === lastObservation,
+        observationDateTimes: observations
+          .filter((o) => o.establishmentRef === obs.establishmentRef)
+          .map((o) => ({
+            date: formatDate(o.date), // Formatage de la date
+            time: o.time, // Ajout de l'heure brute (vous pouvez la formater ici si besoin)
+          })),
       }
     })
     .filter((marker) => marker.markerCoords)

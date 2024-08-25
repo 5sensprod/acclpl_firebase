@@ -53,13 +53,21 @@ function LeafletMapView({ center, zoom, markersData }) {
           map.setView(data.markerCoords, 15)
         }, 10)
       })
+
+      // Inclure les dates et heures de signalement dans le popup
       if (data.companyName) {
+        const dateTimesList = data.observationDateTimes
+          .map((dateTime) => `<li>${dateTime.date} à ${dateTime.time}</li>`)
+          .join('')
+
         const popupContent = `
-          <div style="display: flex; flex-direction: column; align-items: start; justify-content: center; min-width: 80px; text-align:center;">
-          <p style="margin-top: 5px;margin-bottom: 5px;">${data.companyName}</p>
-            <img src="${data.imageURL}" alt="Image associée" style="max-width: 80px; max-height: 100px;">
-          </div>
-        `
+      <div style="display: flex; flex-direction: column; align-items: start; justify-content: center; min-width: 80px; text-align:center;">
+        <p style="margin-top: 5px;margin-bottom: 5px;">${data.companyName}</p>
+        <p style="margin: 0;">Dates et heures des signalements :</p>
+        <ul style="list-style: none; padding: 0; margin: 5px 0;">${dateTimesList}</ul>
+        <img src="${data.imageURL}" alt="Image associée" style="max-width: 80px; max-height: 100px;">
+      </div>
+    `
         marker.bindPopup(popupContent)
       }
     })
