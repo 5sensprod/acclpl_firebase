@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react'
 import { UserContext } from '../../../context/userContext'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
-import { Accordion, Card } from 'react-bootstrap'
+import { Accordion, Card, Button } from 'react-bootstrap' // Ajout de Button
 import { motion } from 'framer-motion'
 import AddObservationButton from '../AddObservationButton'
 import AddObservationModal from '../AddObservationModal'
@@ -29,19 +29,16 @@ const ReportingsView = () => {
   const fetchObservationsFromIndexedDB = useCallback(async () => {
     if (currentUser?.uid) {
       try {
-        // Récupérer les observations de l'utilisateur depuis IndexedDB
         const userObservations = await db.observations
           .where('userID')
           .equals(currentUser.uid)
           .toArray()
 
-        // Trier les observations par date et heure du plus récent au plus ancien
         userObservations.sort(
           (a, b) =>
             new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`),
         )
 
-        // Enrichir les observations avec les détails de l'établissement
         const enrichedObservations = await Promise.all(
           userObservations.map(async (observation) => {
             const establishment = await db.establishments.get(
@@ -90,7 +87,6 @@ const ReportingsView = () => {
     db.establishments.get(establishmentId).then((est) => {
       if (est) {
         setEstablishmentName(est.establishmentName)
-        // Dispatchez l'action pour mettre à jour le nom et l'adresse dans le state global
         dispatch({
           type: 'UPDATE_COMPANY_NAME_MODAL',
           payload: {
@@ -118,7 +114,6 @@ const ReportingsView = () => {
         })
       } else {
         setEstablishmentName('Inconnu')
-        // Si l'établissement est inconnu, réinitialisez les données dans le state global
         dispatch({ type: 'RESET_COMPANY_ADDRESS' })
         dispatch({ type: 'RESET_COMPANY_NAME_MODAL' })
         dispatch({
@@ -130,9 +125,17 @@ const ReportingsView = () => {
     })
   }
 
-  // Group observations by establishment id
+  // Fonction pour supprimer une observation
+  const handleDeleteObservation = async (observationId) => {
+    try {
+      await db.observations.delete(observationId) // Supprime l'observation d'IndexedDB
+      fetchObservationsFromIndexedDB() // Rafraîchit les observations après suppression
+    } catch (error) {
+      console.error('Failed to delete observation:', error)
+    }
+  }
+
   const observationsByEstablishment = observations.reduce((acc, obs) => {
-    // S'assurer que les détails de l'établissement sont présents
     if (obs.establishment) {
       const key = obs.establishmentRef
       if (!acc[key]) {
@@ -143,6 +146,7 @@ const ReportingsView = () => {
         }
       }
       acc[key].observations.push({
+        id: obs.id, // Ajout de l'ID pour faciliter la suppression
         date: obs.date,
         time: obs.time,
         photoURLs: obs.photoURLs,
@@ -154,7 +158,6 @@ const ReportingsView = () => {
     return acc
   }, {})
 
-  // Trier les observations de chaque établissement par date et heure (du plus récent au plus ancien)
   for (const key in observationsByEstablishment) {
     if (observationsByEstablishment[key].observations) {
       observationsByEstablishment[key].observations.sort(
@@ -169,7 +172,7 @@ const ReportingsView = () => {
       <Accordion activeKey={activeKey}>
         {Object.entries(observationsByEstablishment).map(
           ([key, { name, address, observations }], index) => (
-            <Card key={key} className="mb-3 bg-dark ">
+            <Card key={key} className="mb-3 bg-dark">
               <motion.div
                 initial={{ x: -60 }}
                 animate={{ x: 0 }}
@@ -188,12 +191,20 @@ const ReportingsView = () => {
               <Accordion.Collapse eventKey={`${index}`}>
                 <Card.Body className="bg-dark text-light rounded">
                   {observations.map((obs, obsIndex) => (
-                    <ObservationDetail
-                      key={obsIndex}
-                      observation={obs}
-                      isImageLoaded={isImageLoaded}
-                      handleImageLoaded={handleImageLoaded}
-                    />
+                    <div key={obsIndex} className="mb-3">
+                      <ObservationDetail
+                        observation={obs}
+                        isImageLoaded={isImageLoaded}
+                        handleImageLoaded={handleImageLoaded}
+                      />
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDeleteObservation(obs.id)} // Appel à la fonction de suppression
+                      >
+                        Supprimer
+                      </Button>
+                    </div>
                   ))}
                   <div className="text-center">
                     <AddObservationButton
