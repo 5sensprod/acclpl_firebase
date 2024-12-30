@@ -11,9 +11,10 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
       details,
       isApproximateMatch,
     } = duplicateCheckResult
+
     const companyName = details.establishmentName
     const photoURLs = details.photoURL
-
+    const address = details.address
     // Créer le message en fonction de isApproximateMatch
     const messageBody = isApproximateMatch
       ? 'Les informations semblent correspondre à un établissement existant, sélectionnez celui en rapport avec votre signalement.'
@@ -47,9 +48,7 @@ const useShowEstablishmentModal = (setIsLoading, dispatch) => {
     const buttonsConfig = getModalButtonsConfig(
       dispatch,
       details.coordinates,
-      `${details.streetNumber || ''} ${details.streetName}, ${
-        details.postalCode
-      } ${details.city}`,
+      address, // Passer l'adresse complète ici
       setModalConfig,
       companyName,
       photoURLs,

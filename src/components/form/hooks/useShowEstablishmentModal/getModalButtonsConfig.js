@@ -6,9 +6,9 @@ export const handleYesClick = (
   companyName,
   photoURL,
 ) => {
-  console.log('Coordonnées avant inversion dans handleYesClick:', coordinates)
   const invertedCoordinates = [coordinates.latitude, coordinates.longitude]
-  console.log('Coordonnées après inversion:', invertedCoordinates)
+
+  // Mettre à jour avec l'adresse complète
   dispatch({
     type: 'UPDATE_FORM_DATA',
     payload: {
@@ -19,9 +19,11 @@ export const handleYesClick = (
       isDefaultPhoto: false,
     },
   })
+
   dispatch({ type: 'SET_STEP', payload: 3 })
   dispatch({ type: 'UPDATE_HAS_CLOSED_MODAL', payload: true })
   dispatch({ type: 'SET_IS_OCCURRENCE_TRUE' })
+
   setModalConfig((prevConfig) => ({
     ...prevConfig,
     isVisible: false,
