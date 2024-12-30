@@ -14,6 +14,7 @@ import {
 import { auth } from '../firebaseConfig'
 import { addUser, getUser } from '../services/userService'
 import { clearData } from '../db/sync'
+import { initializeDBFromFirestore } from '../db/sync'
 
 export const UserContext = createContext()
 
@@ -92,18 +93,15 @@ export function UserContextProvider(props) {
 
   const signOut = async () => {
     try {
-      // Effacer les données d'IndexedDB avant de déconnecter l'utilisateur
-      await clearData()
+      await clearData() // Vider IndexedDB
       await firebaseSignOut(auth)
-      // Réinitialiser les états de l'utilisateur après la déconnexion
       setCurrentUser(null)
       setUserProfile(null)
-      setActiveView('profile') // Ajoutez cette ligne pour réinitialiser la vue active
+      setActiveView('profile')
     } catch (error) {
       console.error('Erreur lors de la déconnexion :', error)
     }
   }
-
   const changePassword = async (newPassword) => {
     if (!currentUser) {
       throw new Error(
@@ -132,19 +130,17 @@ export function UserContextProvider(props) {
       setCurrentUser(user)
       setLoadingData(true)
       if (user) {
-        setIsPasswordSignIn(
-          user.providerData.some((p) => p.providerId === 'password'),
-        )
         try {
+          await initializeDBFromFirestore() // Réinitialiser IndexedDB avec les données Firestore
           let profileData = await getUser(user.uid)
           setUserProfile(profileData)
         } catch (error) {
-          if (!error.message.includes('No user found with userID')) {
-          }
+          console.error('Error initializing data:', error)
         } finally {
           setLoadingData(false)
         }
       } else {
+        await clearData() // Vider IndexedDB à la déconnexion
         setActiveView('profile')
         setIsPasswordSignIn(false)
         setUserProfile({})

@@ -13,6 +13,7 @@ import SuccessModal from '../../form/modals/SuccessModal'
 import CustomToggle from './CustomToggle'
 import './ReportingsView.module.css'
 import ObservationDetail from './ObservationDetail'
+import { deleteObservationFromFirestore } from '../../../services/observationService'
 
 const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
@@ -84,6 +85,9 @@ const ReportingsView = () => {
   // Nouvelle fonction pour gérer la confirmation de suppression
   const handleConfirmDelete = async () => {
     try {
+      // Supprimer dans Firebase
+      await deleteObservationFromFirestore(observationToDelete) // Cette fonction est à créer
+      // Supprimer dans IndexedDB
       await db.observations.delete(observationToDelete)
       await fetchObservationsFromIndexedDB()
       setShowDeleteModal(false)

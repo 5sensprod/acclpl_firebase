@@ -8,24 +8,37 @@ export const initializeDBFromFirestore = async () => {
     const establishmentsCollection = collection(firestore, 'establishments')
     const observationsCollection = collection(firestore, 'observations')
 
-    // Listener pour les établissements
-    onSnapshot(establishmentsCollection, (snapshot) => {
-      const establishments = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
-      db.establishments.bulkPut(establishments)
-      console.log('Establishments updated in IndexedDB')
-    })
-
     // Listener pour les observations
     onSnapshot(observationsCollection, (snapshot) => {
-      const observations = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
-      db.observations.bulkPut(observations)
-      console.log('Observations updated in IndexedDB')
+      snapshot.docChanges().forEach(async (change) => {
+        if (change.type === 'removed') {
+          // Document supprimé dans Firestore
+          await db.observations.delete(change.doc.id)
+          console.log('Observation supprimée dans IndexedDB:', change.doc.id)
+        } else {
+          // Document ajouté ou modifié
+          const observation = {
+            id: change.doc.id,
+            ...change.doc.data(),
+          }
+          await db.observations.put(observation)
+        }
+      })
+    })
+
+    // Même logique pour les établissements
+    onSnapshot(establishmentsCollection, (snapshot) => {
+      snapshot.docChanges().forEach(async (change) => {
+        if (change.type === 'removed') {
+          await db.establishments.delete(change.doc.id)
+        } else {
+          const establishment = {
+            id: change.doc.id,
+            ...change.doc.data(),
+          }
+          await db.establishments.put(establishment)
+        }
+      })
     })
   } catch (error) {
     console.error('Error syncing with Firestore:', error)
