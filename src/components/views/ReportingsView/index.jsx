@@ -1,73 +1,39 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react'
-import { UserContext } from '../../../context/userContext'
-import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
+// src/components/views/ReportingsView/index.jsx
+import React, { useState, useEffect } from 'react'
 import { Accordion, Card, Button } from 'react-bootstrap'
 import { motion } from 'framer-motion'
+import { useFormWizardState } from '../../form/context/FormWizardContext'
+import { useObservations } from './hooks/useObservations'
+import { useDeleteObservation } from './hooks/useDeleteObservation'
+import { useEstablishments } from './hooks/useEstablishments'
 import AddObservationButton from '../AddObservationButton'
 import AddObservationModal from '../AddObservationModal'
 import DeleteModal from '../../form/modals/DeleteModal'
-import db from '../../../db/db'
-import { useFormWizardState } from '../../form/context/FormWizardContext'
-import useHandleSubmitClick from '../../form/hooks/useHandleSubmitClick'
 import SuccessModal from '../../form/modals/SuccessModal'
 import CustomToggle from './CustomToggle'
-import './ReportingsView.module.css'
 import ObservationDetail from './ObservationDetail'
-import { deleteObservationFromFirestore } from '../../../services/observationService'
+import useHandleSubmitClick from '../../form/hooks/useHandleSubmitClick'
+import './ReportingsView.module.css'
 
 const ReportingsView = () => {
-  const { currentUser } = useContext(UserContext)
-  const [observations, setObservations] = useState([])
   const [activeKey, setActiveKey] = useState(null)
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [establishmentName, setEstablishmentName] = useState('')
   const [loaded, setLoaded] = useState({})
-  const { dispatch } = useFormWizardState()
   const [isLoading, setIsLoading] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
 
-  // Nouveaux états pour la modal de confirmation de suppression
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [observationToDelete, setObservationToDelete] = useState(null)
-
-  const fetchObservationsFromIndexedDB = useCallback(async () => {
-    if (currentUser?.uid) {
-      try {
-        const userObservations = await db.observations
-          .where('userID')
-          .equals(currentUser.uid)
-          .toArray()
-
-        userObservations.sort(
-          (a, b) =>
-            new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`),
-        )
-
-        const enrichedObservations = await Promise.all(
-          userObservations.map(async (observation) => {
-            const establishment = await db.establishments.get(
-              observation.establishmentRef,
-            )
-            return {
-              ...observation,
-              establishment: establishment || {},
-              photoURLs:
-                observation.photoURLs && observation.photoURLs.length > 0
-                  ? observation.photoURLs
-                  : [defaultPhoto],
-            }
-          }),
-        )
-
-        setObservations(enrichedObservations)
-      } catch (error) {
-        console.error('Failed to fetch observations from IndexedDB:', error)
-      }
-    }
-  }, [currentUser])
-
-  useEffect(() => {
-    fetchObservationsFromIndexedDB()
-  }, [currentUser, fetchObservationsFromIndexedDB])
+  const { dispatch } = useFormWizardState()
+  const { observations, fetchObservationsFromIndexedDB } = useObservations()
+  const {
+    showDeleteModal,
+    handleDeleteClick,
+    handleConfirmDelete,
+    handleCloseDeleteModal,
+  } = useDeleteObservation(fetchObservationsFromIndexedDB)
+  const { establishmentName, handleOpenAddModal } = useEstablishments(
+    observations,
+    dispatch,
+    setShowAddModal, // Ajout de ce paramètre
+  )
 
   const { handleSubmitClick, showModal, handleCloseModal } =
     useHandleSubmitClick(
@@ -76,83 +42,12 @@ const ReportingsView = () => {
       fetchObservationsFromIndexedDB,
     )
 
-  // Nouvelle fonction pour ouvrir la modal de confirmation
-  const handleDeleteClick = (observationId) => {
-    setObservationToDelete(observationId)
-    setShowDeleteModal(true)
-  }
-
-  // Nouvelle fonction pour gérer la confirmation de suppression
-  const handleConfirmDelete = async () => {
-    try {
-      // Supprimer dans Firebase
-      await deleteObservationFromFirestore(observationToDelete) // Cette fonction est à créer
-      // Supprimer dans IndexedDB
-      await db.observations.delete(observationToDelete)
-      await fetchObservationsFromIndexedDB()
-      setShowDeleteModal(false)
-      setObservationToDelete(null)
-    } catch (error) {
-      console.error('Failed to delete observation:', error)
-    }
-  }
-
-  // Fonction pour fermer la modal de confirmation
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false)
-    setObservationToDelete(null)
-  }
-
   const handleImageLoaded = (urlIndex) => {
     setLoaded((prevState) => ({ ...prevState, [urlIndex]: true }))
   }
 
   const isImageLoaded = (urlIndex) => {
     return loaded[urlIndex]
-  }
-
-  const handleOpenAddModal = (establishmentId) => {
-    setShowAddModal(true)
-
-    db.establishments.get(establishmentId).then((est) => {
-      if (est) {
-        setEstablishmentName(est.establishmentName)
-        dispatch({
-          type: 'UPDATE_COMPANY_NAME_MODAL',
-          payload: {
-            companyName: est.establishmentName,
-            normalizedCompanyName: est.normalizedEstablishmentName,
-          },
-        })
-        dispatch({
-          type: 'UPDATE_COMPANY_ADDRESS',
-          payload: est.address,
-        })
-        dispatch({
-          type: 'SET_COMPANY_COORDINATES',
-          payload: [est.coordinates.latitude, est.coordinates.longitude],
-        })
-
-        dispatch({
-          type: 'SET_ESTABLISHMENT_EXISTS',
-          payload: true,
-        })
-
-        dispatch({
-          type: 'SET_CURRENT_ESTABLISHMENT_ID',
-          payload: establishmentId,
-        })
-      } else {
-        setEstablishmentName('Inconnu')
-        dispatch({ type: 'RESET_COMPANY_ADDRESS' })
-        dispatch({ type: 'RESET_COMPANY_NAME_MODAL' })
-        dispatch({
-          type: 'SET_ESTABLISHMENT_EXISTS',
-          payload: false,
-        })
-        dispatch({ type: 'SET_CURRENT_ESTABLISHMENT_ID', payload: null })
-      }
-    })
   }
 
   const observationsByEstablishment = observations.reduce((acc, obs) => {
@@ -178,6 +73,7 @@ const ReportingsView = () => {
     return acc
   }, {})
 
+  // Tri des observations par date et heure pour chaque établissement
   for (const key in observationsByEstablishment) {
     if (observationsByEstablishment[key].observations) {
       observationsByEstablishment[key].observations.sort(
@@ -186,6 +82,11 @@ const ReportingsView = () => {
       )
     }
   }
+
+  useEffect(() => {
+    console.log('ReportingsView useEffect triggered')
+    fetchObservationsFromIndexedDB()
+  }, [fetchObservationsFromIndexedDB])
 
   return (
     <div className="reporting-view text-light">
