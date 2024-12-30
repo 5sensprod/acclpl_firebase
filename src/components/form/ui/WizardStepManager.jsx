@@ -11,13 +11,15 @@ import PreviewModal from '../modals/PreviewModal'
 import useHandleSubmitClick from '../hooks/useHandleSubmitClick'
 import useShowEstablishmentModal from '../hooks/useShowEstablishmentModal'
 import SuccessModal from '../modals/SuccessModal'
+import CancelModal from '../modals/CancelModal'
 import { useUserContext } from '../../../context/userContext'
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
   const [isLoading, setIsLoading] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
-  const [showSuccessModal, setShowSuccessModal] = useState(false) // État pour gérer l'affichage du SuccessModal
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showCancelModal, setShowCancelModal] = useState(false)
   const { handleSubmitClick } = useHandleSubmitClick(
     setIsLoading,
     setShowAddModal,
@@ -32,16 +34,17 @@ const WizardStepManager = () => {
 
   // Gérer l'annulation
   const handleCancel = () => {
-    if (
-      window.confirm(
-        'Voulez-vous vraiment annuler ce signalement ? Les données saisies seront perdues.',
-      )
-    ) {
-      // Réinitialiser le formulaire
-      dispatch({ type: 'RESET_FORM' })
-      // Rediriger vers la vue des signalements
-      setActiveView('reportings')
-    }
+    setShowCancelModal(true)
+  }
+
+  const handleConfirmCancel = () => {
+    dispatch({ type: 'RESET_FORM' })
+    setShowCancelModal(false)
+    setActiveView('reportings')
+  }
+
+  const handleCloseCancelModal = () => {
+    setShowCancelModal(false)
   }
 
   const handleClosePreview = () => {
@@ -178,6 +181,11 @@ const WizardStepManager = () => {
       <SuccessModal
         show={showSuccessModal}
         handleClose={handleSuccessModalClose}
+      />
+      <CancelModal
+        show={showCancelModal}
+        handleClose={handleCloseCancelModal}
+        handleConfirm={handleConfirmCancel}
       />
     </div>
   )
