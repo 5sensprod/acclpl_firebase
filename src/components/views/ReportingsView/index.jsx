@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react'
 import { UserContext } from '../../../context/userContext'
 import defaultPhoto from '../../../assets/images/defaultPhoto.jpg'
-import { Accordion, Card, Button } from 'react-bootstrap' // Ajout de Button
+import { Accordion, Card, Button } from 'react-bootstrap'
 import { motion } from 'framer-motion'
 import AddObservationButton from '../AddObservationButton'
 import AddObservationModal from '../AddObservationModal'
+import DeleteModal from '../../form/modals/DeleteModal'
 import db from '../../../db/db'
 import { useFormWizardState } from '../../form/context/FormWizardContext'
 import useHandleSubmitClick from '../../form/hooks/useHandleSubmitClick'
@@ -17,14 +18,15 @@ const ReportingsView = () => {
   const { currentUser } = useContext(UserContext)
   const [observations, setObservations] = useState([])
   const [activeKey, setActiveKey] = useState(null)
-
   const [showAddModal, setShowAddModal] = useState(false)
   const [establishmentName, setEstablishmentName] = useState('')
   const [loaded, setLoaded] = useState({})
-
   const { dispatch } = useFormWizardState()
-
   const [isLoading, setIsLoading] = useState(false)
+
+  // Nouveaux états pour la modal de confirmation de suppression
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [observationToDelete, setObservationToDelete] = useState(null)
 
   const fetchObservationsFromIndexedDB = useCallback(async () => {
     if (currentUser?.uid) {
@@ -72,6 +74,30 @@ const ReportingsView = () => {
       setShowAddModal,
       fetchObservationsFromIndexedDB,
     )
+
+  // Nouvelle fonction pour ouvrir la modal de confirmation
+  const handleDeleteClick = (observationId) => {
+    setObservationToDelete(observationId)
+    setShowDeleteModal(true)
+  }
+
+  // Nouvelle fonction pour gérer la confirmation de suppression
+  const handleConfirmDelete = async () => {
+    try {
+      await db.observations.delete(observationToDelete)
+      await fetchObservationsFromIndexedDB()
+      setShowDeleteModal(false)
+      setObservationToDelete(null)
+    } catch (error) {
+      console.error('Failed to delete observation:', error)
+    }
+  }
+
+  // Fonction pour fermer la modal de confirmation
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false)
+    setObservationToDelete(null)
+  }
 
   const handleImageLoaded = (urlIndex) => {
     setLoaded((prevState) => ({ ...prevState, [urlIndex]: true }))
@@ -125,16 +151,6 @@ const ReportingsView = () => {
     })
   }
 
-  // Fonction pour supprimer une observation
-  const handleDeleteObservation = async (observationId) => {
-    try {
-      await db.observations.delete(observationId) // Supprime l'observation d'IndexedDB
-      fetchObservationsFromIndexedDB() // Rafraîchit les observations après suppression
-    } catch (error) {
-      console.error('Failed to delete observation:', error)
-    }
-  }
-
   const observationsByEstablishment = observations.reduce((acc, obs) => {
     if (obs.establishment) {
       const key = obs.establishmentRef
@@ -146,7 +162,7 @@ const ReportingsView = () => {
         }
       }
       acc[key].observations.push({
-        id: obs.id, // Ajout de l'ID pour faciliter la suppression
+        id: obs.id,
         date: obs.date,
         time: obs.time,
         photoURLs: obs.photoURLs,
@@ -200,7 +216,7 @@ const ReportingsView = () => {
                       <Button
                         variant="danger"
                         size="sm"
-                        onClick={() => handleDeleteObservation(obs.id)} // Appel à la fonction de suppression
+                        onClick={() => handleDeleteClick(obs.id)}
                       >
                         Supprimer
                       </Button>
@@ -217,6 +233,7 @@ const ReportingsView = () => {
           ),
         )}
       </Accordion>
+
       <AddObservationModal
         isLoading={isLoading}
         setIsLoading={setIsLoading}
@@ -225,7 +242,14 @@ const ReportingsView = () => {
         title={`Ajouter à ${establishmentName}`}
         handleAddObservation={handleSubmitClick}
       />
+
       <SuccessModal show={showModal} handleClose={handleCloseModal} />
+
+      <DeleteModal
+        show={showDeleteModal}
+        handleClose={handleCloseDeleteModal}
+        handleConfirm={handleConfirmDelete}
+      />
     </div>
   )
 }
