@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import BaseModal from './BaseModal'
 import LeafletMap from '../../LeafletMap'
 
 const PreviewModal = ({
@@ -11,24 +11,27 @@ const PreviewModal = ({
   photoURLs,
 }) => {
   const imageURL = isDefaultPhoto ? previewPhotoURL : photoURLs[0]
+
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Prévisualisation</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <LeafletMap
-          markerCoords={formData.companyCoordinates}
-          companyName={formData.companyName}
-          imageURL={imageURL}
-        />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Fermer
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <BaseModal
+      show={show}
+      onHide={onHide}
+      title="Prévisualisation"
+      size="lg"
+      buttons={[
+        {
+          text: 'Fermer',
+          onClick: onHide,
+          variant: 'secondary',
+        },
+      ]}
+    >
+      <LeafletMap
+        markerCoords={formData.companyCoordinates}
+        companyName={formData.companyName}
+        imageURL={imageURL}
+      />
+    </BaseModal>
   )
 }
 

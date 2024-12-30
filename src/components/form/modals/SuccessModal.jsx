@@ -1,22 +1,22 @@
+// SuccessModal.jsx
 import React from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import BaseModal from './BaseModal'
 
-const SuccessModal = ({ show, handleClose }) => {
-  return (
-    <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Confirmation</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        Votre signalement a bien été pris en compte ! Merci
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Fermer
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  )
-}
+const SuccessModal = ({ show, handleClose }) => (
+  <BaseModal
+    show={show}
+    onHide={handleClose}
+    title="Confirmation"
+    buttons={[
+      {
+        text: 'Fermer',
+        onClick: handleClose,
+        variant: 'secondary',
+      },
+    ]}
+  >
+    Votre signalement a bien été pris en compte ! Merci
+  </BaseModal>
+)
 
 export default SuccessModal

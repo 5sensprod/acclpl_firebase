@@ -1,33 +1,22 @@
 import React from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import BaseModal from './BaseModal'
 import { useModal } from '../context/ModalContext'
 
 const EstablishmentModal = () => {
   const { modalConfig, setModalConfig } = useModal()
-
   const handleClose = () => {
     setModalConfig((prevConfig) => ({ ...prevConfig, isVisible: false }))
   }
 
   return (
-    <Modal show={modalConfig.isVisible} onHide={handleClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>{modalConfig.title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>{modalConfig.body}</Modal.Body>
-      <Modal.Footer>
-        {modalConfig.buttons &&
-          modalConfig.buttons.map((button, index) => (
-            <Button
-              key={index}
-              variant={button.variant || 'secondary'}
-              onClick={button.onClick || handleClose}
-            >
-              {button.text}
-            </Button>
-          ))}
-      </Modal.Footer>
-    </Modal>
+    <BaseModal
+      show={modalConfig.isVisible}
+      onHide={handleClose}
+      title={modalConfig.title}
+      buttons={modalConfig.buttons}
+    >
+      {modalConfig.body}
+    </BaseModal>
   )
 }
 

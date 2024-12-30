@@ -1,26 +1,27 @@
 import React from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import BaseModal from './BaseModal'
 
-const DeleteModal = ({ show, handleClose, handleConfirm }) => {
-  return (
-    <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Confirmation de suppression</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        Êtes-vous sûr de vouloir supprimer ce signalement ? Cette action est
-        irréversible.
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Annuler
-        </Button>
-        <Button variant="danger" onClick={handleConfirm}>
-          Supprimer
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  )
-}
+const DeleteModal = ({ show, handleClose, handleConfirm }) => (
+  <BaseModal
+    show={show}
+    onHide={handleClose}
+    title="Confirmation de suppression"
+    buttons={[
+      {
+        text: 'Annuler',
+        onClick: handleClose,
+        variant: 'secondary',
+      },
+      {
+        text: 'Supprimer',
+        onClick: handleConfirm,
+        variant: 'danger',
+      },
+    ]}
+  >
+    Êtes-vous sûr de vouloir supprimer ce signalement ? Cette action est
+    irréversible.
+  </BaseModal>
+)
 
 export default DeleteModal
