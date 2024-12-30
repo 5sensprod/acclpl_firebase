@@ -187,6 +187,12 @@ const wizardReducer = (state, action) => {
         formData: { ...initialState.formData },
       }
 
+    case 'RESET_FORM':
+      return {
+        ...initialState, // Utilise l'état initial défini plus haut
+        steps: state.steps, // Garde les étapes du wizard
+      }
+
     case 'SET_CURRENT_ESTABLISHMENTS_DATA':
       return {
         ...state,

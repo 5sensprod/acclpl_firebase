@@ -11,23 +11,38 @@ import PreviewModal from '../modals/PreviewModal'
 import useHandleSubmitClick from '../hooks/useHandleSubmitClick'
 import useShowEstablishmentModal from '../hooks/useShowEstablishmentModal'
 import SuccessModal from '../modals/SuccessModal'
-import { useUserContext } from '../../../context/userContext' // Import the user context
+import { useUserContext } from '../../../context/userContext'
 
 const WizardStepManager = () => {
   const { state, dispatch } = useFormWizardState()
   const [isLoading, setIsLoading] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
-  const { handleSubmitClick, showModal, handleCloseModal } =
-    useHandleSubmitClick(setIsLoading, setShowAddModal)
+  const [showSuccessModal, setShowSuccessModal] = useState(false) // État pour gérer l'affichage du SuccessModal
+  const { handleSubmitClick } = useHandleSubmitClick(
+    setIsLoading,
+    setShowAddModal,
+  )
 
-  const { setActiveView } = useUserContext() // Get the setActiveView function from the context
+  const { setActiveView } = useUserContext()
 
   const currentStep = state.currentStep
   const totalSteps = state.steps.length
-
   const [showPreview, setShowPreview] = useState(false)
-
   const canFinish = isFormReadyToSubmit(state.formData)
+
+  // Gérer l'annulation
+  const handleCancel = () => {
+    if (
+      window.confirm(
+        'Voulez-vous vraiment annuler ce signalement ? Les données saisies seront perdues.',
+      )
+    ) {
+      // Réinitialiser le formulaire
+      dispatch({ type: 'RESET_FORM' })
+      // Rediriger vers la vue des signalements
+      setActiveView('reportings')
+    }
+  }
 
   const handleClosePreview = () => {
     setShowPreview(false)
@@ -81,43 +96,74 @@ const WizardStepManager = () => {
   }
 
   const handleSubmitAndRedirect = async () => {
-    await handleSubmitClick()
-    setActiveView('reportings') // Update the activeView to 'reportings'
+    try {
+      await handleSubmitClick()
+      setShowSuccessModal(true) // Afficher le SuccessModal après la soumission réussie
+    } catch (error) {
+      console.error('Erreur lors de la soumission:', error)
+    }
+  }
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false)
+    setActiveView('reportings') // Rediriger après la fermeture du modal
   }
 
   return (
     <div className="d-flex justify-content-between mb-2">
-      {currentStep > 1 && (
-        <Button variant="outline-primary" onClick={moveToPrevStep}>
-          Revenir
+      <div>
+        {' '}
+        {/* Groupe de boutons gauche */}
+        {currentStep > 1 ? (
+          <Button
+            variant="outline-primary"
+            onClick={moveToPrevStep}
+            className="me-2"
+          >
+            Revenir
+          </Button>
+        ) : null}
+        <Button variant="outline-danger" onClick={handleCancel}>
+          Annuler
         </Button>
-      )}
+      </div>
 
-      {currentStep < totalSteps && (
-        <Button variant="primary" onClick={moveToNextStep} disabled={isLoading}>
-          {isLoading ? <Spinner animation="border" size="sm" /> : 'Suivant'}
-        </Button>
-      )}
-
-      {currentStep === totalSteps && (
-        <div className="btn-group" role="group">
+      <div>
+        {' '}
+        {/* Groupe de boutons droite */}
+        {currentStep < totalSteps ? (
           <Button
             variant="primary"
-            onClick={handleVisualizeClick}
-            disabled={!canFinish || isLoading}
-            onChange={showAddModal ? showAddModal : undefined}
+            onClick={moveToNextStep}
+            disabled={isLoading}
           >
-            <Map />
+            {isLoading ? <Spinner animation="border" size="sm" /> : 'Suivant'}
           </Button>
-          <Button
-            variant="success"
-            onClick={handleSubmitAndRedirect} // Use the new function to submit and redirect
-            disabled={!canFinish || isLoading}
-          >
-            {isLoading ? <Spinner animation="border" size="sm" /> : 'Terminer'}
-          </Button>
-        </div>
-      )}
+        ) : (
+          <div className="btn-group" role="group">
+            <Button
+              variant="primary"
+              onClick={handleVisualizeClick}
+              disabled={!canFinish || isLoading}
+              onChange={showAddModal ? showAddModal : undefined}
+            >
+              <Map />
+            </Button>
+            <Button
+              variant="success"
+              onClick={handleSubmitAndRedirect}
+              disabled={!canFinish || isLoading}
+            >
+              {isLoading ? (
+                <Spinner animation="border" size="sm" />
+              ) : (
+                'Terminer'
+              )}
+            </Button>
+          </div>
+        )}
+      </div>
+
       <EstablishmentModal />
       {showPreview && (
         <PreviewModal
@@ -129,7 +175,10 @@ const WizardStepManager = () => {
           photoURLs={state.formData.photoURLs}
         />
       )}
-      <SuccessModal show={showModal} handleClose={handleCloseModal} />
+      <SuccessModal
+        show={showSuccessModal}
+        handleClose={handleSuccessModalClose}
+      />
     </div>
   )
 }
