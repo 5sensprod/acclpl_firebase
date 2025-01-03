@@ -1,14 +1,16 @@
 <?php
 add_action('rest_api_init', function() {
-    register_rest_route('establishments/v1', '/sync', [
+    register_rest_route('establishments/v1', '/establishment', [
         'methods' => 'POST',
-        'callback' => 'handle_establishment_sync',
-        'permission_callback' => function() {
-            // Autoriser les requêtes avec Basic Auth
-            return true;
-        }
+        'callback' => 'handle_establishment_sync'
+    ]);
+    
+    register_rest_route('establishments/v1', '/observation', [
+        'methods' => 'POST',
+        'callback' => 'handle_observation_sync'
     ]);
 });
+
 function handle_establishment_sync($request) {
     global $wpdb;
     $data = $request->get_json_params();
@@ -23,6 +25,23 @@ function handle_establishment_sync($request) {
             'lat' => $data['coordinates']['latitude'],
             'lng' => $data['coordinates']['longitude'],
             'observation_count' => $data['observationCount']
+        ]
+    );
+}
+
+function handle_observation_sync($request) {
+    global $wpdb;
+    $data = $request->get_json_params();
+    
+    return $wpdb->replace(
+        $wpdb->prefix . 'observations',
+        [
+            'id' => $data['id'],
+            'establishment_id' => $data['establishmentRef'],
+            'photo_urls' => json_encode($data['photoURLs']),
+            'observation_date' => $data['date'],
+            'observation_time' => $data['time'],
+            'notes' => $data['additionalNotes']
         ]
     );
 }

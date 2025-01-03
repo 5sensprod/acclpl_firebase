@@ -3,8 +3,8 @@ const WP_API = process.env.REACT_APP_WP_API
 const API_USER = process.env.REACT_APP_WP_USER
 const API_PASSWORD = process.env.REACT_APP_WP_PASSWORD
 
-async function syncEstablishment(establishmentData) {
-  const response = await fetch(`${WP_API}/sync`, {
+export async function syncEstablishment(establishmentData) {
+  const response = await fetch(`${WP_API}/establishment`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -12,12 +12,26 @@ async function syncEstablishment(establishmentData) {
     },
     body: JSON.stringify(establishmentData),
   })
-  if (!response.ok) {
+
+  if (!response.ok)
     throw new Error(`WordPress sync failed: ${await response.text()}`)
-  }
+  return response.json()
 }
 
-export { syncEstablishment }
+export async function syncObservation(observationData) {
+  const response = await fetch(`${WP_API}/observation`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${btoa(API_USER + ':' + API_PASSWORD)}`,
+    },
+    body: JSON.stringify(observationData),
+  })
+
+  if (!response.ok)
+    throw new Error(`WordPress sync failed: ${await response.text()}`)
+  return response.json()
+}
 
 // Test la connexion
 async function testConnection() {

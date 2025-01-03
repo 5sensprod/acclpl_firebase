@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore'
 import ObservationModel from '../models/ObservationModel'
 import db from '../db/db'
+import { syncObservation } from './wordpressService'
 
 async function addObservation(observationData) {
   const observation = new ObservationModel(observationData)
@@ -23,7 +24,6 @@ async function addObservation(observationData) {
     return await runTransaction(firestore, async (transaction) => {
       const obsCollection = collection(firestore, 'observations')
       const obsRef = doc(obsCollection)
-
       const establishmentRef = doc(
         firestore,
         'establishments',
@@ -32,11 +32,10 @@ async function addObservation(observationData) {
       const userRef = doc(firestore, 'users', observationData.userID)
 
       const establishmentDoc = await transaction.get(establishmentRef)
-      if (!establishmentDoc.exists()) {
-        throw new Error('Establishment not found')
-      }
+      if (!establishmentDoc.exists()) throw new Error('Establishment not found')
 
-      transaction.set(obsRef, observation.toFirebaseObject())
+      const obsToSave = observation.toFirebaseObject()
+      transaction.set(obsRef, obsToSave)
 
       transaction.update(establishmentRef, {
         observationRefs: arrayUnion(obsRef.id),
@@ -47,10 +46,13 @@ async function addObservation(observationData) {
         observationRefs: arrayUnion(obsRef.id),
       })
 
-      await db.observations.put({
+      const observationWithId = {
         id: obsRef.id,
-        ...observation.toFirebaseObject(),
-      })
+        ...obsToSave,
+      }
+
+      await db.observations.put(observationWithId)
+      await syncObservation(observationWithId)
 
       return obsRef.id
     })
@@ -59,7 +61,6 @@ async function addObservation(observationData) {
     throw e
   }
 }
-
 async function getObservationsForUser(userId) {
   try {
     let observations = await db.observations

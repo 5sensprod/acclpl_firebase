@@ -35,7 +35,6 @@ async function addEstablishment(establishmentData) {
       await syncEstablishment(establishmentWithId)
     } catch (wpError) {
       console.error('WordPress sync failed:', wpError)
-      // Continue même si WordPress échoue
     }
 
     await db.establishments.put(establishmentWithId)
