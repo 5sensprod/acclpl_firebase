@@ -1,7 +1,7 @@
 // wordpressService.js
-const WP_API = 'https://acclpl.fr/wp-json/establishments/v1'
-const API_USER = 'api-acclpl'
-const API_PASSWORD = '*e!l&PtPw*#vlijSqp#dACwa' // Mot de passe d'application
+const WP_API = process.env.REACT_APP_WP_API
+const API_USER = process.env.REACT_APP_WP_USER
+const API_PASSWORD = process.env.REACT_APP_WP_PASSWORD
 
 async function syncEstablishment(establishmentData) {
   const response = await fetch(`${WP_API}/sync`, {
@@ -12,7 +12,6 @@ async function syncEstablishment(establishmentData) {
     },
     body: JSON.stringify(establishmentData),
   })
-
   if (!response.ok) {
     throw new Error(`WordPress sync failed: ${await response.text()}`)
   }
