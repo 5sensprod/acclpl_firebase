@@ -3,6 +3,7 @@ import { firestore } from '../firebaseConfig'
 import { addDoc, doc, getDoc, writeBatch, collection } from 'firebase/firestore'
 import EstablishmentModel from '../models/EstablishmentModel'
 import db from '../db/db'
+import { syncEstablishment } from './wordpressService'
 
 async function addEstablishment(establishmentData) {
   const establishment = new EstablishmentModel(establishmentData)
@@ -24,10 +25,20 @@ async function addEstablishment(establishmentData) {
       establishment.toFirebaseObject(),
     )
 
-    await db.establishments.put({
+    const establishmentWithId = {
       id: docRef.id,
       ...establishment.toFirebaseObject(),
-    })
+    }
+
+    // Sync avec WordPress
+    try {
+      await syncEstablishment(establishmentWithId)
+    } catch (wpError) {
+      console.error('WordPress sync failed:', wpError)
+      // Continue même si WordPress échoue
+    }
+
+    await db.establishments.put(establishmentWithId)
 
     return { id: docRef.id }
   } catch (e) {
@@ -86,13 +97,25 @@ async function getStreetByRef(streetRef) {
 async function batchUpdateEstablishments(updates) {
   const batch = writeBatch(firestore)
 
-  updates.forEach(({ id, data }) => {
-    const ref = doc(firestore, 'establishments', id)
-    batch.update(ref, data)
-  })
+  try {
+    for (const update of updates) {
+      const ref = doc(firestore, 'establishments', update.id)
+      batch.update(ref, update.data)
 
-  await batch.commit()
-  await db.establishments.bulkPut(updates)
+      try {
+        await syncEstablishment({ id: update.id, ...update.data })
+      } catch (wpError) {
+        console.error(`WordPress sync failed for ${update.id}:`, wpError)
+        // Continue avec les autres mises à jour
+      }
+    }
+
+    await batch.commit()
+    await db.establishments.bulkPut(updates)
+  } catch (error) {
+    console.error('Error in batch update:', error)
+    throw error
+  }
 }
 
 export {
