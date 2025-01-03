@@ -1,56 +1,74 @@
+// observationService.js
 import { firestore } from '../firebaseConfig'
 import {
   collection,
-  addDoc,
   query,
   where,
   getDocs,
-  updateDoc,
-  arrayUnion,
   doc,
-  increment,
-  deleteDoc,
+  runTransaction,
+  writeBatch,
+  arrayUnion,
   arrayRemove,
+  increment,
 } from 'firebase/firestore'
 import ObservationModel from '../models/ObservationModel'
-import { addObservationRefToUser } from './userService'
+import db from '../db/db'
 
 async function addObservation(observationData) {
   const observation = new ObservationModel(observationData)
   observation.validate()
 
   try {
-    const docRef = await addDoc(
-      collection(firestore, 'observations'),
-      observation.toFirebaseObject(),
-    )
-    await addObservationRefToUser(observationData.userID, docRef.id)
-    console.log('Observation ajoutée avec ID:', docRef.id)
-    const establishmentRef = doc(
-      firestore,
-      'establishments',
-      observationData.establishmentRef,
-    )
-    console.log(
-      'Mise à jour de l’établissement avec ID:',
-      observationData.establishmentRef,
-    )
+    return await runTransaction(firestore, async (transaction) => {
+      const obsCollection = collection(firestore, 'observations')
+      const obsRef = doc(obsCollection)
 
-    await updateDoc(establishmentRef, {
-      observationRefs: arrayUnion(docRef.id),
-      observationCount: increment(1),
+      const establishmentRef = doc(
+        firestore,
+        'establishments',
+        observationData.establishmentRef,
+      )
+      const userRef = doc(firestore, 'users', observationData.userID)
+
+      const establishmentDoc = await transaction.get(establishmentRef)
+      if (!establishmentDoc.exists()) {
+        throw new Error('Establishment not found')
+      }
+
+      transaction.set(obsRef, observation.toFirebaseObject())
+
+      transaction.update(establishmentRef, {
+        observationRefs: arrayUnion(obsRef.id),
+        observationCount: increment(1),
+      })
+
+      transaction.update(userRef, {
+        observationRefs: arrayUnion(obsRef.id),
+      })
+
+      await db.observations.put({
+        id: obsRef.id,
+        ...observation.toFirebaseObject(),
+      })
+
+      return obsRef.id
     })
-    console.log('Établissement mis à jour avec succès.')
-
-    return docRef.id
   } catch (e) {
-    console.error("Erreur lors de l'ajout du document d'observation :", e)
+    console.error("Erreur lors de l'ajout de l'observation:", e)
     throw e
   }
 }
 
 async function getObservationsForUser(userId) {
   try {
+    let observations = await db.observations
+      .where('userID')
+      .equals(userId)
+      .toArray()
+
+    if (observations.length > 0) return observations
+
     const obsSnapshot = await getDocs(
       query(
         collection(firestore, 'observations'),
@@ -58,60 +76,69 @@ async function getObservationsForUser(userId) {
       ),
     )
 
-    let observations = []
-    obsSnapshot.forEach((doc) => {
-      observations.push({
-        id: doc.id,
-        ...doc.data(),
-      })
-    })
+    observations = obsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
 
+    await db.observations.bulkPut(observations)
     return observations
   } catch (error) {
-    console.error(
-      "Erreur lors de la récupération des observations pour l'utilisateur :",
-      error,
-    )
+    console.error('Error fetching observations:', error)
     throw error
   }
 }
 
-async function deleteObservationFromFirestore(observationId) {
+async function deleteObservation(observationId) {
   try {
-    // D'abord, récupérer l'observation pour avoir l'ID de l'établissement
-    const obsRef = doc(firestore, 'observations', observationId)
-    const obsSnapshot = await getDocs(
-      query(
-        collection(firestore, 'observations'),
-        where('__name__', '==', observationId),
-      ),
-    )
-    const observationData = obsSnapshot.docs[0]?.data()
+    await runTransaction(firestore, async (transaction) => {
+      const obsRef = doc(firestore, 'observations', observationId)
+      const obsDoc = await transaction.get(obsRef)
 
-    if (observationData) {
-      // Mettre à jour l'établissement
+      if (!obsDoc.exists()) {
+        throw new Error('Observation not found')
+      }
+
+      const data = obsDoc.data()
       const establishmentRef = doc(
         firestore,
         'establishments',
-        observationData.establishmentRef,
+        data.establishmentRef,
       )
-      await updateDoc(establishmentRef, {
+      const userRef = doc(firestore, 'users', data.userID)
+
+      transaction.delete(obsRef)
+      transaction.update(establishmentRef, {
         observationRefs: arrayRemove(observationId),
         observationCount: increment(-1),
       })
+      transaction.update(userRef, {
+        observationRefs: arrayRemove(observationId),
+      })
 
-      // Supprimer l'observation
-      await deleteDoc(obsRef)
-      console.log('Observation supprimée avec succès:', observationId)
-    }
+      await db.observations.delete(observationId)
+    })
   } catch (error) {
-    console.error("Erreur lors de la suppression de l'observation:", error)
+    console.error('Error deleting observation:', error)
     throw error
   }
+}
+
+async function batchUpdateObservations(updates) {
+  const batch = writeBatch(firestore)
+
+  updates.forEach(({ id, data }) => {
+    const ref = doc(firestore, 'observations', id)
+    batch.update(ref, data)
+  })
+
+  await batch.commit()
+  await db.observations.bulkPut(updates)
 }
 
 export {
   addObservation,
   getObservationsForUser,
-  deleteObservationFromFirestore,
+  deleteObservation,
+  batchUpdateObservations,
 }

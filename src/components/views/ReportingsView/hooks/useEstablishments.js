@@ -1,6 +1,6 @@
 // src/components/views/ReportingsView/hooks/useEstablishments.js
 import { useState } from 'react'
-import db from '../../../../db/db'
+import { getEstablishmentByRef } from '../../../../services/establishmentService'
 
 export const useEstablishments = (observations, dispatch, setShowAddModal) => {
   // Ajout de setShowAddModal
@@ -8,7 +8,7 @@ export const useEstablishments = (observations, dispatch, setShowAddModal) => {
 
   const handleOpenAddModal = async (establishmentId) => {
     try {
-      const est = await db.establishments.get(establishmentId)
+      const est = await getEstablishmentByRef(establishmentId)
       if (est) {
         setEstablishmentName(est.establishmentName)
         dispatch({

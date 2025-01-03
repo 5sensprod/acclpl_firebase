@@ -1,47 +1,21 @@
+// establishmentService.js
 import { firestore } from '../firebaseConfig'
-import {
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-} from 'firebase/firestore'
+import { addDoc, doc, getDoc, writeBatch, collection } from 'firebase/firestore'
 import EstablishmentModel from '../models/EstablishmentModel'
-
-async function getStreetByRef(streetRef) {
-  try {
-    const streetDoc = await getDoc(doc(firestore, 'streets', streetRef))
-    if (streetDoc.exists()) {
-      return streetDoc.data()
-    } else {
-      throw new Error('Street not found')
-    }
-  } catch (error) {
-    console.error('Error fetching street: ', error)
-    throw error
-  }
-}
+import db from '../db/db'
 
 async function addEstablishment(establishmentData) {
   const establishment = new EstablishmentModel(establishmentData)
   establishment.validate()
 
   try {
-    const establishmentQuery = query(
-      collection(firestore, 'establishments'),
-      where(
-        'normalizedEstablishmentName',
-        '==',
-        establishment.normalizedEstablishmentName,
-      ),
-      where('address', '==', establishment.address),
-    )
+    const existingEstablishment = await db.establishments
+      .where('normalizedEstablishmentName')
+      .equals(establishment.normalizedEstablishmentName)
+      .and((item) => item.address === establishment.address)
+      .first()
 
-    const querySnapshot = await getDocs(establishmentQuery)
-    if (!querySnapshot.empty) {
-      // Un établissement avec le même nom normalisé et la même adresse existe déjà.
+    if (existingEstablishment) {
       throw new Error('Establishment already exists at this address')
     }
 
@@ -49,23 +23,81 @@ async function addEstablishment(establishmentData) {
       collection(firestore, 'establishments'),
       establishment.toFirebaseObject(),
     )
-    console.log('Establishment document written with ID: ', docRef.id)
-    return { id: docRef.id } // Retourne l'objet avec l'ID pour une utilisation ultérieure
+
+    await db.establishments.put({
+      id: docRef.id,
+      ...establishment.toFirebaseObject(),
+    })
+
+    return { id: docRef.id }
   } catch (e) {
-    console.error('Error adding establishment document: ', e)
+    console.error('Error adding establishment:', e)
     throw e
   }
 }
 
 async function getEstablishmentByRef(establishmentRef) {
-  const establishmentDocRef = doc(firestore, 'establishments', establishmentRef)
-  const establishmentSnap = await getDoc(establishmentDocRef)
+  try {
+    const cachedData = await db.establishments
+      .where('id')
+      .equals(establishmentRef)
+      .first()
 
-  if (establishmentSnap.exists()) {
-    return establishmentSnap.data()
-  } else {
-    throw new Error('Establishment not found')
+    if (cachedData) return cachedData
+
+    const establishmentDoc = await getDoc(
+      doc(firestore, 'establishments', establishmentRef),
+    )
+
+    if (!establishmentDoc.exists()) {
+      throw new Error('Establishment not found')
+    }
+
+    const data = establishmentDoc.data()
+    await db.establishments.put({
+      id: establishmentRef,
+      ...data,
+    })
+
+    return data
+  } catch (error) {
+    console.error('Error fetching establishment:', error)
+    throw error
   }
 }
 
-export { addEstablishment, getEstablishmentByRef, getStreetByRef }
+async function getStreetByRef(streetRef) {
+  try {
+    const cachedStreet = await db.streets.get(streetRef)
+    if (cachedStreet) return cachedStreet
+
+    const streetDoc = await getDoc(doc(firestore, 'streets', streetRef))
+    if (!streetDoc.exists()) throw new Error('Street not found')
+
+    const data = streetDoc.data()
+    await db.streets.put({ id: streetRef, ...data })
+    return data
+  } catch (error) {
+    console.error('Error fetching street:', error)
+    throw error
+  }
+}
+
+async function batchUpdateEstablishments(updates) {
+  const batch = writeBatch(firestore)
+
+  updates.forEach(({ id, data }) => {
+    const ref = doc(firestore, 'establishments', id)
+    batch.update(ref, data)
+  })
+
+  await batch.commit()
+  await db.establishments.bulkPut(updates)
+}
+
+export {
+  addEstablishment,
+  getEstablishmentByRef,
+  getStreetByRef,
+  batchUpdateEstablishments,
+}

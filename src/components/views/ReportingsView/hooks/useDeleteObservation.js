@@ -1,7 +1,7 @@
 // src/components/views/ReportingsView/hooks/useDeleteObservation.js
 import { useState } from 'react'
-import { deleteObservationFromFirestore } from '../../../../services/observationService'
-import db from '../../../../db/db'
+import { deleteObservation } from '../../../../services/observationService'
+// import db from '../../../../db/db'
 
 export const useDeleteObservation = (fetchObservationsFromIndexedDB) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -14,8 +14,8 @@ export const useDeleteObservation = (fetchObservationsFromIndexedDB) => {
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteObservationFromFirestore(observationToDelete)
-      await db.observations.delete(observationToDelete)
+      await deleteObservation(observationToDelete)
+      //await db.observations.delete(observationToDelete)
       await fetchObservationsFromIndexedDB()
       setShowDeleteModal(false)
       setObservationToDelete(null)

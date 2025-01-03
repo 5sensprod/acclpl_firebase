@@ -5,18 +5,18 @@ import { firestore } from '../firebaseConfig'
 
 export const initializeDBFromFirestore = async () => {
   try {
+    if (unsubscribeEstablishments) unsubscribeEstablishments()
+    if (unsubscribeObservations) unsubscribeObservations()
+
     const establishmentsCollection = collection(firestore, 'establishments')
     const observationsCollection = collection(firestore, 'observations')
 
-    // Listener pour les observations
-    onSnapshot(observationsCollection, (snapshot) => {
+    unsubscribeObservations = onSnapshot(observationsCollection, (snapshot) => {
       snapshot.docChanges().forEach(async (change) => {
         if (change.type === 'removed') {
-          // Document supprimé dans Firestore
           await db.observations.delete(change.doc.id)
           console.log('Observation supprimée dans IndexedDB:', change.doc.id)
         } else {
-          // Document ajouté ou modifié
           const observation = {
             id: change.doc.id,
             ...change.doc.data(),
@@ -26,20 +26,22 @@ export const initializeDBFromFirestore = async () => {
       })
     })
 
-    // Même logique pour les établissements
-    onSnapshot(establishmentsCollection, (snapshot) => {
-      snapshot.docChanges().forEach(async (change) => {
-        if (change.type === 'removed') {
-          await db.establishments.delete(change.doc.id)
-        } else {
-          const establishment = {
-            id: change.doc.id,
-            ...change.doc.data(),
+    unsubscribeEstablishments = onSnapshot(
+      establishmentsCollection,
+      (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+          if (change.type === 'removed') {
+            await db.establishments.delete(change.doc.id)
+          } else {
+            const establishment = {
+              id: change.doc.id,
+              ...change.doc.data(),
+            }
+            await db.establishments.put(establishment)
           }
-          await db.establishments.put(establishment)
-        }
-      })
-    })
+        })
+      },
+    )
   } catch (error) {
     console.error('Error syncing with Firestore:', error)
     throw new Error('Failed to initialize data from Firestore.')
@@ -88,4 +90,13 @@ export const clearData = async () => {
   } catch (error) {
     console.error('Erreur lors de l’effacement des données IndexedDB:', error)
   }
+}
+
+let unsubscribeEstablishments = null
+let unsubscribeObservations = null
+
+// Fonction de nettoyage à appeler lors du démontage du composant
+export const cleanup = () => {
+  if (unsubscribeEstablishments) unsubscribeEstablishments()
+  if (unsubscribeObservations) unsubscribeObservations()
 }

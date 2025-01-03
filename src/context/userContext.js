@@ -22,7 +22,7 @@ export function UserContextProvider(props) {
   const [currentUser, setCurrentUser] = useState()
   const [userProfile, setUserProfile] = useState(null)
   const [loadingData, setLoadingData] = useState(true)
-  const [activeView, setActiveView] = useState('profile')
+  const [activeView, setActiveView] = useState('reportings')
 
   const signUp = async (email, pwd, displayName) => {
     const response = await createUserWithEmailAndPassword(auth, email, pwd)
@@ -134,6 +134,7 @@ export function UserContextProvider(props) {
           await initializeDBFromFirestore() // Réinitialiser IndexedDB avec les données Firestore
           let profileData = await getUser(user.uid)
           setUserProfile(profileData)
+          setActiveView('reportings')
         } catch (error) {
           console.error('Error initializing data:', error)
         } finally {
