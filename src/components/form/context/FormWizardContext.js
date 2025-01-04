@@ -48,21 +48,6 @@ const initialState = {
 
 const wizardReducer = (state, action) => {
   switch (action.type) {
-    case 'UPDATE_FORM_DATA_MODAL':
-      return {
-        ...state,
-        formData: {
-          ...state.formData,
-          ...action.payload, // mise à jour de tous les champs fournis dans le payload
-        },
-      }
-
-    case 'RESET_FORM_DATA_MODAL':
-      return {
-        ...state,
-        formData: { ...initialState.formData },
-      }
-
     case 'RESET_NOTES':
       console.log('Réinitialisation de la notes.')
       return {
@@ -87,7 +72,7 @@ const wizardReducer = (state, action) => {
           normalizedCompanyName: action.payload.normalizedCompanyName,
         },
       }
-    // Réinitialisation des noms de l'entreprise
+
     case 'RESET_COMPANY_NAME_MODAL':
       console.log('Réinitialisation des noms de l’entreprise.')
       return {
@@ -167,20 +152,13 @@ const wizardReducer = (state, action) => {
         ...state,
         formData: {
           ...state.formData,
-          companyCoordinates: action.payload, // Ici, action.payload est déjà un tableau
-        },
-      }
-    case 'SET_DEFAULT_IMAGE':
-      return {
-        ...state,
-        formData: {
-          ...state.formData,
-          photoURLs: [action.payload],
+          companyCoordinates: action.payload,
         },
       }
 
     case 'RESET_TO_FIRST_STEP':
       return { ...state, currentStep: 1 }
+
     case 'RESET_FORM_DATA':
       return {
         ...state,
@@ -189,20 +167,14 @@ const wizardReducer = (state, action) => {
 
     case 'RESET_FORM':
       return {
-        ...initialState, // Utilise l'état initial défini plus haut
-        steps: state.steps, // Garde les étapes du wizard
+        ...initialState,
+        steps: state.steps,
       }
 
     case 'SET_CURRENT_ESTABLISHMENTS_DATA':
       return {
         ...state,
         currentEstablishmentsData: action.payload,
-      }
-
-    case 'SET_CURRENT_ESTABLISHMENT_IDS':
-      return {
-        ...state,
-        currentEstablishmentIds: action.payload,
       }
 
     case 'SET_ESTABLISHMENT_EXISTS':
@@ -334,12 +306,6 @@ const wizardReducer = (state, action) => {
       return {
         ...state,
         hasClosedModal: action.payload,
-      }
-
-    case 'CLOSE_MODAL':
-      return {
-        ...state,
-        hasClosedModal: true,
       }
 
     case 'RESET_HAS_CLOSED_MODAL':
