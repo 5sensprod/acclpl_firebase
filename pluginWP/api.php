@@ -90,10 +90,10 @@ function handle_observation_sync($request) {
     $data = $request->get_json_params();
    
     $photoURLs = array_map(function($url) {
-        return str_replace('"', '', $url); // Supprime les guillemets excessifs
+        return str_replace('"', '', $url);
     }, $data['photoURLs']);
    
-    return $wpdb->replace(
+    $wpdb->replace(
         $wpdb->prefix . 'observations',
         [
             'id' => $data['id'],
@@ -103,6 +103,17 @@ function handle_observation_sync($request) {
             'observation_time' => $data['time'],
             'notes' => $data['additionalNotes']
         ]
+    );
+
+    $count = $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE establishment_id = %s",
+        $data['establishmentRef']
+    ));
+
+    return $wpdb->update(
+        $wpdb->prefix . 'establishments',
+        ['observation_count' => $count],
+        ['id' => $data['establishmentRef']]
     );
 }
 function get_establishments() {
