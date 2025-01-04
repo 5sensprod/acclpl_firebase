@@ -19,11 +19,14 @@ document.addEventListener('DOMContentLoaded', function () {
     let photosHTML = ''
     if (establishment.photo_urls) {
       try {
-        const urls = JSON.parse(establishment.photo_urls)
+        const urls = JSON.parse(establishment.photo_urls.replace(/\\/g, '')) // Supprime les backslashes
         photosHTML = urls
           .map(
             (url) =>
-              `<img src="${url}" style="max-width: 200px; margin: 5px;">`,
+              `<img src="${url.replace(
+                /"/g,
+                '',
+              )}" style="max-width: 200px; margin: 5px;">`,
           )
           .join('')
       } catch (e) {

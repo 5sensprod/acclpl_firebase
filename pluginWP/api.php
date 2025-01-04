@@ -88,24 +88,23 @@ function handle_establishment_sync($request) {
 function handle_observation_sync($request) {
     global $wpdb;
     $data = $request->get_json_params();
-    
+   
     $photoURLs = array_map(function($url) {
-        return stripslashes($url); // Supprime les échappements excessifs
+        return str_replace('"', '', $url); // Supprime les guillemets excessifs
     }, $data['photoURLs']);
-    
+   
     return $wpdb->replace(
         $wpdb->prefix . 'observations',
         [
             'id' => $data['id'],
             'establishment_id' => $data['establishmentRef'],
-            'photo_urls' => wp_json_encode($photoURLs, JSON_UNESCAPED_SLASHES), // Évite l'échappement des slashes
+            'photo_urls' => json_encode($photoURLs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
             'observation_date' => $data['date'],
             'observation_time' => $data['time'],
             'notes' => $data['additionalNotes']
         ]
     );
 }
-
 function get_establishments() {
     global $wpdb;
     return $wpdb->get_results(
