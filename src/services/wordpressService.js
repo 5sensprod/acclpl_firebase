@@ -3,16 +3,18 @@ const WP_API = process.env.REACT_APP_WP_API
 const API_USER = process.env.REACT_APP_WP_USER
 const API_PASSWORD = process.env.REACT_APP_WP_PASSWORD
 
-export async function uploadMediaToWordPress(fileUrl) {
+export async function uploadMediaToWordPress(fileUrl, establishmentRef) {
   const response = await fetch(`${WP_API}/media`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Basic ${btoa(API_USER + ':' + API_PASSWORD)}`,
     },
-    body: JSON.stringify({ file_url: fileUrl }),
+    body: JSON.stringify({
+      file_url: fileUrl,
+      establishment_ref: establishmentRef,
+    }),
   })
-
   if (!response.ok)
     throw new Error(`WordPress media upload failed: ${await response.text()}`)
   return response.text()
@@ -36,7 +38,9 @@ export async function syncEstablishment(establishmentData) {
 export async function syncObservation(observationData) {
   // Convertir les URLs Firebase en URLs WordPress
   const wordpressPhotoURLs = await Promise.all(
-    observationData.photoURLs.map((url) => uploadMediaToWordPress(url)),
+    observationData.photoURLs.map((url) =>
+      uploadMediaToWordPress(url, observationData.establishmentRef),
+    ),
   )
 
   const wordpressData = {

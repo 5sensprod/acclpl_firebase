@@ -37,33 +37,37 @@ add_action('rest_api_init', function() {
 });
 
 function handle_media_upload($request) {
-    error_log('--- DÉBUT MEDIA UPLOAD ---');
-    error_log('Headers: ' . print_r($request->get_headers(), true));
-    error_log('Params: ' . print_r($request->get_params(), true));
-    
+    global $wpdb;
     $file_url = $request->get_param('file_url');
-    error_log('File URL: ' . $file_url);
-    
+    $establishment_ref = $request->get_param('establishment_ref');
+
+    // Récupère le nom de l'établissement
+    $establishment_name = $wpdb->get_var($wpdb->prepare(
+        "SELECT establishment_name FROM {$wpdb->prefix}establishments WHERE id = %s",
+        $establishment_ref
+    ));
+
+    // Génère un nom de fichier propre
+    $random_id = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyz'), 0, 6);
+    $timestamp = date('Ymd_His');
+    $filename = sprintf('%s_%s_%s.jpg', 
+        sanitize_title($establishment_name), 
+        $random_id,
+        $timestamp
+    );
+
     $tmp = download_url($file_url);
     if (is_wp_error($tmp)) {
-        error_log('Download error: ' . $tmp->get_error_message());
         return new WP_Error('upload_error', $tmp->get_error_message());
     }
-    
+
     $file_array = [
-        'name' => basename($file_url) . '.jpg',
+        'name' => $filename,
         'tmp_name' => $tmp,
         'type' => 'image/jpeg'
     ];
-    error_log('File array: ' . print_r($file_array, true));
-    
+
     $attachment_id = media_handle_sideload($file_array, 0);
-    if (is_wp_error($attachment_id)) {
-        error_log('Upload error: ' . $attachment_id->get_error_message());
-    }
-    
-    error_log('--- FIN MEDIA UPLOAD ---');
-    
     return wp_get_attachment_url($attachment_id);
 }
 
@@ -90,32 +94,33 @@ function handle_observation_sync($request) {
     $data = $request->get_json_params();
    
     $photoURLs = array_map(function($url) {
-        return str_replace('"', '', $url);
+        return stripslashes(trim($url, '"')); // Nettoie les slashes et guillemets
     }, $data['photoURLs']);
    
     $wpdb->replace(
         $wpdb->prefix . 'observations',
         [
             'id' => $data['id'],
-            'establishment_id' => $data['establishmentRef'],
-            'photo_urls' => json_encode($photoURLs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            'establishment_id' => $data['establishmentRef'], 
+            'photo_urls' => json_encode($photoURLs), // Simplification du json_encode
             'observation_date' => $data['date'],
             'observation_time' => $data['time'],
             'notes' => $data['additionalNotes']
         ]
     );
-
+ 
+    // Garde le comptage et la mise à jour
     $count = $wpdb->get_var($wpdb->prepare(
         "SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE establishment_id = %s",
         $data['establishmentRef']
     ));
-
+ 
     return $wpdb->update(
         $wpdb->prefix . 'establishments',
         ['observation_count' => $count],
         ['id' => $data['establishmentRef']]
     );
-}
+ }
 function get_establishments() {
     global $wpdb;
     return $wpdb->get_results(
