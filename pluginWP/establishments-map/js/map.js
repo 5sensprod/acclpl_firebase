@@ -18,14 +18,13 @@ document.addEventListener('DOMContentLoaded', function () {
       try {
         const urls = JSON.parse(establishment.photo_urls)
         photosHTML = urls
-          .map((url) => {
-            // Nettoyer l'URL en deux étapes
-            const decodedUrl = JSON.parse(url) // Décode le premier niveau d'échappement
-            return `<img src="${decodedUrl}" style="max-width: 200px; margin: 5px;">`
-          })
+          .map(
+            (url) =>
+              `<img src="${url}" style="max-width: 200px; margin: 5px;">`,
+          )
           .join('')
       } catch (e) {
-        console.error('Erreur parsing JSON:', e, establishment.photo_urls)
+        console.error('Erreur parsing JSON:', e)
       }
     }
 
