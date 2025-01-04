@@ -89,12 +89,16 @@ function handle_observation_sync($request) {
     global $wpdb;
     $data = $request->get_json_params();
     
+    $photoURLs = array_map(function($url) {
+        return stripslashes($url); // Supprime les échappements excessifs
+    }, $data['photoURLs']);
+    
     return $wpdb->replace(
         $wpdb->prefix . 'observations',
         [
             'id' => $data['id'],
             'establishment_id' => $data['establishmentRef'],
-            'photo_urls' => json_encode($data['photoURLs']),
+            'photo_urls' => wp_json_encode($photoURLs, JSON_UNESCAPED_SLASHES), // Évite l'échappement des slashes
             'observation_date' => $data['date'],
             'observation_time' => $data['time'],
             'notes' => $data['additionalNotes']
