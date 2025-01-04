@@ -45,18 +45,57 @@ function establishments_map_add_custom_css() {
         .establishment-popup {
             font-family: Arial, sans-serif;
             padding: 10px;
+            min-width: 250px;
         }
-        .observation-photos {
-            margin-top: 10px;
+        .carousel {
+            position: relative;
+            margin: 10px 0;
+        }
+        .carousel-container {
+            position: relative;
+            padding: 0 20px;
+        }
+        .carousel-item {
+            display: none;
             text-align: center;
         }
+        .carousel-item.active {
+            display: block;
+        }
+        .carousel-prev, .carousel-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+        .carousel-prev {
+            left: -5px;
+        }
+        .carousel-next {
+            right: -5px;
+        }
+        .observation-date {
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #666;
+            display: block;
+        }
+        .observation-notes {
+            margin-top: 5px;
+            font-style: italic;
+            display: block;
+        }
         .observation-photos img {
+            max-width: 200px;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-        .observation-photos img:hover {
-            transform: scale(1.05);
+            margin: 5px;
         }
     </style>';
 }
