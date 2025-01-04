@@ -1,3 +1,6 @@
+/* eslint-disable no-console */ // Disables console warnings globally in this file
+/* eslint-disable no-undef */ // Disables warnings for undefined variables like 'L' or 'establishmentsData'
+
 document.addEventListener('DOMContentLoaded', function () {
   const map = L.map('establishments-map').setView([46.603354, 1.888334], 6)
 
