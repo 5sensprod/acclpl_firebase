@@ -34,7 +34,32 @@ add_action('rest_api_init', function() {
             return user_can($user, 'upload_files');
         }
     ]);
+
+    // Nouvelle route GET
+    register_rest_route('establishments/v1', '/establishments', [
+        'methods' => 'GET',
+        'callback' => 'get_establishments_with_observations',
+        'permission_callback' => '__return_true'
+    ]);
+
 });
+
+function get_establishments_with_observations() {
+    global $wpdb;
+    $results = $wpdb->get_results("
+        SELECT 
+            e.*,
+            o.photo_urls,
+            o.observation_date,
+            o.observation_time,
+            o.notes
+        FROM {$wpdb->prefix}establishments e
+        LEFT JOIN {$wpdb->prefix}observations o 
+        ON e.id = o.establishment_id
+    ", ARRAY_A);
+    
+    return $results;
+}
 
 function handle_media_upload($request) {
     global $wpdb;

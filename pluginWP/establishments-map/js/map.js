@@ -2,6 +2,12 @@
 /* eslint-disable no-undef */ // Disables warnings for undefined variables like 'L' or 'establishmentsData'
 
 document.addEventListener('DOMContentLoaded', function () {
+  console.log('establishmentsData:', establishmentsData) // Debug
+
+  if (!establishmentsData || !establishmentsData.establishments) {
+    console.error('No establishments data available')
+    return
+  }
   window.moveCarousel = function (direction, button) {
     const container = button
       .closest('.carousel')
