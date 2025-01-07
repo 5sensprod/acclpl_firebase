@@ -6,6 +6,8 @@ Version: 1.0
 */
 
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+require_once(plugin_dir_path(__FILE__) . 'admin/admin-pages.php');
+require_once(plugin_dir_path(__FILE__) . 'api.php');
 
 register_activation_hook(__FILE__, function() {
     create_establishments_table();
@@ -57,4 +59,3 @@ function create_observations_table() {
     dbDelta($sql);
 }
 
-require_once(plugin_dir_path(__FILE__) . 'api.php');
