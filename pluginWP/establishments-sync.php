@@ -9,12 +9,12 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 require_once(plugin_dir_path(__FILE__) . 'admin/admin-pages.php');
 require_once(plugin_dir_path(__FILE__) . 'api.php');
 
-register_activation_hook(__FILE__, function() {
+register_activation_hook(__FILE__, function () {
     create_establishments_table();
     create_observations_table();
 });
 
-add_action('init', function() {
+add_action('init', function () {
     if (get_option('plugin_installed') !== 'yes') {
         create_establishments_table();
         create_observations_table();
@@ -22,10 +22,11 @@ add_action('init', function() {
     }
 });
 
-function create_establishments_table() {
+function create_establishments_table()
+{
     global $wpdb;
     $table_name = $wpdb->prefix . 'establishments';
-   
+
     $sql = "CREATE TABLE IF NOT EXISTS $table_name (
         id VARCHAR(255) PRIMARY KEY,
         establishment_name VARCHAR(255) NOT NULL,
@@ -36,14 +37,15 @@ function create_establishments_table() {
         observation_count INT DEFAULT 0,
         last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
-   
+
     dbDelta($sql);
 }
 
-function create_observations_table() {
+function create_observations_table()
+{
     global $wpdb;
     $table_name = $wpdb->prefix . 'observations';
-   
+
     $sql = "CREATE TABLE IF NOT EXISTS $table_name (
         id VARCHAR(255) PRIMARY KEY,
         establishment_id VARCHAR(255),
@@ -55,7 +57,6 @@ function create_observations_table() {
         REFERENCES {$wpdb->prefix}establishments(id)
         ON DELETE CASCADE
     )";
-   
+
     dbDelta($sql);
 }
-
