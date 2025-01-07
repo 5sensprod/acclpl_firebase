@@ -1,10 +1,34 @@
 <?php
 
+// Fonction pour compter les nouveaux signalements
+function get_pending_counts() {
+    global $wpdb;
+    
+    $counts = $wpdb->get_row("
+        SELECT 
+            (SELECT COUNT(*) FROM {$wpdb->prefix}establishments WHERE status = 'pending') as establishments,
+            (SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE status = 'pending') as observations
+    ");
+    
+    return $counts;
+}
+
 // Ajout des menus d'administration
 add_action('admin_menu', function() {
+    $counts = get_pending_counts();
+    $menu_title = 'Établissements';
+    if ($counts->establishments > 0) {
+        $menu_title .= " <span class='update-plugins count-{$counts->establishments}'><span class='update-count'>" . number_format_i18n($counts->establishments) . "</span></span>";
+    }
+    
+    $submenu_title = 'Observations';
+    if ($counts->observations > 0) {
+        $submenu_title .= " <span class='update-plugins count-{$counts->observations}'><span class='update-count'>" . number_format_i18n($counts->observations) . "</span></span>";
+    }
+    
     add_menu_page(
         'Gestion des établissements',
-        'Établissements',
+        $menu_title,
         'manage_options',
         'establishments-sync',
         'establishments_map_admin_page',
@@ -13,8 +37,8 @@ add_action('admin_menu', function() {
     
     add_submenu_page(
         'establishments-sync',
-        'Observations',
-        'Observations',
+        'Gestion des Observations',
+        $submenu_title,
         'manage_options',
         'establishments-observations',
         'establishments_map_observations_page'
