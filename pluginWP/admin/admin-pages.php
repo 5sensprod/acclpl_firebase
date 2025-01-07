@@ -45,6 +45,61 @@ add_action('admin_menu', function() {
     );
 });
 
+// Chargement des scripts pour la gestion des photos
+add_action('admin_enqueue_scripts', function($hook) {
+    error_log('Current hook: ' . $hook); // Debug
+    
+    if (strpos($hook, 'establishments-observations') === false) {
+        return;
+    }
+
+    // Enqueue media library
+    wp_enqueue_media();
+    
+    // Enqueue notre script
+    wp_enqueue_script(
+        'photo-manager',
+        plugins_url('js/photo-manager.js', __FILE__),
+        array('jquery', 'media-upload'),
+        '1.0',
+        true
+    );
+    
+    // Passer des variables à notre script
+    wp_localize_script('photo-manager', 'photoManagerParams', array(
+        'ajaxurl' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('update_observation_photo')
+    ));
+});
+
+// Gestionnaire AJAX pour la mise à jour des photos
+add_action('wp_ajax_update_observation_photo', function() {
+    check_ajax_referer('update_observation_photo');
+    
+    global $wpdb;
+    $observation_id = sanitize_text_field($_POST['observation_id']);
+    $old_url = $_POST['old_url'];
+    $new_url = $_POST['new_url'];
+    
+    $observation = $wpdb->get_row($wpdb->prepare(
+        "SELECT photo_urls FROM {$wpdb->prefix}observations WHERE id = %s",
+        $observation_id
+    ));
+    
+    $photos = json_decode($observation->photo_urls);
+    $photos = array_map(function($url) use ($old_url, $new_url) {
+        return $url === $old_url ? $new_url : $url;
+    }, $photos);
+    
+    $wpdb->update(
+        $wpdb->prefix . 'observations',
+        ['photo_urls' => json_encode($photos)],
+        ['id' => $observation_id]
+    );
+    
+    wp_send_json_success();
+});
+
 function establishments_map_admin_page() {
     global $wpdb;
     
@@ -332,19 +387,27 @@ function establishments_map_observations_page() {
         <button type="submit" class="button button-small">Enregistrer</button>
     </form>
 </td>
-                    <td>
-                        <?php 
-                        $photos = json_decode($observation->photo_urls);
-                        if ($photos) {
-                            foreach ($photos as $photo): ?>
-                                <a href="<?php echo esc_url($photo); ?>" target="_blank">
-                                    <img src="<?php echo esc_url($photo); ?>" 
-                                         style="max-width: 100px; height: auto; margin: 5px;">
-                                </a>
-                            <?php endforeach;
-                        }
-                        ?>
-                    </td>
+<td>
+    <?php 
+    $photos = json_decode($observation->photo_urls);
+    if ($photos) {
+        foreach ($photos as $photo): ?>
+            <div class="observation-photo" style="margin-bottom: 10px;">
+                <a href="<?php echo esc_url($photo); ?>" target="_blank">
+                    <img src="<?php echo esc_url($photo); ?>" 
+                         style="max-width: 100px; height: auto; display: block; margin-bottom: 5px;">
+                </a>
+                <button type="button" 
+                        class="button button-small change-photo-button"
+                        data-observation-id="<?php echo esc_attr($observation->id); ?>"
+                        data-current-url="<?php echo esc_url($photo); ?>">
+                    Changer la photo
+                </button>
+            </div>
+        <?php endforeach;
+    }
+    ?>
+</td>
                     <td>
                         <form method="post" style="display:inline">
                             <input type="hidden" name="observation_id" 
