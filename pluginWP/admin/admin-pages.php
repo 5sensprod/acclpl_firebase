@@ -222,6 +222,18 @@ function establishments_map_observations_page() {
             );
         }
     }
+
+    if (isset($_POST['action']) && $_POST['action'] === 'edit_notes') {
+        $observation_id = sanitize_text_field($_POST['observation_id']);
+        $new_notes = sanitize_textarea_field($_POST['notes']);
+        
+        $wpdb->update(
+            $wpdb->prefix . 'observations',
+            ['notes' => $new_notes],
+            ['id' => $observation_id]
+        );
+    }
+    
     
     $establishment_id = isset($_GET['establishment_id']) ? $_GET['establishment_id'] : null;
     $status_filter = isset($_GET['status']) ? $_GET['status'] : 'pending';
@@ -312,7 +324,14 @@ function establishments_map_observations_page() {
                         echo esc_html(date('H:i', strtotime($observation->observation_time)));
                         ?>
                     </td>
-                    <td><?php echo esc_html($observation->notes); ?></td>
+                    <td>
+    <form method="post" class="edit-notes-form">
+        <input type="hidden" name="action" value="edit_notes">
+        <input type="hidden" name="observation_id" value="<?php echo esc_attr($observation->id); ?>">
+        <textarea name="notes" rows="3" class="width-100"><?php echo esc_textarea($observation->notes); ?></textarea>
+        <button type="submit" class="button button-small">Enregistrer</button>
+    </form>
+</td>
                     <td>
                         <?php 
                         $photos = json_decode($observation->photo_urls);
