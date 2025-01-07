@@ -6,8 +6,14 @@ Version: 1.0
 */
 
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+// Admin
 require_once(plugin_dir_path(__FILE__) . 'admin/admin-pages.php');
-require_once(plugin_dir_path(__FILE__) . 'api.php');
+
+// API
+require_once(plugin_dir_path(__FILE__) . 'api/services/services.php');
+require_once(plugin_dir_path(__FILE__) . 'api/controllers/controllers.php');
+require_once(plugin_dir_path(__FILE__) . 'api/routes/routes.php');
 
 register_activation_hook(__FILE__, function () {
     create_establishments_table();
