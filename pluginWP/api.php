@@ -56,6 +56,8 @@ function get_establishments_with_observations() {
         FROM {$wpdb->prefix}establishments e
         LEFT JOIN {$wpdb->prefix}observations o 
         ON e.id = o.establishment_id
+        WHERE e.status = 'approved' 
+        AND (o.status = 'approved' OR o.status IS NULL)
     ", ARRAY_A);
     
     return $results;
@@ -109,7 +111,8 @@ function handle_establishment_sync($request) {
             'address' => $data['address'],
             'lat' => $data['coordinates']['latitude'],
             'lng' => $data['coordinates']['longitude'],
-            'observation_count' => $data['observationCount']
+            'observation_count' => $data['observationCount'],
+            'status' => 'pending' // Statut par défaut
         ]
     );
 }
