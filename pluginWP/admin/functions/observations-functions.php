@@ -101,3 +101,16 @@ function handle_update_observation_photo()
 
     wp_send_json_success();
 }
+
+function translate_observation_type($type)
+{
+    $translations = [
+        'colors' => 'Les couleurs',
+        'windows' => 'Les vitrines',
+        'sign' => "L'enseigne",
+        'local' => 'Le local',
+        'advertisement' => 'Publicité lumineuse'
+    ];
+
+    return isset($translations[$type]) ? $translations[$type] : $type;
+}

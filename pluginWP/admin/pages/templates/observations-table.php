@@ -28,7 +28,7 @@
                     if ($types) {
                         echo '<ul class="observation-types-list">';
                         foreach ($types as $type) {
-                            echo '<li>' . esc_html($type) . '</li>';
+                            echo '<li>' . esc_html(translate_observation_type($type)) . '</li>';
                         }
                         echo '</ul>';
                     }
