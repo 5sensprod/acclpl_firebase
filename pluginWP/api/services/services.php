@@ -32,6 +32,8 @@ class DatabaseService
             return stripslashes(trim($url, '"'));
         }, $data['photoURLs']);
 
+        $observation_types = isset($data['observationTypes']) ? json_encode($data['observationTypes']) : null;
+
         $this->wpdb->replace(
             $this->wpdb->prefix . 'observations',
             [
@@ -40,7 +42,8 @@ class DatabaseService
                 'photo_urls' => json_encode($photoURLs),
                 'observation_date' => $data['date'],
                 'observation_time' => $data['time'],
-                'notes' => $data['additionalNotes']
+                'notes' => $data['additionalNotes'],
+                'observation_types' => $observation_types
             ]
         );
 
@@ -64,7 +67,8 @@ class DatabaseService
                 o.photo_urls,
                 o.observation_date,
                 o.observation_time,
-                o.notes
+                o.notes,
+                o.observation_types
             FROM {$this->wpdb->prefix}establishments e
             LEFT JOIN {$this->wpdb->prefix}observations o 
             ON e.id = o.establishment_id
