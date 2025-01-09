@@ -5,8 +5,8 @@
         <tr>
             <th>Établissement</th>
             <th>Date</th>
-            <th>Notes</th>
             <th>Types d'observation</th>
+            <th>Notes</th>
             <th>Photos</th>
             <th>Actions</th>
         </tr>
@@ -23,14 +23,6 @@
                     ?>
                 </td>
                 <td>
-                    <form method="post" class="edit-notes-form">
-                        <input type="hidden" name="action" value="edit_notes">
-                        <input type="hidden" name="observation_id" value="<?php echo esc_attr($observation->id); ?>">
-                        <textarea name="notes" rows="3" class="width-100"><?php echo esc_textarea($observation->notes); ?></textarea>
-                        <button type="submit" class="button button-small">Enregistrer</button>
-                    </form>
-                </td>
-                <td>
                     <?php
                     $types = json_decode($observation->observation_types);
                     if ($types) {
@@ -41,6 +33,14 @@
                         echo '</ul>';
                     }
                     ?>
+                </td>
+                <td>
+                    <form method="post" class="edit-notes-form">
+                        <input type="hidden" name="action" value="edit_notes">
+                        <input type="hidden" name="observation_id" value="<?php echo esc_attr($observation->id); ?>">
+                        <textarea name="notes" rows="3" class="width-100"><?php echo esc_textarea($observation->notes); ?></textarea>
+                        <button type="submit" class="button button-small">Enregistrer</button>
+                    </form>
                 </td>
                 <td>
                     <?php
