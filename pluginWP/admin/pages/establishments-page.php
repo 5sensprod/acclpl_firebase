@@ -2,10 +2,9 @@
 function establishments_map_admin_page()
 {
     handle_establishment_actions();
-
     $status_filter = isset($_GET['status']) ? $_GET['status'] : 'pending';
     $establishments = get_filtered_establishments($status_filter);
-
+    $counts = get_pending_counts(); // Ajout de cette ligne
 ?>
     <div class="wrap">
         <h1>Gestion des établissements</h1>
@@ -14,19 +13,19 @@ function establishments_map_admin_page()
             <li>
                 <a href="?page=establishments-sync&status=pending"
                     class="<?php echo $status_filter === 'pending' ? 'current' : ''; ?>">
-                    En attente (<?php echo count(array_filter($establishments, fn($e) => $e->status === 'pending')); ?>)
+                    En attente (<?php echo $counts->pending_establishments; ?>)
                 </a> |
             </li>
             <li>
                 <a href="?page=establishments-sync&status=approved"
                     class="<?php echo $status_filter === 'approved' ? 'current' : ''; ?>">
-                    Approuvés (<?php echo count(array_filter($establishments, fn($e) => $e->status === 'approved')); ?>)
+                    Approuvés (<?php echo $counts->approved_establishments; ?>)
                 </a> |
             </li>
             <li>
                 <a href="?page=establishments-sync&status=rejected"
                     class="<?php echo $status_filter === 'rejected' ? 'current' : ''; ?>">
-                    Rejetés (<?php echo count(array_filter($establishments, fn($e) => $e->status === 'rejected')); ?>)
+                    Rejetés (<?php echo $counts->rejected_establishments; ?>)
                 </a>
             </li>
         </ul>

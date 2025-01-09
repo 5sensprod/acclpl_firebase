@@ -11,8 +11,12 @@ function get_pending_counts()
 
     $counts = $wpdb->get_row("
         SELECT 
-            (SELECT COUNT(*) FROM {$wpdb->prefix}establishments WHERE status = 'pending') as establishments,
-            (SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE status = 'pending') as observations
+            (SELECT COUNT(*) FROM {$wpdb->prefix}establishments WHERE status = 'pending') as pending_establishments,
+            (SELECT COUNT(*) FROM {$wpdb->prefix}establishments WHERE status = 'approved') as approved_establishments,
+            (SELECT COUNT(*) FROM {$wpdb->prefix}establishments WHERE status = 'rejected') as rejected_establishments,
+            (SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE status = 'pending') as pending_observations,
+            (SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE status = 'approved') as approved_observations,
+            (SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE status = 'rejected') as rejected_observations
     ");
 
     return $counts;
@@ -23,13 +27,13 @@ add_action('admin_menu', function () {
     $counts = get_pending_counts();
 
     $menu_title = 'Établissements';
-    if ($counts->establishments > 0) {
-        $menu_title .= " <span class='update-plugins count-{$counts->establishments}'><span class='update-count'>" . number_format_i18n($counts->establishments) . "</span></span>";
+    if ($counts->pending_establishments > 0) {
+        $menu_title .= " <span class='update-plugins count-{$counts->pending_establishments}'><span class='update-count'>" . number_format_i18n($counts->pending_establishments) . "</span></span>";
     }
 
     $submenu_title = 'Observations';
-    if ($counts->observations > 0) {
-        $submenu_title .= " <span class='update-plugins count-{$counts->observations}'><span class='update-count'>" . number_format_i18n($counts->observations) . "</span></span>";
+    if ($counts->pending_observations > 0) {
+        $submenu_title .= " <span class='update-plugins count-{$counts->pending_observations}'><span class='update-count'>" . number_format_i18n($counts->pending_observations) . "</span></span>";
     }
 
     add_menu_page(
