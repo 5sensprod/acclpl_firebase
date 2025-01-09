@@ -3,6 +3,7 @@ import { Modal, Form, Button, Spinner } from 'react-bootstrap'
 import DateTimeInput from '../form/inputs/DateTimeInput'
 import PhotoCapture from '../form/PhotoCapture'
 import Notes from '../form/inputs/Notes'
+import ObservationTypes from '../form/inputs/ObservationTypes'
 import { useFormWizardState } from '../form/context/FormWizardContext'
 
 const AddObservationModal = ({
@@ -14,10 +15,14 @@ const AddObservationModal = ({
   setIsLoading,
 }) => {
   const { dispatch, state } = useFormWizardState()
+
   const isDisabled =
     isLoading ||
     !state.formData.dateOfObservation ||
-    !state.formData.timeOfObservation
+    !state.formData.timeOfObservation ||
+    !state.formData.observationTypes ||
+    !Array.isArray(state.formData.observationTypes) ||
+    state.formData.observationTypes.length === 0
 
   const handleClose = () => {
     setTimeout(() => {
@@ -33,6 +38,10 @@ const AddObservationModal = ({
       })
       dispatch({ type: 'RESET_NOTES' })
       dispatch({ type: 'SET_CURRENT_ESTABLISHMENT_ID', payload: null })
+      dispatch({
+        type: 'UPDATE_FORM_DATA',
+        payload: { observationTypes: [] },
+      }) // Réinitialiser les types d'observation
     }, 500)
     onHide()
   }
@@ -46,8 +55,11 @@ const AddObservationModal = ({
         <Form onSubmit={handleAddObservation}>
           <DateTimeInput />
           <div className="d-flex gap-3">
+            <div className="d-flex flex-column gap-3 flex-grow-1">
+              <ObservationTypes />
+              <Notes />
+            </div>
             <PhotoCapture />
-            <Notes />
           </div>
         </Form>
       </Modal.Body>

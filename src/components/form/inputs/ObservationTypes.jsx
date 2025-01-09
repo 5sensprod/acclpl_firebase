@@ -10,6 +10,7 @@ const ObservationTypes = () => {
     { id: 'windows', label: 'Les vitrines' },
     { id: 'sign', label: "L'enseigne" },
     { id: 'local', label: 'Le local' },
+    { id: 'advertisement', label: 'Publicité lumineuse' },
   ]
 
   const handleTypeChange = (typeId) => {

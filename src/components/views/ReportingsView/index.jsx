@@ -29,6 +29,7 @@ const ReportingsView = () => {
     handleConfirmDelete,
     handleCloseDeleteModal,
   } = useDeleteObservation(fetchObservationsFromIndexedDB)
+
   const { establishmentName, handleOpenAddModal } = useEstablishments(
     observations,
     dispatch,

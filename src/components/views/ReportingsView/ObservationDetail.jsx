@@ -8,6 +8,7 @@ const typeLabels = {
   windows: 'Les vitrines',
   sign: "L'enseigne",
   local: 'Le local',
+  advertisement: 'Publicité lumineuse',
 }
 
 const ObservationDetail = ({
