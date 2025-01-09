@@ -1,4 +1,3 @@
-// src/components/views/ReportingsView/components/EstablishmentCard.jsx
 import React from 'react'
 import { Card, Button } from 'react-bootstrap'
 import { motion } from 'framer-motion'
@@ -19,6 +18,9 @@ export const EstablishmentCard = ({
 }) => {
   const { key, name, address } = establishment
 
+  // Ajout d'un log pour déboguer
+  console.log('Observations dans EstablishmentCard:', observations)
+
   return (
     <Card key={key} className="mb-3 bg-dark">
       <motion.div
@@ -37,22 +39,34 @@ export const EstablishmentCard = ({
         </CustomToggle>
       </motion.div>
       <Card.Body className="bg-dark text-light rounded">
-        {observations.map((obs, obsIndex) => (
-          <div key={obsIndex} className="mb-3">
-            <ObservationDetail
-              observation={obs}
-              isImageLoaded={isImageLoaded}
-              handleImageLoaded={handleImageLoaded}
-            />
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={() => handleDeleteClick(obs.id)}
-            >
-              Supprimer
-            </Button>
-          </div>
-        ))}
+        {observations.map((obs, obsIndex) => {
+          // Log pour déboguer chaque observation
+          console.log('Observation complète avant rendu:', obs)
+
+          return (
+            <div key={obsIndex} className="mb-3">
+              <ObservationDetail
+                observation={{
+                  id: obs.id,
+                  date: obs.date,
+                  time: obs.time,
+                  photoURLs: obs.photoURLs,
+                  additionalNotes: obs.additionalNotes,
+                  observationTypes: obs.observationTypes, // Ajout explicite des types
+                }}
+                isImageLoaded={isImageLoaded}
+                handleImageLoaded={handleImageLoaded}
+              />
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => handleDeleteClick(obs.id)}
+              >
+                Supprimer
+              </Button>
+            </div>
+          )
+        })}
         <div className="text-center">
           <AddObservationButton onClick={() => handleOpenAddModal(key)} />
         </div>

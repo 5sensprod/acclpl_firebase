@@ -66,6 +66,7 @@ const ReportingsView = () => {
         time: obs.time,
         photoURLs: obs.photoURLs,
         additionalNotes: obs.additionalNotes,
+        observationTypes: obs.observationTypes,
       })
     } else {
       console.error('Establishment details are missing for observation', obs)

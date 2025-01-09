@@ -36,6 +36,7 @@ const useHandleSubmitClick = (
         date: state.formData.dateOfObservation,
         time: state.formData.timeOfObservation,
         additionalNotes: state.formData.additionalNotes,
+        observationTypes: state.formData.observationTypes,
       }
 
       // Si l'établissement n'existe pas, créer un nouvel établissement et ensuite ajouter l'observation.

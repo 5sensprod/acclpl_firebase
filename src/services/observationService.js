@@ -82,6 +82,8 @@ async function getObservationsForUser(userId) {
       ...doc.data(),
     }))
 
+    console.log('Observations récupérées:', observations)
+
     await db.observations.bulkPut(observations)
     return observations
   } catch (error) {

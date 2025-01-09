@@ -43,6 +43,7 @@ const initialState = {
     croppedImageUrl: null,
     currentEstablishmentId: null,
     additionalNotes: '',
+    observationTypes: [],
   },
 }
 

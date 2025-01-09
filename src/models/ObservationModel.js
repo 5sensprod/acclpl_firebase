@@ -6,6 +6,7 @@ class ObservationModel {
     this.time = data.time
     this.photoURLs = data.photoURLs
     this.additionalNotes = data.additionalNotes
+    this.observationTypes = data.observationTypes || []
   }
 
   validate() {
@@ -16,6 +17,10 @@ class ObservationModel {
     if (!this.time) throw new Error("L'heure est requise")
     if (!this.photoURLs || !Array.isArray(this.photoURLs))
       throw new Error('Les URLs des photos doivent être un tableau')
+    if (!this.observationTypes || !Array.isArray(this.observationTypes))
+      throw new Error("Les types d'observation doivent être un tableau")
+    if (this.observationTypes.length === 0)
+      throw new Error("Au moins un type d'observation est requis")
   }
 
   toFirebaseObject() {
@@ -26,6 +31,7 @@ class ObservationModel {
       time: this.time,
       photoURLs: this.photoURLs,
       additionalNotes: this.additionalNotes || null,
+      observationTypes: this.observationTypes,
     }
   }
 }
