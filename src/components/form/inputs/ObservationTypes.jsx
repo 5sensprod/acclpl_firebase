@@ -24,9 +24,13 @@ const ObservationTypes = () => {
     })
   }
 
+  // const hasSelectedTypes = state.formData.observationTypes?.length > 0
+
   return (
-    <div className="form-group m-0 w-100">
-      <label className="mb-2">Types d'observation</label>
+    <div className="form-group m-0 w-75">
+      <label className="mb-2">
+        Types d'observation <span className="text-danger">*</span>
+      </label>
       <div className="d-flex flex-column gap-2">
         {observationTypes.map(({ id, label }) => (
           <div key={id} className="form-check">
@@ -43,8 +47,12 @@ const ObservationTypes = () => {
           </div>
         ))}
       </div>
+      {/* {!hasSelectedTypes && (
+        <small className="text-danger mt-1">
+          Veuillez sélectionner au moins un type d'observation
+        </small>
+      )} */}
     </div>
   )
 }
-
 export default ObservationTypes
