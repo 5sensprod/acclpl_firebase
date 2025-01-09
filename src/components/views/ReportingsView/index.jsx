@@ -32,7 +32,7 @@ const ReportingsView = () => {
   const { establishmentName, handleOpenAddModal } = useEstablishments(
     observations,
     dispatch,
-    setShowAddModal, // Ajout de ce paramètre
+    setShowAddModal,
   )
 
   const { handleSubmitClick, showModal, handleCloseModal } =
@@ -73,7 +73,6 @@ const ReportingsView = () => {
     return acc
   }, {})
 
-  // Tri des observations par date et heure pour chaque établissement
   for (const key in observationsByEstablishment) {
     if (observationsByEstablishment[key].observations) {
       observationsByEstablishment[key].observations.sort(
@@ -88,56 +87,71 @@ const ReportingsView = () => {
     fetchObservationsFromIndexedDB()
   }, [fetchObservationsFromIndexedDB])
 
+  // Vérifier s'il n'y a aucune observation
+  const hasNoObservations = observations.length === 0
+
   return (
     <div className="reporting-view text-light">
-      <Accordion activeKey={activeKey}>
-        {Object.entries(observationsByEstablishment).map(
-          ([key, { name, address, observations }], index) => (
-            <Card key={key} className="mb-3 bg-dark">
-              <motion.div
-                initial={{ x: -60 }}
-                animate={{ x: 0 }}
-                transition={{ delay: 0.1 + index * 0.04, duration: 0.15 }}
-                className="card-header bg-dark text-light rounded shadow"
-              >
-                <CustomToggle
-                  eventKey={`${index}`}
-                  activeKey={activeKey}
-                  setActiveKey={setActiveKey}
+      {hasNoObservations ? (
+        // Message affiché quand il n'y a aucune observation
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center p-8 rounded bg-dark">
+            <p className="text-xl text-light">
+              Vous n'avez encore aucun signalement
+            </p>
+          </div>
+        </div>
+      ) : (
+        // Affichage normal des observations
+        <Accordion activeKey={activeKey}>
+          {Object.entries(observationsByEstablishment).map(
+            ([key, { name, address, observations }], index) => (
+              <Card key={key} className="mb-3 bg-dark">
+                <motion.div
+                  initial={{ x: -60 }}
+                  animate={{ x: 0 }}
+                  transition={{ delay: 0.1 + index * 0.04, duration: 0.15 }}
+                  className="card-header bg-dark text-light rounded shadow"
                 >
-                  <h3>{name}</h3>
-                  <div>{address.split(',')[0]}</div>
-                </CustomToggle>
-              </motion.div>
-              <Accordion.Collapse eventKey={`${index}`}>
-                <Card.Body className="bg-dark text-light rounded">
-                  {observations.map((obs, obsIndex) => (
-                    <div key={obsIndex} className="mb-3">
-                      <ObservationDetail
-                        observation={obs}
-                        isImageLoaded={isImageLoaded}
-                        handleImageLoaded={handleImageLoaded}
+                  <CustomToggle
+                    eventKey={`${index}`}
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
+                  >
+                    <h3>{name}</h3>
+                    <div>{address.split(',')[0]}</div>
+                  </CustomToggle>
+                </motion.div>
+                <Accordion.Collapse eventKey={`${index}`}>
+                  <Card.Body className="bg-dark text-light rounded">
+                    {observations.map((obs, obsIndex) => (
+                      <div key={obsIndex} className="mb-3">
+                        <ObservationDetail
+                          observation={obs}
+                          isImageLoaded={isImageLoaded}
+                          handleImageLoaded={handleImageLoaded}
+                        />
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDeleteClick(obs.id)}
+                        >
+                          Supprimer
+                        </Button>
+                      </div>
+                    ))}
+                    <div className="text-center">
+                      <AddObservationButton
+                        onClick={() => handleOpenAddModal(key)}
                       />
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => handleDeleteClick(obs.id)}
-                      >
-                        Supprimer
-                      </Button>
                     </div>
-                  ))}
-                  <div className="text-center">
-                    <AddObservationButton
-                      onClick={() => handleOpenAddModal(key)}
-                    />
-                  </div>
-                </Card.Body>
-              </Accordion.Collapse>
-            </Card>
-          ),
-        )}
-      </Accordion>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            ),
+          )}
+        </Accordion>
+      )}
 
       <AddObservationModal
         isLoading={isLoading}
