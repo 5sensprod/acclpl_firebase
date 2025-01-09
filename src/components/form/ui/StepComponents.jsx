@@ -7,6 +7,7 @@ import PhotoCapture from '../PhotoCapture'
 import { motion } from 'framer-motion'
 import { formatAddress } from '../../../utils/addressUtils'
 import Notes from '../inputs/Notes'
+import ObservationTypes from '../inputs/ObservationTypes'
 
 const slideVariants = {
   initial: { opacity: 0, x: '-50%' },
@@ -101,8 +102,11 @@ export const Step3Component = () => (
 export const Step4Component = () => {
   return (
     <AnimatedWrapper>
-      <div className="d-flex gap-3">
-        <PhotoCapture />
+      <div className="d-flex flex-column gap-3">
+        <div className="d-flex gap-3">
+          <PhotoCapture />
+          <ObservationTypes />
+        </div>
         <Notes />
       </div>
     </AnimatedWrapper>

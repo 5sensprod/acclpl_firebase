@@ -12,14 +12,14 @@ const Notes = () => {
   }
 
   return (
-    <div className="form-group m-0 w-75">
+    <div className="form-group m-0 w-100">
       <label htmlFor="additionalNotes" className="mb-2">
         Notes
       </label>
       <textarea
         id="additionalNotes"
         className="form-control p-1 mb-3"
-        style={{ height: '187px' }}
+        style={{ height: '100px' }}
         value={state.formData.additionalNotes || ''}
         onChange={handleNotesChange}
         placeholder="Facultatif"
