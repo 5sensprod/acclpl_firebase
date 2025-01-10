@@ -25,4 +25,10 @@ add_action('rest_api_init', function () {
         'callback' => [$establishmentController, 'getAllWithObservations'],
         'permission_callback' => '__return_true'
     ]);
+
+    register_rest_route('establishments/v1', '/observation/(?P<id>[a-zA-Z0-9-]+)/comments', [
+        'methods' => ['GET', 'POST'],
+        'callback' => [$observationController, 'handleComments'],
+        'permission_callback' => '__return_true'
+    ]);
 });

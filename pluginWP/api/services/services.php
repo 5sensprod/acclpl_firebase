@@ -76,6 +76,50 @@ class DatabaseService
             AND (o.status = 'approved' OR o.status IS NULL)
         ", ARRAY_A);
     }
+
+    public function addObservationComment($data)
+    {
+        $result = $this->wpdb->insert(
+            $this->wpdb->prefix . 'observation_comments',
+            [
+                'id' => wp_generate_uuid4(),
+                'observation_id' => $data['observation_id'],
+                'user_id' => get_current_user_id(),
+                'comment' => $data['comment']
+            ]
+        );
+
+        if ($result) {
+            $this->updateObservationCommentCount($data['observation_id']);
+        }
+
+        return $result;
+    }
+
+    private function updateObservationCommentCount($observation_id)
+    {
+        $count = $this->wpdb->get_var($this->wpdb->prepare(
+            "SELECT COUNT(*) FROM {$this->wpdb->prefix}observation_comments WHERE observation_id = %s",
+            $observation_id
+        ));
+
+        return $this->wpdb->update(
+            $this->wpdb->prefix . 'observations',
+            ['comments_count' => $count],
+            ['id' => $observation_id]
+        );
+    }
+
+    public function getObservationComments($observation_id)
+    {
+        return $this->wpdb->get_results($this->wpdb->prepare("
+            SELECT c.*, u.display_name 
+            FROM {$this->wpdb->prefix}observation_comments c
+            JOIN {$this->wpdb->prefix}users u ON c.user_id = u.ID
+            WHERE c.observation_id = %s
+            ORDER BY c.created_at DESC
+        ", $observation_id), ARRAY_A);
+    }
 }
 
 class MediaService

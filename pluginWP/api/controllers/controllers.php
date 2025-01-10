@@ -34,6 +34,22 @@ class ObservationController
         $data = $request->get_json_params();
         return $this->dbService->syncObservation($data);
     }
+
+    public function handleComments($request)
+    {
+        $observation_id = $request['id'];
+
+        if ($request->get_method() === 'POST') {
+            if (!is_user_logged_in()) {
+                return new WP_Error('unauthorized', 'Vous devez être connecté', ['status' => 401]);
+            }
+            $data = $request->get_json_params();
+            $data['observation_id'] = $observation_id;
+            return $this->dbService->addObservationComment($data);
+        }
+
+        return $this->dbService->getObservationComments($observation_id);
+    }
 }
 
 class MediaController
