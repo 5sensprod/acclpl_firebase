@@ -13,19 +13,19 @@ function establishments_map_comments_page()
             <li>
                 <a href="?page=establishments-comments&status=pending"
                     class="<?php echo $status_filter === 'pending' ? 'current' : ''; ?>">
-                    En attente (<?php echo $counts->pending_comments; ?>)
+                    En attente (<?php echo (int)$counts->pending_comments; ?>)
                 </a> |
             </li>
             <li>
                 <a href="?page=establishments-comments&status=approved"
                     class="<?php echo $status_filter === 'approved' ? 'current' : ''; ?>">
-                    Approuvés (<?php echo $counts->approved_comments; ?>)
+                    Approuvés (<?php echo (int)$counts->approved_comments; ?>)
                 </a> |
             </li>
             <li>
                 <a href="?page=establishments-comments&status=rejected"
                     class="<?php echo $status_filter === 'rejected' ? 'current' : ''; ?>">
-                    Rejetés (<?php echo $counts->rejected_comments; ?>)
+                    Rejetés (<?php echo (int)$counts->rejected_comments; ?>)
                 </a>
             </li>
         </ul>

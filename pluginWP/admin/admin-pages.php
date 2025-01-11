@@ -10,20 +10,32 @@ require_once(plugin_dir_path(__FILE__) . 'functions/comments-functions.php');
 function get_pending_counts()
 {
     global $wpdb;
-
     $counts = $wpdb->get_row("
-        SELECT 
+        SELECT
             (SELECT COUNT(*) FROM {$wpdb->prefix}establishments WHERE status = 'pending') as pending_establishments,
             (SELECT COUNT(*) FROM {$wpdb->prefix}establishments WHERE status = 'approved') as approved_establishments,
             (SELECT COUNT(*) FROM {$wpdb->prefix}establishments WHERE status = 'rejected') as rejected_establishments,
             (SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE status = 'pending') as pending_observations,
             (SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE status = 'approved') as approved_observations,
-            (SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE status = 'rejected') as rejected_observations
+            (SELECT COUNT(*) FROM {$wpdb->prefix}observations WHERE status = 'rejected') as rejected_observations,
+            (SELECT COUNT(*) FROM {$wpdb->prefix}observation_comments WHERE status = 'pending') as pending_comments,
+            (SELECT COUNT(*) FROM {$wpdb->prefix}observation_comments WHERE status = 'approved') as approved_comments,
+            (SELECT COUNT(*) FROM {$wpdb->prefix}observation_comments WHERE status = 'rejected') as rejected_comments
     ");
 
-    return $counts;
+    // Convertir les valeurs en entiers
+    return (object) array(
+        'pending_establishments' => (int) $counts->pending_establishments,
+        'approved_establishments' => (int) $counts->approved_establishments,
+        'rejected_establishments' => (int) $counts->rejected_establishments,
+        'pending_observations' => (int) $counts->pending_observations,
+        'approved_observations' => (int) $counts->approved_observations,
+        'rejected_observations' => (int) $counts->rejected_observations,
+        'pending_comments' => (int) $counts->pending_comments,
+        'approved_comments' => (int) $counts->approved_comments,
+        'rejected_comments' => (int) $counts->rejected_comments
+    );
 }
-
 // Ajout des menus d'administration
 add_action('admin_menu', function () {
     $counts = get_pending_counts();
