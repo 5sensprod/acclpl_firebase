@@ -18,6 +18,11 @@ class EstablishmentController
     {
         return $this->dbService->getEstablishmentsWithObservations();
     }
+
+    public function getAllObservations()
+    {
+        return $this->dbService->getAllObservations();
+    }
 }
 
 class ObservationController
@@ -50,7 +55,14 @@ class ObservationController
 
         return $this->dbService->getObservationComments($observation_id);
     }
+
+    // Nouvelle méthode pour récupérer toutes les observations
+    public function getAllObservations()
+    {
+        return $this->dbService->getAllObservations();
+    }
 }
+
 
 class MediaController
 {

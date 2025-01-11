@@ -64,6 +64,7 @@ class DatabaseService
         return $this->wpdb->get_results("
             SELECT 
                 e.*,
+                o.id as observation_id, 
                 o.photo_urls,
                 o.observation_date,
                 o.observation_time,
@@ -119,6 +120,26 @@ class DatabaseService
             WHERE c.observation_id = %s
             ORDER BY c.created_at DESC
         ", $observation_id), ARRAY_A);
+    }
+
+    public function getAllObservations()
+    {
+        return $this->wpdb->get_results("
+        SELECT 
+            o.id AS observation_id,
+            o.establishment_id,
+            o.photo_urls,
+            o.observation_date,
+            o.observation_time,
+            o.notes,
+            o.observation_types,
+            e.establishment_name,
+            e.address
+        FROM {$this->wpdb->prefix}observations o
+        LEFT JOIN {$this->wpdb->prefix}establishments e 
+        ON o.establishment_id = e.id
+        WHERE o.status = 'approved'
+    ", ARRAY_A);
     }
 }
 

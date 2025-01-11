@@ -31,4 +31,10 @@ add_action('rest_api_init', function () {
         'callback' => [$observationController, 'handleComments'],
         'permission_callback' => '__return_true'
     ]);
+
+    register_rest_route('establishments/v1', '/observations', [
+        'methods' => 'GET',
+        'callback' => [$observationController, 'getAllObservations'],
+        'permission_callback' => '__return_true' // Permet un accès public
+    ]);
 });
