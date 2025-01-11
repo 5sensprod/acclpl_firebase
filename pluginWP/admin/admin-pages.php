@@ -1,8 +1,10 @@
 <?php
 require_once(plugin_dir_path(__FILE__) . 'pages/establishments-page.php');
 require_once(plugin_dir_path(__FILE__) . 'pages/observations-page.php');
+require_once(plugin_dir_path(__FILE__) . 'pages/comments-page.php');
 require_once(plugin_dir_path(__FILE__) . 'functions/establishments-functions.php');
 require_once(plugin_dir_path(__FILE__) . 'functions/observations-functions.php');
+require_once(plugin_dir_path(__FILE__) . 'functions/comments-functions.php');
 
 // Fonction pour compter les nouveaux signalements
 function get_pending_counts()
@@ -26,32 +28,52 @@ function get_pending_counts()
 add_action('admin_menu', function () {
     $counts = get_pending_counts();
 
+    // Menu principal Établissements
     $menu_title = 'Établissements';
     if ($counts->pending_establishments > 0) {
         $menu_title .= " <span class='update-plugins count-{$counts->pending_establishments}'><span class='update-count'>" . number_format_i18n($counts->pending_establishments) . "</span></span>";
     }
 
-    $submenu_title = 'Observations';
+    // Sous-menu Observations
+    $observations_title = 'Observations';
     if ($counts->pending_observations > 0) {
-        $submenu_title .= " <span class='update-plugins count-{$counts->pending_observations}'><span class='update-count'>" . number_format_i18n($counts->pending_observations) . "</span></span>";
+        $observations_title .= " <span class='update-plugins count-{$counts->pending_observations}'><span class='update-count'>" . number_format_i18n($counts->pending_observations) . "</span></span>";
     }
 
+    // Nouveau sous-menu Commentaires
+    $comments_title = 'Commentaires';
+    if ($counts->pending_comments > 0) {
+        $comments_title .= " <span class='update-plugins count-{$counts->pending_comments}'><span class='update-count'>" . number_format_i18n($counts->pending_comments) . "</span></span>";
+    }
+
+    // Menu principal
     add_menu_page(
-        'Gestion des établissements',
-        $menu_title,
-        'manage_options',
-        'establishments-sync',
-        'establishments_map_admin_page',
-        'dashicons-location'
+        'Gestion des établissements',    // Titre de la page
+        $menu_title,                     // Titre du menu
+        'manage_options',                // Capacité requise
+        'establishments-sync',           // Slug du menu
+        'establishments_map_admin_page', // Fonction de callback
+        'dashicons-location'            // Icône
     );
 
+    // Sous-menu Observations
     add_submenu_page(
-        'establishments-sync',
-        'Gestion des Observations',
-        $submenu_title,
-        'manage_options',
-        'establishments-observations',
-        'establishments_map_observations_page'
+        'establishments-sync',              // Slug du menu parent
+        'Gestion des Observations',         // Titre de la page
+        $observations_title,                // Titre dans le menu
+        'manage_options',                   // Capacité requise
+        'establishments-observations',       // Slug du sous-menu
+        'establishments_map_observations_page' // Fonction de callback
+    );
+
+    // Sous-menu Commentaires
+    add_submenu_page(
+        'establishments-sync',              // Slug du menu parent
+        'Modération des Commentaires',      // Titre de la page
+        $comments_title,                    // Titre dans le menu
+        'manage_options',                   // Capacité requise
+        'establishments-comments',          // Slug du sous-menu
+        'establishments_map_comments_page'  // Fonction de callback
     );
 });
 

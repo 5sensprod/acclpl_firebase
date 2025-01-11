@@ -118,10 +118,10 @@ class DatabaseService
             FROM {$this->wpdb->prefix}observation_comments c
             JOIN {$this->wpdb->prefix}users u ON c.user_id = u.ID
             WHERE c.observation_id = %s
+            AND c.status = 'approved'
             ORDER BY c.created_at DESC
         ", $observation_id), ARRAY_A);
     }
-
     public function getAllObservations()
     {
         return $this->wpdb->get_results("
